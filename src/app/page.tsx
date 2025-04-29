@@ -9,9 +9,11 @@ export default function Home() {
   const [code, setCode] = useState('');
   const [prize, setPrize] = useState('');
   const [error, setError] = useState('');
+  const [resendDisabled, setResendDisabled] = useState(false);
 
   const sendOTP = async () => {
     setError('');
+    setResendDisabled(true);
     const res = await fetch('/api/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -24,6 +26,8 @@ export default function Home() {
     } else {
       setError('Failed to send code.');
     }
+
+    setTimeout(() => setResendDisabled(false), 30000); // 30 second cooldown
   };
 
   const verifyCode = async () => {
@@ -70,12 +74,6 @@ export default function Home() {
             >
               Send Verification Code
             </button>
-            <button
-              onClick={sendOTP}
-              className="text-sm text-blue-600 underline mt-2"
-            >
-              Resend Code
-            </button>
             {error && <p className="text-red-500 mt-2">{error}</p>}
           </>
         )}
@@ -95,6 +93,15 @@ export default function Home() {
               className="bg-green-600 text-white px-4 py-2 rounded w-full"
             >
               Verify
+            </button>
+            <button
+              onClick={sendOTP}
+              disabled={resendDisabled}
+              className={`text-sm mt-2 underline w-full ${
+                resendDisabled ? 'text-gray-400' : 'text-blue-600'
+              }`}
+            >
+              Resend Code
             </button>
             {error && <p className="text-red-500 mt-2">{error}</p>}
           </>

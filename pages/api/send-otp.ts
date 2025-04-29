@@ -4,6 +4,21 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+function htmlTemplateWithOTP(otp: string) {
+  return `
+    <div style="font-family: sans-serif; max-width: 480px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px;">
+      <h2 style="color: #0072CE;">🛡️ Biome Brigade Verification</h2>
+      <p>Greetings, Hero!</p>
+      <p>You're one step away from joining the Biome Brigade prize squad.</p>
+      <p style="font-size: 24px; font-weight: bold; text-align: center;">Your OTP Code:</p>
+      <p style="font-size: 32px; font-weight: bold; color: #0072CE; text-align: center;">${otp}</p>
+      <p>Enter this code on the registration screen to complete your mission. 🦸‍♀️</p>
+      <p style="font-size: 12px; color: #888;">Code expires in 10 minutes.</p>
+    </div>
+  `;
+}
+
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { email, phone, method } = req.body;
   const otp = Math.floor(10000 + Math.random() * 90000).toString();
@@ -30,8 +45,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await resend.emails.send({
     from: 'noreply@syncworkflow.com',
     to: email,
-    subject: 'Your Verification Code',
-    text: `Your OTP code is: ${otp}`,
+    subject: 'Your Biome Brigade OTP Code',
+    html: htmlTemplateWithOTP(otp), // function returns the HTML above
   });
   
 
