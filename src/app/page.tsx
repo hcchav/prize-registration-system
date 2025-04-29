@@ -70,6 +70,12 @@ export default function Home() {
             >
               Send Verification Code
             </button>
+            <button
+              onClick={sendOTP}
+              className="text-sm text-blue-600 underline mt-2"
+            >
+              Resend Code
+            </button>
             {error && <p className="text-red-500 mt-2">{error}</p>}
           </>
         )}
