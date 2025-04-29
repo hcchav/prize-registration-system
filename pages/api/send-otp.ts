@@ -27,14 +27,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .insert([{ email, phone, method, otp, verified: false }]);
   }
 
-  if (method === 'email') {
-    await resend.emails.send({
-      from: 'heroncchavez@gmail.com', // must match verified sender in Resend
-      to: email,
-      subject: 'Your Verification Code',
-      text: `Your OTP code is: ${otp}`,
-    });
-  }
+  await resend.emails.send({
+    from: 'noreply@syncworkflow.com',
+    to: email,
+    subject: 'Your Verification Code',
+    text: `Your OTP code is: ${otp}`,
+  });
+  
 
   res.status(200).json({ success: true });
 }
