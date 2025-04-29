@@ -50,11 +50,7 @@ export default function Home() {
               src="https://biomebrigade.com/cdn/shop/files/Untitled_design_2.png?v=1742993065&width=450"
               alt="Biome Brigade Mascot"
               className="w-40 h-auto mx-auto mb-4 rounded-lg shadow-md"
-            />
-
-            <h1 className="text-3xl font-bold text-blue-800 mb-4 font-comic">Join the Biome Brigade!</h1>
-            <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
-            
+            />                     
             <h1 className="text-3xl font-bold text-blue-800 mb-4 font-comic">Join the Biome Brigade!</h1>
             <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
             <input
