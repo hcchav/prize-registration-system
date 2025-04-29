@@ -19,15 +19,11 @@ export default function Home() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, method }),
     });
-
     const data = await res.json();
-    if (data.success) {
-      setStep(2);
-    } else {
-      setError('Failed to send code.');
-    }
+    if (data.success) setStep(2);
+    else setError('Failed to send code.');
 
-    setTimeout(() => setResendDisabled(false), 30000); // 30 second cooldown
+    setTimeout(() => setResendDisabled(false), 30000);
   };
 
   const verifyCode = async () => {
@@ -37,80 +33,90 @@ export default function Home() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, code }),
     });
-
     const data = await res.json();
-    if (data.error) {
-      setError(data.error);
-    } else {
+    if (data.error) setError(data.error);
+    else {
       setPrize(data.prize || data.message);
       setStep(3);
     }
   };
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+    <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-white p-4">
+      <div className="bg-white border-[3px] border-blue-700 p-8 rounded-2xl shadow-xl w-full max-w-md text-center comic-border">
         {step === 1 && (
           <>
-            <h1 className="text-xl font-bold mb-4">Register for a Prize</h1>
+            <img
+              src="https://biomebrigade.com/cdn/shop/files/Untitled_design_2.png?v=1742993065&width=450"
+              alt="Biome Brigade Mascot"
+              className="w-40 h-auto mx-auto mb-4 rounded-lg shadow-md"
+            />
+
+            <h1 className="text-3xl font-bold text-blue-800 mb-4 font-comic">Join the Biome Brigade!</h1>
+            <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
+            
+            <h1 className="text-3xl font-bold text-blue-800 mb-4 font-comic">Join the Biome Brigade!</h1>
+            <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
             <input
               type="email"
-              placeholder="Email Address"
-              className="w-full border p-2 rounded mb-2"
+              placeholder="Your Secret Agent Email"
+              className="w-full border border-gray-300 p-2 rounded mb-3"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value)}
-              className="w-full border p-2 rounded mb-4"
+              className="w-full border border-gray-300 p-2 rounded mb-4"
             >
-              <option value="email">Verify via Email</option>
-              <option value="sms">Verify via SMS</option>
+              <option value="email">Email Verification</option>
+              <option value="sms">SMS Verification</option>
             </select>
             <button
               onClick={sendOTP}
-              className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+              className="bg-blue-700 text-white font-bold py-2 px-4 rounded w-full hover:bg-blue-800"
             >
-              Send Verification Code
+              Activate Entry
             </button>
-            {error && <p className="text-red-500 mt-2">{error}</p>}
+            {error && <p className="text-red-600 mt-2">{error}</p>}
           </>
         )}
 
         {step === 2 && (
           <>
-            <h2 className="text-lg font-semibold mb-2">Enter the Code</h2>
+            <h2 className="text-2xl font-bold text-green-700 mb-2 font-comic">🔐 Enter Access Code</h2>
+            <p className="text-gray-600 mb-4">Your code has been dispatched to your inbox.</p>
             <input
               type="text"
-              placeholder="Enter the 5-digit code"
-              className="w-full border p-2 rounded mb-2"
+              placeholder="5-digit OTP"
+              className="w-full border border-gray-300 p-2 rounded mb-2"
               value={code}
               onChange={(e) => setCode(e.target.value)}
             />
             <button
               onClick={verifyCode}
-              className="bg-green-600 text-white px-4 py-2 rounded w-full"
+              className="bg-green-600 text-white font-bold py-2 px-4 rounded w-full hover:bg-green-700"
             >
-              Verify
+              Confirm Identity
             </button>
             <button
               onClick={sendOTP}
               disabled={resendDisabled}
-              className={`text-sm mt-2 underline w-full ${
+              className={`text-sm mt-3 underline w-full ${
                 resendDisabled ? 'text-gray-400' : 'text-blue-600'
               }`}
             >
               Resend Code
             </button>
-            {error && <p className="text-red-500 mt-2">{error}</p>}
+            {error && <p className="text-red-600 mt-2">{error}</p>}
           </>
         )}
 
         {step === 3 && (
           <>
-            <h2 className="text-xl font-bold mb-4">🎉 Prize Assigned!</h2>
-            <p className="text-lg text-green-700 font-semibold">{prize}</p>
+            <h2 className="text-3xl font-bold text-purple-800 mb-4 font-comic">🎉 Mission Complete!</h2>
+            <p className="text-lg font-semibold text-green-700">You won: {prize}</p>
+            <p className="text-sm text-gray-500 mt-2">Claim your prize at Booth #9158</p>
           </>
         )}
       </div>
