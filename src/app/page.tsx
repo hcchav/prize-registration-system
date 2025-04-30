@@ -78,7 +78,8 @@ export default function Home() {
   };
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-white p-4">
+    <main className="flex items-center justify-center min-h-[100dvh] overflow-auto px-4 bg-gradient-to-br from-blue-50 to-white">
+
       <div className="bg-white border-[3px] border-blue-700 p-8 rounded-2xl shadow-xl w-full max-w-md text-center comic-border">
         {step === 1 && (
           <>
@@ -91,6 +92,7 @@ export default function Home() {
             <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
             <input
               type="email"
+              onFocus={(e) => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' })}
               placeholder="Your Secret Agent Email"
               className="w-full border border-gray-300 p-2 rounded mb-3"
               value={email}
