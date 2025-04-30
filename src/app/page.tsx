@@ -78,8 +78,8 @@ export default function Home() {
   };
 
   return (
-    <main className="flex items-center justify-center min-h-[100dvh] overflow-auto px-4" style={{ backgroundColor: 'rgb(171, 202, 233)', fontFamily: 'Poppins, sans-serif' }}>
-      <div className="p-8 rounded-2xl shadow-xl w-full max-w-md text-center border-[3px]" style={{ backgroundColor: 'white', borderColor: 'rgb(2, 32, 41)' }}>
+    <main className="flex items-center justify-center min-h-[100dvh] overflow-auto px-4" style={{ backgroundColor: 'white', fontFamily: 'Poppins, sans-serif' }}>
+      <div className="p-8 rounded-2xl shadow-xl w-full max-w-md text-center border-[3px]" style={{ backgroundColor: 'white', borderColor: 'rgb(236, 242, 243)' }}>
         {step === 1 && (
           <>
             <img
@@ -87,9 +87,9 @@ export default function Home() {
               alt="Biome Brigade Mascot"
               className="w-40 h-auto mx-auto mb-4 rounded-lg shadow-md"
             />
-            <h1 className="text-3xl font-bold mb-4" style={{ color: 'rgb(2, 32, 41)' }}>Join the Biome Brigade!</h1>
-            <p className="mb-4 font-medium" style={{ color: 'rgb(2, 32, 41)' }}>Register to win exclusive superhero swag.</p>
-            <label className="block text-left font-semibold mb-1" style={{ color: 'rgb(2, 32, 41)' }}>Your Secret Agent Email</label>
+            <h1 className="text-3xl font-bold mb-4" style={{ color: 'rgb(0, 39, 58)' }}>Join the Biome Brigade!</h1>
+            <p className="mb-4 font-medium" style={{ color: 'rgb(0, 39, 58)' }}>Register to win exclusive superhero swag.</p>
+            <label className="block text-left font-semibold mb-1" style={{ color: 'rgb(42, 42, 52)' }}>Your Secret Agent Email</label>
             <input
               type="email"
               placeholder="example@domain.com"
@@ -104,8 +104,8 @@ export default function Home() {
             />
 
             <div className="text-left mb-4">
-              <label className="font-semibold block mb-1" style={{ color: 'rgb(2, 32, 41)' }}>Verification Method:</label>
-              <label className="inline-flex items-center mr-4">
+              <label className="font-semibold block mb-1" style={{ color: 'rgb(42, 42, 52)' }}>Verification Method:</label>
+              <label className="inline-flex items-center mr-4" style={{ color: 'rgb(42, 42, 52)' }}>
                 <input
                   type="radio"
                   value="email"
@@ -115,7 +115,7 @@ export default function Home() {
                 />
                 Email
               </label>
-              <label className="inline-flex items-center">
+              <label className="inline-flex items-center" style={{ color: 'rgb(42, 42, 52)' }}>
                 <input
                   type="radio"
                   value="sms"
@@ -128,7 +128,7 @@ export default function Home() {
             </div>
 
             <div className="text-left mb-4">
-              <label className="inline-flex items-center">
+              <label className="inline-flex items-center" style={{ color: 'rgb(42, 42, 52)' }}>
                 <input
                   type="checkbox"
                   required
@@ -162,8 +162,8 @@ export default function Home() {
 
         {step === 2 && (
           <>
-            <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgb(2, 32, 41)' }}>🔐 Enter Access Code</h2>
-            <p className="mb-4" style={{ color: 'rgb(2, 32, 41)' }}>Your code has been dispatched to your inbox.</p>
+            <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgb(0, 39, 58)' }}>🔐 Enter Access Code</h2>
+            <p className="mb-4" style={{ color: 'rgb(0, 39, 58)' }}>Your code has been dispatched to your inbox.</p>
             <input
               type="text"
               placeholder="5-digit OTP"
@@ -201,9 +201,9 @@ export default function Home() {
 
         {step === 3 && (
           <>
-            <h2 className="text-3xl font-bold mb-4" style={{ color: 'rgb(2, 32, 41)' }}>🎉 Mission Complete!</h2>
+            <h2 className="text-3xl font-bold mb-4" style={{ color: 'rgb(0, 39, 58)' }}>🎉 Mission Complete!</h2>
             <p className="text-lg font-semibold text-green-700">You won: {prize}</p>
-            <p className="text-sm mt-2" style={{ color: 'rgb(2, 32, 41)' }}>Claim your prize at Booth #9158</p>
+            <p className="text-sm mt-2" style={{ color: 'rgb(0, 39, 58)' }}>Claim your prize at Booth #9158</p>
           </>
         )}
       </div>
