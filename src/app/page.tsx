@@ -92,13 +92,23 @@ export default function Home() {
       <div className="p-8 rounded-2xl shadow-xl w-full max-w-md text-center border-[3px]" style={{ backgroundColor: 'white', borderColor: 'rgb(236, 242, 243)' }}>
         {step === 1 && (
           <>
-            <h1 className="text-3xl font-bold mb-4" style={{ color: 'rgb(0, 39, 58)' }}>Join the Biome Brigade!</h1>
+            <img
+              src="https://biomebrigade.com/cdn/shop/files/Untitled_design_2.png?v=1742993065&width=450"
+              alt="Biome Brigade Mascot"
+              className="w-40 h-auto mx-auto mb-4 rounded-lg shadow-md"
+            />
+            <h1 className="text-3xl font-bold mb-2" style={{ color: 'rgb(0, 39, 58)' }}>Join the Biome Brigade!</h1>
+            <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
             <div className="space-y-3 text-left text-sm" style={{ color: 'rgb(42, 42, 52)' }}>
-              <input className="w-full border border-gray-600 p-2 rounded" placeholder="First Name" onChange={(e) => handleChange('firstName', e.target.value)} />
-              <input className="w-full border border-gray-600 p-2 rounded" placeholder="Last Name" onChange={(e) => handleChange('lastName', e.target.value)} />
-              <input className="w-full border border-gray-600 p-2 rounded" placeholder="Company Name" onChange={(e) => handleChange('company', e.target.value)} />
-              <input className="w-full border border-gray-600 p-2 rounded" placeholder="Company Address" onChange={(e) => handleChange('address', e.target.value)} />
-              <label className="block mt-2 font-semibold">Company Function:</label>
+              <label>First Name</label>
+              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('firstName', e.target.value)} />
+              <label>Last Name</label>
+              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('lastName', e.target.value)} />
+              <label>Company Name</label>
+              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('company', e.target.value)} />
+              <label>Company Address</label>
+              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('address', e.target.value)} />
+              <label>Company Function</label>
               <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('function', e.target.value)}>
                 <option value="">Select One</option>
                 <option value="Supplier">Supplier</option>
@@ -107,15 +117,16 @@ export default function Home() {
                 <option value="Wholesaler">Wholesaler</option>
                 <option value="Other">Other</option>
               </select>
-              <input className="w-full border border-gray-600 p-2 rounded" placeholder="Subcategory or Notes (optional)" onChange={(e) => handleChange('subcategory', e.target.value)} />
-              <input className="w-full border border-gray-600 p-2 rounded" type="email" placeholder="Email Address" onChange={(e) => handleChange('email', e.target.value)} />
-              <input className="w-full border border-gray-600 p-2 rounded" placeholder="Phone Number" onChange={(e) => handleChange('phone', e.target.value)} />
-              <div className="mt-2">
-                <label className="font-semibold">Verification Method:</label>
-                <div className="flex gap-4 mt-1">
-                  <label><input type="radio" name="method" value="email" checked={formData.method === 'email'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> Email</label>
-                  <label><input type="radio" name="method" value="sms" checked={formData.method === 'sms'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> SMS</label>
-                </div>
+              <label>Subcategory or Notes (optional)</label>
+              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)} />
+              <label>Email Address</label>
+              <input className="w-full border border-gray-600 p-2 rounded" type="email" onChange={(e) => handleChange('email', e.target.value)} />
+              <label>Phone Number</label>
+              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('phone', e.target.value)} />
+              <label className="font-semibold">Verification Method:</label>
+              <div className="flex gap-4 mt-1">
+                <label><input type="radio" name="method" value="email" checked={formData.method === 'email'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> Email</label>
+                <label><input type="radio" name="method" value="sms" checked={formData.method === 'sms'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> SMS</label>
               </div>
               <label className="inline-flex items-center mt-3">
                 <input type="checkbox" className="mr-2" onChange={(e) => handleChange('consent', e.target.checked)} />
