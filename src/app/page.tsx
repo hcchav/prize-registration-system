@@ -11,12 +11,21 @@ export default function Home() {
   const [error, setError] = useState('');
   const [resendDisabled, setResendDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+
+  const isValidEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const sendOTP = async () => {
     setError('');
 
     if (!email) {
-      setError('Please enter your email.');
+      setError('Email is required.');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address.');
       return;
     }
 
@@ -44,6 +53,13 @@ export default function Home() {
   const verifyCode = async () => {
     setError('');
 
+    if (!code || code.length < 4) {
+      setError('Please enter the verification code.');
+      return;
+    }
+
+    setVerifying(true);
+
     const res = await fetch('/api/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -51,6 +67,7 @@ export default function Home() {
     });
 
     const data = await res.json();
+    setVerifying(false);
 
     if (data.error) {
       setError(data.error);
@@ -113,9 +130,12 @@ export default function Home() {
             />
             <button
               onClick={verifyCode}
-              className="bg-green-600 text-white font-bold py-2 px-4 rounded w-full hover:bg-green-700"
+              disabled={verifying}
+              className={`bg-green-600 text-white font-bold py-2 px-4 rounded w-full hover:bg-green-700 ${
+                verifying ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
-              Confirm Identity
+              {verifying ? 'Verifying...' : 'Confirm Identity'}
             </button>
             <button
               onClick={sendOTP}
