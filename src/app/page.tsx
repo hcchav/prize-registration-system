@@ -141,7 +141,7 @@ export default function Home() {
                 </>
               )}
 
-              {formData.function === 'Manufacturer' && (
+{formData.function === 'Manufacturer' && (
                 <>
                   <label>Manufacturer Categories</label>
                   <div className="flex flex-col gap-1">
@@ -161,6 +161,16 @@ export default function Home() {
                         {option}
                       </label>
                     ))}
+                  </div>
+                  {formData.manufacturerOptions.includes('Other') && (
+                    <input
+                      className="w-full border border-gray-600 p-2 rounded mt-2"
+                      placeholder="Please specify"
+                      onChange={(e) => handleChange('manufacturerOther', e.target.value)}
+                    />
+                  )}
+                </>
+              )}
                   </div>
                 </>
               )}
