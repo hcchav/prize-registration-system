@@ -81,7 +81,7 @@ export default function Home() {
     <main className="flex items-center justify-center min-h-[100dvh] overflow-auto px-4 bg-gradient-to-br from-blue-50 to-white">
 
       <div className="bg-white border-[3px] border-blue-700 p-8 rounded-2xl shadow-xl w-full max-w-md text-center comic-border">
-        {step === 1 && (
+          {step === 1 && (
           <>
             <img
               src="https://biomebrigade.com/cdn/shop/files/Untitled_design_2.png?v=1742993065&width=450"
@@ -90,27 +90,62 @@ export default function Home() {
             />
             <h1 className="text-3xl font-bold text-blue-800 mb-4 font-comic">Join the Biome Brigade!</h1>
             <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
+
             <input
               type="email"
               placeholder="Your Secret Agent Email"
-              className="w-full border border-gray-300 p-2 rounded mb-3"
+              className="w-full border border-gray-600 p-3 rounded mb-3"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onFocus={(e) => {
                 setTimeout(() => {
                   e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300); // slight delay after keyboard opens
+                }, 300);
               }}
             />
 
-            <select
-              value={method}
-              onChange={(e) => setMethod(e.target.value)}
-              className="w-full border border-gray-300 p-2 rounded mb-4"
-            >
-              <option value="email">Email Verification</option>
-              <option value="sms">SMS Verification</option>
-            </select>
+            <div className="text-left mb-4">
+              <label className="font-semibold block mb-1">Verification Method:</label>
+              <label className="inline-flex items-center mr-4">
+                <input
+                  type="radio"
+                  value="email"
+                  checked={method === 'email'}
+                  onChange={(e) => setMethod(e.target.value)}
+                  className="mr-2"
+                />
+                Email
+              </label>
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  value="sms"
+                  checked={method === 'sms'}
+                  onChange={(e) => setMethod(e.target.value)}
+                  className="mr-2"
+                />
+                SMS
+              </label>
+            </div>
+
+            <div className="text-left mb-4">
+              <label className="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  required
+                  className="mr-2"
+                  onChange={(e) => {
+                    if (!e.target.checked) {
+                      setError('You must consent to continue.');
+                    } else {
+                      setError('');
+                    }
+                  }}
+                />
+                I consent to receive a verification code and be entered into the prize giveaway.
+              </label>
+            </div>
+
             <button
               onClick={sendOTP}
               disabled={loading}
@@ -120,9 +155,11 @@ export default function Home() {
             >
               {loading ? 'Sending...' : 'Activate Entry'}
             </button>
+
             {error && <p className="text-red-600 mt-2">{error}</p>}
           </>
         )}
+
 
         {step === 2 && (
           <>
