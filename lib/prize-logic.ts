@@ -1,27 +1,25 @@
-// lib/prize-logic.ts
-
 import { supabase } from './supabase';
 
-interface Prize {
-  id: number;
-  name: string;
-  quantity: number;
-}
+export async function getAvailablePrize(): Promise<string | null> {
+  const { data: prizes, error } = await supabase
+    .from('prizes')
+    .select('*');
 
-export async function assignPrize(): Promise<Prize | null> {
-  const { data: prizes } = await supabase.from('prizes').select('*');
+  if (error || !prizes) return null;
 
-  if (!prizes) return null;
+  const available = prizes.filter(p => p.claimed < p.stock);
+  if (available.length === 0) return null;
 
-  const available = (prizes as Prize[]).filter((p) => p.quantity > 0);
-  if (!available.length) return null;
+  const pool = available.flatMap(prize =>
+    Array(prize.stock - prize.claimed).fill(prize)
+  );
 
-  const chosen = available[Math.floor(Math.random() * available.length)];
+  const selected = pool[Math.floor(Math.random() * pool.length)];
 
   await supabase
     .from('prizes')
-    .update({ quantity: chosen.quantity - 1 })
-    .eq('id', chosen.id);
+    .update({ claimed: selected.claimed + 1 })
+    .eq('id', selected.id);
 
-  return chosen;
+  return selected.name;
 }
