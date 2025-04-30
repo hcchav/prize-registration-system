@@ -92,12 +92,17 @@ export default function Home() {
             <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
             <input
               type="email"
-              onFocus={(e) => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' })}
               placeholder="Your Secret Agent Email"
               className="w-full border border-gray-300 p-2 rounded mb-3"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onFocus={(e) => {
+                setTimeout(() => {
+                  e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300); // slight delay after keyboard opens
+              }}
             />
+
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value)}
@@ -129,6 +134,11 @@ export default function Home() {
               className="w-full border border-gray-300 p-2 rounded mb-2"
               value={code}
               onChange={(e) => setCode(e.target.value)}
+              onFocus={(e) => {
+                setTimeout(() => {
+                  e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+              }}
             />
             <button
               onClick={verifyCode}
