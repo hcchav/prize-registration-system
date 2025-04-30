@@ -90,10 +90,11 @@ export default function Home() {
             />
             <h1 className="text-3xl font-bold text-blue-800 mb-4 font-comic">Join the Biome Brigade!</h1>
             <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
-
+            <label className="block text-left font-semibold text-gray-700 mb-1">
+              Your Secret Agent Email
+            </label>
             <input
               type="email"
-              placeholder="Your Secret Agent Email"
               className="w-full border border-gray-600 p-3 rounded mb-3"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
