@@ -4,8 +4,18 @@ import { useState } from 'react';
 
 export default function Home() {
   const [step, setStep] = useState(1);
-  const [email, setEmail] = useState('');
-  const [method, setMethod] = useState('email');
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    company: '',
+    address: '',
+    function: '',
+    subcategory: '',
+    email: '',
+    phone: '',
+    method: 'email',
+    consent: false,
+  });
   const [code, setCode] = useState('');
   const [prize, setPrize] = useState('');
   const [error, setError] = useState('');
@@ -13,19 +23,18 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
 
-  const isValidEmail = (email: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const sendOTP = async () => {
     setError('');
+    const { email, method, consent } = formData;
 
-    if (!email) {
-      setError('Email is required.');
+    if (!email || !isValidEmail(email)) {
+      setError('Valid email is required.');
       return;
     }
-
-    if (!isValidEmail(email)) {
-      setError('Please enter a valid email address.');
+    if (!consent) {
+      setError('You must consent to continue.');
       return;
     }
 
@@ -35,17 +44,14 @@ export default function Home() {
     const res = await fetch('/api/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, method }),
+      body: JSON.stringify({ ...formData }),
     });
 
     const data = await res.json();
     setLoading(false);
 
-    if (data.success) {
-      setStep(2);
-    } else {
-      setError('Failed to send code.');
-    }
+    if (data.success) setStep(2);
+    else setError('Failed to send code.');
 
     setTimeout(() => setResendDisabled(false), 30000);
   };
@@ -63,7 +69,7 @@ export default function Home() {
     const res = await fetch('/api/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, code }),
+      body: JSON.stringify({ email: formData.email, code }),
     });
 
     const data = await res.json();
@@ -77,122 +83,60 @@ export default function Home() {
     }
   };
 
+  const handleChange = (field: string, value: string | boolean) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
   return (
     <main className="flex items-center justify-center min-h-[100dvh] overflow-auto px-4" style={{ backgroundColor: 'white', fontFamily: 'Poppins, sans-serif' }}>
       <div className="p-8 rounded-2xl shadow-xl w-full max-w-md text-center border-[3px]" style={{ backgroundColor: 'white', borderColor: 'rgb(236, 242, 243)' }}>
         {step === 1 && (
           <>
-            <img
-              src="https://biomebrigade.com/cdn/shop/files/Untitled_design_2.png?v=1742993065&width=450"
-              alt="Biome Brigade Mascot"
-              className="w-40 h-auto mx-auto mb-4 rounded-lg shadow-md"
-            />
             <h1 className="text-3xl font-bold mb-4" style={{ color: 'rgb(0, 39, 58)' }}>Join the Biome Brigade!</h1>
-            <p className="mb-4 font-medium" style={{ color: 'rgb(0, 39, 58)' }}>Register to win exclusive superhero swag.</p>
-            <label className="block text-left font-semibold mb-1" style={{ color: 'rgb(42, 42, 52)' }}>Your Secret Agent Email</label>
-            <input
-              type="email"
-              placeholder="example@domain.com"
-              className="w-full border border-gray-600 p-3 rounded mb-3 placeholder:text-gray-700"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onFocus={(e) => {
-                setTimeout(() => {
-                  e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
-              }}
-            />
-
-            <div className="text-left mb-4">
-              <label className="font-semibold block mb-1" style={{ color: 'rgb(42, 42, 52)' }}>Verification Method:</label>
-              <label className="inline-flex items-center mr-4" style={{ color: 'rgb(42, 42, 52)' }}>
-                <input
-                  type="radio"
-                  value="email"
-                  checked={method === 'email'}
-                  onChange={(e) => setMethod(e.target.value)}
-                  className="mr-2"
-                />
-                Email
-              </label>
-              <label className="inline-flex items-center" style={{ color: 'rgb(42, 42, 52)' }}>
-                <input
-                  type="radio"
-                  value="sms"
-                  checked={method === 'sms'}
-                  onChange={(e) => setMethod(e.target.value)}
-                  className="mr-2"
-                />
-                SMS
-              </label>
-            </div>
-
-            <div className="text-left mb-4">
-              <label className="inline-flex items-center" style={{ color: 'rgb(42, 42, 52)' }}>
-                <input
-                  type="checkbox"
-                  required
-                  className="mr-2"
-                  onChange={(e) => {
-                    if (!e.target.checked) {
-                      setError('You must consent to continue.');
-                    } else {
-                      setError('');
-                    }
-                  }}
-                />
+            <div className="space-y-3 text-left text-sm" style={{ color: 'rgb(42, 42, 52)' }}>
+              <input className="w-full border border-gray-600 p-2 rounded" placeholder="First Name" onChange={(e) => handleChange('firstName', e.target.value)} />
+              <input className="w-full border border-gray-600 p-2 rounded" placeholder="Last Name" onChange={(e) => handleChange('lastName', e.target.value)} />
+              <input className="w-full border border-gray-600 p-2 rounded" placeholder="Company Name" onChange={(e) => handleChange('company', e.target.value)} />
+              <input className="w-full border border-gray-600 p-2 rounded" placeholder="Company Address" onChange={(e) => handleChange('address', e.target.value)} />
+              <label className="block mt-2 font-semibold">Company Function:</label>
+              <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('function', e.target.value)}>
+                <option value="">Select One</option>
+                <option value="Supplier">Supplier</option>
+                <option value="Manufacturer">Manufacturer</option>
+                <option value="Retailer">Retailer</option>
+                <option value="Wholesaler">Wholesaler</option>
+                <option value="Other">Other</option>
+              </select>
+              <input className="w-full border border-gray-600 p-2 rounded" placeholder="Subcategory or Notes (optional)" onChange={(e) => handleChange('subcategory', e.target.value)} />
+              <input className="w-full border border-gray-600 p-2 rounded" type="email" placeholder="Email Address" onChange={(e) => handleChange('email', e.target.value)} />
+              <input className="w-full border border-gray-600 p-2 rounded" placeholder="Phone Number" onChange={(e) => handleChange('phone', e.target.value)} />
+              <div className="mt-2">
+                <label className="font-semibold">Verification Method:</label>
+                <div className="flex gap-4 mt-1">
+                  <label><input type="radio" name="method" value="email" checked={formData.method === 'email'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> Email</label>
+                  <label><input type="radio" name="method" value="sms" checked={formData.method === 'sms'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> SMS</label>
+                </div>
+              </div>
+              <label className="inline-flex items-center mt-3">
+                <input type="checkbox" className="mr-2" onChange={(e) => handleChange('consent', e.target.checked)} />
                 I consent to receive a verification code and be entered into the prize giveaway.
               </label>
+              <button onClick={sendOTP} disabled={loading} style={{ backgroundColor: loading ? 'rgb(2, 32, 41)' : 'rgb(102, 158, 224)' }} className="text-white font-bold py-2 px-4 rounded w-full mt-4">
+                {loading ? 'Sending...' : 'Activate Entry'}
+              </button>
+              {error && <p className="text-red-600 mt-2 text-sm">{error}</p>}
             </div>
-
-            <button
-              onClick={sendOTP}
-              disabled={loading}
-              style={{ backgroundColor: loading ? 'rgb(2, 32, 41)' : 'rgb(102, 158, 224)' }}
-              className={`text-white font-bold py-2 px-4 rounded w-full hover:opacity-90 ${
-                loading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-            >
-              {loading ? 'Sending...' : 'Activate Entry'}
-            </button>
-
-            {error && <p className="text-red-600 mt-2">{error}</p>}
           </>
         )}
 
         {step === 2 && (
           <>
             <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgb(0, 39, 58)' }}>🔐 Enter Access Code</h2>
-            <p className="mb-4" style={{ color: 'rgb(0, 39, 58)' }}>Your code has been dispatched to your inbox.</p>
-            <input
-              type="text"
-              placeholder="5-digit OTP"
-              className="w-full border border-gray-600 p-3 rounded mb-2 placeholder:text-gray-700"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              onFocus={(e) => {
-                setTimeout(() => {
-                  e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
-              }}
-            />
-            <button
-              onClick={verifyCode}
-              disabled={verifying}
-              style={{ backgroundColor: verifying ? 'rgb(2, 32, 41)' : 'rgb(102, 158, 224)' }}
-              className={`text-white font-bold py-2 px-4 rounded w-full hover:opacity-90 ${
-                verifying ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-            >
+            <input type="text" placeholder="5-digit OTP" className="w-full border border-gray-600 p-3 rounded mb-2 placeholder:text-gray-700" value={code} onChange={(e) => setCode(e.target.value)} />
+            <button onClick={verifyCode} disabled={verifying} style={{ backgroundColor: verifying ? 'rgb(2, 32, 41)' : 'rgb(102, 158, 224)' }} className="text-white font-bold py-2 px-4 rounded w-full hover:opacity-90">
               {verifying ? 'Verifying...' : 'Confirm Identity'}
             </button>
-            <button
-              onClick={sendOTP}
-              disabled={resendDisabled}
-              className={`text-sm mt-3 underline w-full ${
-                resendDisabled ? 'text-gray-400' : 'text-blue-800'
-              }`}
-            >
+            <button onClick={sendOTP} disabled={resendDisabled} className={`text-sm mt-3 underline w-full ${resendDisabled ? 'text-gray-400' : 'text-blue-800'}`}>
               Resend Code
             </button>
             {error && <p className="text-red-600 mt-2">{error}</p>}
