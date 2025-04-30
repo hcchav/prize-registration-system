@@ -27,7 +27,7 @@ export default function Home() {
 
   const sendOTP = async () => {
     setError('');
-    const { email, method, consent } = formData;
+    const { email, consent } = formData;
 
     if (!email || !isValidEmail(email)) {
       setError('Valid email is required.');

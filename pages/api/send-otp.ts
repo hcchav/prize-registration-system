@@ -18,9 +18,19 @@ function htmlTemplateWithOTP(otp: string) {
   `;
 }
 
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { email, phone, method } = req.body;
+  const {
+    firstName,
+    lastName,
+    company,
+    address,
+    function: companyFunction,
+    subcategory,
+    email,
+    phone,
+    method,
+  } = req.body;
+
   const otp = Math.floor(10000 + Math.random() * 90000).toString();
 
   const { data: existing } = await supabase
@@ -31,24 +41,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .order('created_at', { ascending: false })
     .limit(1);
 
+  const payload = {
+    first_name: firstName,
+    last_name: lastName,
+    company,
+    address,
+    function: companyFunction,
+    subcategory,
+    email,
+    phone,
+    method,
+    otp,
+    verified: false,
+  };
+
   if (existing && existing.length > 0) {
-    await supabase
-      .from('attendees')
-      .update({ otp, phone, method })
-      .eq('id', existing[0].id);
+    await supabase.from('attendees').update(payload).eq('id', existing[0].id);
   } else {
-    await supabase
-      .from('attendees')
-      .insert([{ email, phone, method, otp, verified: false }]);
+    await supabase.from('attendees').insert([payload]);
   }
 
-  await resend.emails.send({
-    from: 'noreply@syncworkflow.com',
-    to: email,
-    subject: 'Your Biome Brigade OTP Code',
-    html: htmlTemplateWithOTP(otp), // function returns the HTML above
-  });
-  
+  if (method === 'email') {
+    await resend.emails.send({
+      from: 'noreply@syncworkflow.com',
+      to: email,
+      subject: 'Your Biome Brigade OTP Code',
+      html: htmlTemplateWithOTP(otp),
+    });
+  }
 
   res.status(200).json({ success: true });
 }
