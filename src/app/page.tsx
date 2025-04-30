@@ -10,32 +10,51 @@ export default function Home() {
   const [prize, setPrize] = useState('');
   const [error, setError] = useState('');
   const [resendDisabled, setResendDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const sendOTP = async () => {
     setError('');
+
+    if (!email) {
+      setError('Please enter your email.');
+      return;
+    }
+
+    setLoading(true);
     setResendDisabled(true);
+
     const res = await fetch('/api/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, method }),
     });
+
     const data = await res.json();
-    if (data.success) setStep(2);
-    else setError('Failed to send code.');
+    setLoading(false);
+
+    if (data.success) {
+      setStep(2);
+    } else {
+      setError('Failed to send code.');
+    }
 
     setTimeout(() => setResendDisabled(false), 30000);
   };
 
   const verifyCode = async () => {
     setError('');
+
     const res = await fetch('/api/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, code }),
     });
+
     const data = await res.json();
-    if (data.error) setError(data.error);
-    else {
+
+    if (data.error) {
+      setError(data.error);
+    } else {
       setPrize(data.prize || data.message);
       setStep(3);
     }
@@ -50,7 +69,7 @@ export default function Home() {
               src="https://biomebrigade.com/cdn/shop/files/Untitled_design_2.png?v=1742993065&width=450"
               alt="Biome Brigade Mascot"
               className="w-40 h-auto mx-auto mb-4 rounded-lg shadow-md"
-            />                     
+            />
             <h1 className="text-3xl font-bold text-blue-800 mb-4 font-comic">Join the Biome Brigade!</h1>
             <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
             <input
@@ -70,9 +89,12 @@ export default function Home() {
             </select>
             <button
               onClick={sendOTP}
-              className="bg-blue-700 text-white font-bold py-2 px-4 rounded w-full hover:bg-blue-800"
+              disabled={loading}
+              className={`bg-blue-700 text-white font-bold py-2 px-4 rounded w-full hover:bg-blue-800 ${
+                loading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
-              Activate Entry
+              {loading ? 'Sending...' : 'Activate Entry'}
             </button>
             {error && <p className="text-red-600 mt-2">{error}</p>}
           </>
