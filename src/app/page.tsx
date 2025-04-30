@@ -78,24 +78,22 @@ export default function Home() {
   };
 
   return (
-    <main className="flex items-center justify-center min-h-[100dvh] overflow-auto px-4 bg-gradient-to-br from-blue-50 to-white">
-
-      <div className="bg-white border-[3px] border-blue-700 p-8 rounded-2xl shadow-xl w-full max-w-md text-center comic-border">
-          {step === 1 && (
+    <main className="flex items-center justify-center min-h-[100dvh] overflow-auto px-4" style={{ backgroundColor: 'rgb(171, 202, 233)', fontFamily: 'Poppins, sans-serif' }}>
+      <div className="p-8 rounded-2xl shadow-xl w-full max-w-md text-center border-[3px]" style={{ backgroundColor: 'white', borderColor: 'rgb(2, 32, 41)' }}>
+        {step === 1 && (
           <>
             <img
               src="https://biomebrigade.com/cdn/shop/files/Untitled_design_2.png?v=1742993065&width=450"
               alt="Biome Brigade Mascot"
               className="w-40 h-auto mx-auto mb-4 rounded-lg shadow-md"
             />
-            <h1 className="text-3xl font-bold text-blue-800 mb-4 font-comic">Join the Biome Brigade!</h1>
-            <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
-            <label className="block text-left font-semibold text-gray-700 mb-1">
-              Your Secret Agent Email
-            </label>
+            <h1 className="text-3xl font-bold mb-4" style={{ color: 'rgb(2, 32, 41)' }}>Join the Biome Brigade!</h1>
+            <p className="mb-4 font-medium" style={{ color: 'rgb(2, 32, 41)' }}>Register to win exclusive superhero swag.</p>
+            <label className="block text-left font-semibold mb-1" style={{ color: 'rgb(2, 32, 41)' }}>Your Secret Agent Email</label>
             <input
               type="email"
-              className="w-full border border-gray-600 p-3 rounded mb-3"
+              placeholder="example@domain.com"
+              className="w-full border border-gray-600 p-3 rounded mb-3 placeholder:text-gray-700"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onFocus={(e) => {
@@ -106,7 +104,7 @@ export default function Home() {
             />
 
             <div className="text-left mb-4">
-              <label className="font-semibold block mb-1">Verification Method:</label>
+              <label className="font-semibold block mb-1" style={{ color: 'rgb(2, 32, 41)' }}>Verification Method:</label>
               <label className="inline-flex items-center mr-4">
                 <input
                   type="radio"
@@ -150,7 +148,8 @@ export default function Home() {
             <button
               onClick={sendOTP}
               disabled={loading}
-              className={`bg-blue-700 text-white font-bold py-2 px-4 rounded w-full hover:bg-blue-800 ${
+              style={{ backgroundColor: loading ? 'rgb(2, 32, 41)' : 'rgb(102, 158, 224)' }}
+              className={`text-white font-bold py-2 px-4 rounded w-full hover:opacity-90 ${
                 loading ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
@@ -161,15 +160,14 @@ export default function Home() {
           </>
         )}
 
-
         {step === 2 && (
           <>
-            <h2 className="text-2xl font-bold text-green-700 mb-2 font-comic">🔐 Enter Access Code</h2>
-            <p className="text-gray-600 mb-4">Your code has been dispatched to your inbox.</p>
+            <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgb(2, 32, 41)' }}>🔐 Enter Access Code</h2>
+            <p className="mb-4" style={{ color: 'rgb(2, 32, 41)' }}>Your code has been dispatched to your inbox.</p>
             <input
               type="text"
               placeholder="5-digit OTP"
-              className="w-full border border-gray-300 p-2 rounded mb-2"
+              className="w-full border border-gray-600 p-3 rounded mb-2 placeholder:text-gray-700"
               value={code}
               onChange={(e) => setCode(e.target.value)}
               onFocus={(e) => {
@@ -181,7 +179,8 @@ export default function Home() {
             <button
               onClick={verifyCode}
               disabled={verifying}
-              className={`bg-green-600 text-white font-bold py-2 px-4 rounded w-full hover:bg-green-700 ${
+              style={{ backgroundColor: verifying ? 'rgb(2, 32, 41)' : 'rgb(102, 158, 224)' }}
+              className={`text-white font-bold py-2 px-4 rounded w-full hover:opacity-90 ${
                 verifying ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
@@ -191,7 +190,7 @@ export default function Home() {
               onClick={sendOTP}
               disabled={resendDisabled}
               className={`text-sm mt-3 underline w-full ${
-                resendDisabled ? 'text-gray-400' : 'text-blue-600'
+                resendDisabled ? 'text-gray-400' : 'text-blue-800'
               }`}
             >
               Resend Code
@@ -202,9 +201,9 @@ export default function Home() {
 
         {step === 3 && (
           <>
-            <h2 className="text-3xl font-bold text-purple-800 mb-4 font-comic">🎉 Mission Complete!</h2>
+            <h2 className="text-3xl font-bold mb-4" style={{ color: 'rgb(2, 32, 41)' }}>🎉 Mission Complete!</h2>
             <p className="text-lg font-semibold text-green-700">You won: {prize}</p>
-            <p className="text-sm text-gray-500 mt-2">Claim your prize at Booth #9158</p>
+            <p className="text-sm mt-2" style={{ color: 'rgb(2, 32, 41)' }}>Claim your prize at Booth #9158</p>
           </>
         )}
       </div>
