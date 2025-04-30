@@ -27,6 +27,10 @@ export default function Home() {
 
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+  const handleChange = (field: string, value: string | boolean | string[]) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
   const sendOTP = async () => {
     setError('');
     const { email, consent } = formData;
@@ -91,10 +95,6 @@ export default function Home() {
     }
   };
 
-  const handleChange = (field: string, value: string | boolean | string[]) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
   return (
     <main className="flex items-center justify-center min-h-[100dvh] overflow-auto px-4" style={{ backgroundColor: 'white', fontFamily: 'Poppins, sans-serif' }}>
       <div className="p-8 rounded-2xl shadow-xl w-full max-w-md text-center border-[3px]" style={{ backgroundColor: 'white', borderColor: 'rgb(236, 242, 243)' }}>
@@ -108,37 +108,129 @@ export default function Home() {
             <h1 className="text-3xl font-bold mb-2" style={{ color: 'rgb(0, 39, 58)' }}>Join the Biome Brigade!</h1>
             <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
             <div className="space-y-3 text-left text-sm" style={{ color: 'rgb(42, 42, 52)' }}>
-              <label>Manufacturer Categories</label>
-              <div className="flex flex-col gap-1">
-                {['Foods', 'Supplements', 'Treats', 'All of the Above', 'Other'].map(option => (
-                  <label key={option}>
-                    <input
-                      type="checkbox"
-                      className="mr-2"
-                      checked={formData.manufacturerOptions.includes(option)}
-                      onChange={(e) => {
-                        const updated = e.target.checked
-                          ? [...formData.manufacturerOptions, option]
-                          : formData.manufacturerOptions.filter(item => item !== option);
-                        handleChange('manufacturerOptions', updated);
-                      }}
-                    />
-                    {option}
-                  </label>
-                ))}
-              </div>
-              {formData.manufacturerOptions.includes('Other') && (
-                <input
-                  className="w-full border border-gray-600 p-2 rounded mt-2"
-                  placeholder="Please specify"
-                  onChange={(e) => handleChange('manufacturerOther', e.target.value)}
-                />
+              <label>First Name</label>
+              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('firstName', e.target.value)} />
+              <label>Last Name</label>
+              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('lastName', e.target.value)} />
+              <label>Company Name</label>
+              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('company', e.target.value)} />
+              <label>Company Address</label>
+              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('address', e.target.value)} />
+
+              <label>Company Function</label>
+              <select className="w-full border border-gray-600 p-2 rounded" value={formData.function} onChange={(e) => handleChange('function', e.target.value)}>
+                <option value="">Select One</option>
+                <option value="Supplier">Supplier</option>
+                <option value="Manufacturer">Manufacturer</option>
+                <option value="Retailer">Retailer</option>
+                <option value="Wholesaler">Wholesaler</option>
+                <option value="Other">Other</option>
+              </select>
+
+              {formData.function === 'Supplier' && (
+                <>
+                  <label>Supplier Subcategory</label>
+                  <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)}>
+                    <option value="">Select</option>
+                    <option value="Ingredients">Ingredients</option>
+                    <option value="Toys">Toys</option>
+                    <option value="Packaging">Packaging</option>
+                  </select>
+                </>
               )}
+
+              {formData.function === 'Manufacturer' && (
+                <>
+                  <label>Manufacturer Categories</label>
+                  <div className="flex flex-col gap-1">
+                    {['Foods', 'Supplements', 'Treats', 'All of the Above', 'Other'].map(option => (
+                      <label key={option}>
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          checked={formData.manufacturerOptions.includes(option)}
+                          onChange={(e) => {
+                            const updated = e.target.checked
+                              ? [...formData.manufacturerOptions, option]
+                              : formData.manufacturerOptions.filter(item => item !== option);
+                            handleChange('manufacturerOptions', updated);
+                          }}
+                        />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                  {formData.manufacturerOptions.includes('Other') && (
+                    <input className="w-full border border-gray-600 p-2 rounded mt-2" placeholder="Please specify" onChange={(e) => handleChange('manufacturerOther', e.target.value)} />
+                  )}
+                </>
+              )}
+
+              {['Retailer', 'Wholesaler'].includes(formData.function) && (
+                <>
+                  <label>{formData.function} Region</label>
+                  <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)}>
+                    <option value="">Select</option>
+                    <option value="Local">Local</option>
+                    <option value="Regional">Regional</option>
+                    <option value="National">National</option>
+                    <option value="International">International</option>
+                  </select>
+                </>
+              )}
+
+              {formData.function === 'Other' && (
+                <>
+                  <label>Other Description</label>
+                  <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)} />
+                </>
+              )}
+
+              <label>Email Address</label>
+              <input className="w-full border border-gray-600 p-2 rounded" type="email" onChange={(e) => handleChange('email', e.target.value)} />
+              <label>Phone Number</label>
+              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('phone', e.target.value)} />
+
+              <label className="font-semibold">Verification Method:</label>
+              <div className="flex gap-4 mt-1">
+                <label><input type="radio" name="method" value="email" checked={formData.method === 'email'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> Email</label>
+                <label><input type="radio" name="method" value="sms" checked={formData.method === 'sms'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> SMS</label>
+              </div>
+
+              <label className="inline-flex items-center mt-3">
+                <input type="checkbox" className="mr-2" onChange={(e) => handleChange('consent', e.target.checked)} />
+                I consent to receive a verification code and be entered into the prize giveaway.
+              </label>
+
+              <button onClick={sendOTP} disabled={loading} style={{ backgroundColor: loading ? 'rgb(2, 32, 41)' : 'rgb(102, 158, 224)' }} className="text-white font-bold py-2 px-4 rounded w-full mt-4">
+                {loading ? 'Sending...' : 'Activate Entry'}
+              </button>
+              {error && <p className="text-red-600 mt-2 text-sm">{error}</p>}
             </div>
           </>
         )}
 
-        {/* step 2 and 3 remain unchanged */}
+        {step === 2 && (
+          <>
+            <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgb(0, 39, 58)' }}>🔐 Enter Access Code</h2>
+            <input type="text" placeholder="5-digit OTP" className="w-full border border-gray-600 p-3 rounded mb-2 placeholder:text-gray-700" value={code} onChange={(e) => setCode(e.target.value)} />
+            <button onClick={verifyCode} disabled={verifying} style={{ backgroundColor: verifying ? 'rgb(2, 32, 41)' : 'rgb(102, 158, 224)' }} className="text-white font-bold py-2 px-4 rounded w-full hover:opacity-90">
+              {verifying ? 'Verifying...' : 'Confirm Identity'}
+            </button>
+            <button onClick={sendOTP} disabled={resendDisabled} className={`text-sm mt-3 underline w-full ${resendDisabled ? 'text-gray-400' : 'text-blue-800'}`}>
+              Resend Code
+            </button>
+            {error && <p className="text-red-600 mt-2">{error}</p>}
+          </>
+        )}
+
+        {step === 3 && (
+          <>
+            <h2 className="text-3xl font-bold mb-4" style={{ color: 'rgb(0, 39, 58)' }}>🎉 Mission Complete!</h2>
+            <p className="text-lg font-semibold text-green-700">You won: {prize}</p>
+            <p className="text-sm mt-2" style={{ color: 'rgb(0, 39, 58)' }}>Claim your prize at Booth #9158</p>
+          </>
+        )}
       </div>
     </main>
   );
