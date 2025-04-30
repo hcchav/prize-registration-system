@@ -11,6 +11,7 @@ export default function Home() {
     address: '',
     function: '',
     subcategory: '',
+    manufacturerOptions: [] as string[],
     email: '',
     phone: '',
     method: 'email',
@@ -44,7 +45,13 @@ export default function Home() {
     const res = await fetch('/api/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...formData }),
+      body: JSON.stringify({
+        ...formData,
+        subcategory:
+          formData.function === 'Manufacturer'
+            ? formData.manufacturerOptions.join(', ')
+            : formData.subcategory,
+      }),
     });
 
     const data = await res.json();
@@ -83,7 +90,7 @@ export default function Home() {
     }
   };
 
-  const handleChange = (field: string, value: string | boolean) => {
+  const handleChange = (field: string, value: string | boolean | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -109,7 +116,11 @@ export default function Home() {
               <label>Company Address</label>
               <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('address', e.target.value)} />
               <label>Company Function</label>
-              <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('function', e.target.value)}>
+              <select
+                className="w-full border border-gray-600 p-2 rounded"
+                value={formData.function}
+                onChange={(e) => handleChange('function', e.target.value)}
+              >
                 <option value="">Select One</option>
                 <option value="Supplier">Supplier</option>
                 <option value="Manufacturer">Manufacturer</option>
@@ -117,8 +128,76 @@ export default function Home() {
                 <option value="Wholesaler">Wholesaler</option>
                 <option value="Other">Other</option>
               </select>
-              <label>Subcategory or Notes (optional)</label>
-              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)} />
+
+              {formData.function === 'Supplier' && (
+                <>
+                  <label>Supplier Subcategory</label>
+                  <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)}>
+                    <option value="">Select</option>
+                    <option value="Ingredients">Ingredients</option>
+                    <option value="Toys">Toys</option>
+                    <option value="Packaging">Packaging</option>
+                  </select>
+                </>
+              )}
+
+              {formData.function === 'Manufacturer' && (
+                <>
+                  <label>Manufacturer Categories</label>
+                  <div className="flex flex-col gap-1">
+                    {['Foods', 'Supplements', 'Treats', 'All of the Above', 'Other'].map(option => (
+                      <label key={option}>
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          checked={formData.manufacturerOptions.includes(option)}
+                          onChange={(e) => {
+                            const updated = e.target.checked
+                              ? [...formData.manufacturerOptions, option]
+                              : formData.manufacturerOptions.filter(item => item !== option);
+                            handleChange('manufacturerOptions', updated);
+                          }}
+                        />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {formData.function === 'Retailer' && (
+                <>
+                  <label>Retailer Region</label>
+                  <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)}>
+                    <option value="">Select</option>
+                    <option value="Local">Local</option>
+                    <option value="Regional">Regional</option>
+                    <option value="National">National</option>
+                    <option value="International">International</option>
+                  </select>
+                </>
+              )}
+
+              {formData.function === 'Wholesaler' && (
+                <>
+                  <label>Wholesaler Region</label>
+                  <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)}>
+                    <option value="">Select</option>
+                    <option value="Local">Local</option>
+                    <option value="Regional">Regional</option>
+                    <option value="National">National</option>
+                    <option value="International">International</option>
+                  </select>
+                </>
+              )}
+
+              {formData.function === 'Other' && (
+                <>
+                  <label>Other Description</label>
+                  <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)} />
+                </>
+              )}
+
               <label>Email Address</label>
               <input className="w-full border border-gray-600 p-2 rounded" type="email" onChange={(e) => handleChange('email', e.target.value)} />
               <label>Phone Number</label>
