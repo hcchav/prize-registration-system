@@ -212,15 +212,54 @@ export default function Home() {
 
         {step === 2 && (
           <>
-            <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgb(0, 39, 58)' }}>🔐 Enter Access Code</h2>
-            <input type="text" placeholder="5-digit OTP" className="w-full border border-gray-600 p-3 rounded mb-2 placeholder:text-gray-700" value={code} onChange={(e) => setCode(e.target.value)} />
-            <button onClick={verifyCode} disabled={verifying} style={{ backgroundColor: verifying ? 'rgb(2, 32, 41)' : 'rgb(102, 158, 224)' }} className="text-white font-bold py-2 px-4 rounded w-full hover:opacity-90">
-              {verifying ? 'Verifying...' : 'Confirm Identity'}
-            </button>
-            <button onClick={sendOTP} disabled={resendDisabled} className={`text-sm mt-3 underline w-full ${resendDisabled ? 'text-gray-400' : 'text-blue-800'}`}>
-              Resend Code
-            </button>
-            {error && <p className="text-red-600 mt-2">{error}</p>}
+            <div className="bg-white flex justify-center items-center w-full min-h-screen">
+              <div className="bg-white w-[433px] h-[675px] relative border rounded-lg shadow-lg p-6">
+                {/* Title */}
+                <h2 className="text-2xl font-bold text-[#00273A] text-center mb-6">
+                  🔐 Enter Access Code
+                </h2>
+
+                {/* OTP Input */}
+                <input
+                  type="text"
+                  placeholder="5-digit OTP"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  maxLength={5}
+                  className="w-full border border-gray-400 p-3 rounded-lg mb-4 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+
+                {/* Confirm Button */}
+                <button
+                  onClick={verifyCode}
+                  disabled={verifying}
+                  className={`w-full text-white font-bold py-3 px-4 rounded-lg transition-all ${
+                    verifying
+                      ? 'bg-[#021F29] cursor-not-allowed'
+                      : 'bg-[#669EE0] hover:bg-blue-500'
+                  }`}
+                >
+                  {verifying ? 'Verifying...' : 'Confirm Identity'}
+                </button>
+
+                {/* Resend Button */}
+                <button
+                  onClick={sendOTP}
+                  disabled={resendDisabled}
+                  className={`text-sm mt-4 underline w-full text-center transition-all ${
+                    resendDisabled ? 'text-gray-400 cursor-not-allowed' : 'text-blue-800 hover:text-blue-600'
+                  }`}
+                >
+                  Resend Code
+                </button>
+
+                {/* Error message */}
+                {error && (
+                  <p className="text-red-600 mt-3 text-sm font-medium text-center">{error}</p>
+                )}
+              </div>
+            </div>
+
           </>
         )}
 
