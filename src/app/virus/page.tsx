@@ -1,14 +1,14 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-export default function VirusGamePage() {
+export default function VirusGame() {
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const blastSoundRef = useRef<HTMLAudioElement>(null);
 
   const [killCount, setKillCount] = useState(0);
-  const [prizeGiven, setPrizeGiven] = useState(false);
   const [resultText, setResultText] = useState('');
+  const [prizeGiven, setPrizeGiven] = useState(false);
   const [intervals, setIntervals] = useState<NodeJS.Timeout[]>([]);
 
   const virusCount = 20;
@@ -19,29 +19,37 @@ export default function VirusGamePage() {
     { text: 'You won a treat!', emoji: '🍬' },
   ];
 
-  useEffect(() => {
-    return () => {
-      intervals.forEach(clearInterval);
-    };
-  }, [intervals]);
+  const startGame = () => {
+    setKillCount(0);
+    setResultText('');
+    setPrizeGiven(false);
+    const newIntervals: NodeJS.Timeout[] = [];
 
-  const getCoords = (el: HTMLElement) => {
-    const matrix = window.getComputedStyle(el).transform;
-    if (matrix === 'none') return { x: 0, y: 0 };
-    const match = matrix.match(/matrix.*\((.+)\)/);
-    if (!match) return { x: 0, y: 0 };
-    const values = match[1].split(', ');
-    return {
-      x: parseFloat(values[4]),
-      y: parseFloat(values[5])
-    };
-  };
+    if (!gameAreaRef.current) return;
+    const gameArea = gameAreaRef.current;
+    gameArea.innerHTML = '';
 
-  const playBlastSound = () => {
-    if (blastSoundRef.current) {
-      blastSoundRef.current.currentTime = 0;
-      blastSoundRef.current.play();
+    const virusElements: HTMLDivElement[] = [];
+
+    for (let i = 0; i < virusCount; i++) {
+      const v = document.createElement('div');
+      v.className = 'virus';
+      v.textContent = '🦠';
+      gameArea.appendChild(v);
+      virusElements.push(v);
+      newIntervals.push(startMovement(v));
     }
+
+    for (let i = 0; i < kitCount; i++) {
+      const kit = document.createElement('div');
+      kit.className = 'testkit';
+      kit.textContent = '🧪';
+      kit.onclick = () => useTestKit(kit, virusElements);
+      gameArea.appendChild(kit);
+      newIntervals.push(startMovement(kit));
+    }
+
+    setIntervals(newIntervals);
   };
 
   const startMovement = (el: HTMLElement) => {
@@ -57,70 +65,55 @@ export default function VirusGamePage() {
     return setInterval(move, 2000);
   };
 
-  const startGame = () => {
-    setKillCount(0);
-    setPrizeGiven(false);
-    setResultText('');
-    if (!gameAreaRef.current) return;
-
-    const area = gameAreaRef.current;
-    area.innerHTML = ''; // clear area
-
-    const allIntervals: NodeJS.Timeout[] = [];
-
-    for (let i = 0; i < virusCount; i++) {
-      const v = document.createElement('div');
-      v.className = 'virus';
-      v.textContent = '🦠';
-      area.appendChild(v);
-      allIntervals.push(startMovement(v));
-    }
-
-    for (let i = 0; i < kitCount; i++) {
-      const kit = document.createElement('div');
-      kit.className = 'testkit';
-      kit.textContent = '🧪';
-      kit.onclick = () => useTestKit(kit);
-      area.appendChild(kit);
-      allIntervals.push(startMovement(kit));
-    }
-
-    setIntervals(allIntervals);
+  const getCoords = (el: HTMLElement) => {
+    const matrix = window.getComputedStyle(el).transform;
+    if (matrix === 'none') return { x: 0, y: 0 };
+    const values = matrix.match(/matrix.*\((.+)\)/)?.[1].split(', ') ?? [];
+    return {
+      x: parseFloat(values[4]),
+      y: parseFloat(values[5]),
+    };
   };
 
-  const useTestKit = (kit: HTMLElement) => {
+  const playBlastSound = () => {
+    if (blastSoundRef.current) {
+      blastSoundRef.current.currentTime = 0;
+      blastSoundRef.current.play();
+    }
+  };
+
+  const useTestKit = (kit: HTMLElement, virusElements: HTMLDivElement[]) => {
     if (prizeGiven) return;
     const kitPos = getCoords(kit);
-    let killed = 0;
+    let newCount = killCount;
+    let killed = false;
 
-    gameAreaRef.current?.querySelectorAll('.virus').forEach(v => {
-      const virus = v as HTMLElement;
-      if (virus.style.display === 'none') return;
-      const vPos = getCoords(virus);
+    virusElements.forEach(v => {
+      if (v.style.display === 'none') return;
+      const vPos = getCoords(v);
       const dx = vPos.x - kitPos.x;
       const dy = vPos.y - kitPos.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < killRadius) {
-        virus.style.display = 'none';
-        killed++;
+        v.style.display = 'none';
+        newCount++;
+        killed = true;
+        playBlastSound();
       }
     });
 
-    if (killed > 0) {
-      setKillCount(prev => {
-        const newCount = prev + killed;
-        if (newCount >= 10 && !prizeGiven) {
-          const prize = prizes[Math.floor(Math.random() * prizes.length)];
-          setPrizeGiven(true);
-          setResultText(`${prize.text} ${prize.emoji}`);
-          intervals.forEach(clearInterval);
-        }
-        return newCount;
-      });
+    setKillCount(newCount);
+    if (killed) {
       setResultText('');
-      playBlastSound();
     } else {
       setResultText('❌ No virus nearby!');
+    }
+
+    if (newCount >= 10 && !prizeGiven) {
+      const prize = prizes[Math.floor(Math.random() * prizes.length)];
+      setPrizeGiven(true);
+      setResultText(`${prize.text} ${prize.emoji}`);
+      intervals.forEach(clearInterval);
     }
   };
 
