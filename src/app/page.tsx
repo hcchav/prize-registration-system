@@ -212,53 +212,40 @@ export default function Home() {
 
         {step === 2 && (
           <>
-             <div className="bg-white flex flex-row justify-center w-full min-h-screen">
-              <div className="bg-white w-[433px] h-[675px] relative shadow-lg rounded-md p-4">
-                {/* Title */}
-                <div className="absolute top-[131px] left-[86px] text-2xl font-bold text-black">
-                  🔐 Enter Access Code
-                </div>
+              <div className="frame" data-model-id="2:3">
+      <div className="div">
+        <div className="text-wrapper-3">🔐 Enter Access Code</div>
 
-                {/* OTP Input */}
-                <input
-                  type="text"
-                  placeholder="5-digit OTP"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  maxLength={5}
-                  className="absolute top-[169px] left-[66px] w-[300px] h-10 border border-gray-400 rounded px-3 placeholder:text-gray-500"
-                />
+        <input
+          type="text"
+          className="element-digit-code"
+          placeholder="5-digit code"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          maxLength={5}
+        />
 
-                {/* Confirm Button */}
-                <button
-                  onClick={verifyCode}
-                  disabled={verifying}
-                  className={`absolute top-[229px] left-[66px] w-[300px] h-10 rounded font-bold text-white ${
-                    verifying ? 'bg-[#021F29] cursor-not-allowed' : 'bg-[#669EE0] hover:bg-blue-500'
-                  }`}
-                >
-                  {verifying ? 'Verifying...' : 'Confirm Identity'}
-                </button>
+        <button
+          className="overlap-group"
+          onClick={verifyCode}
+          disabled={verifying}
+        >
+          <span className="text-wrapper-2">
+            {verifying ? 'Verifying...' : 'Confirm Identity'}
+          </span>
+        </button>
 
-                {/* Resend Code */}
-                <button
-                  onClick={sendOTP}
-                  disabled={resendDisabled}
-                  className={`absolute top-[279px] left-[136px] text-sm underline font-bold ${
-                    resendDisabled ? 'text-gray-400 cursor-not-allowed' : 'text-blue-800 hover:text-blue-600'
-                  }`}
-                >
-                  Resend Code
-                </button>
+        <button
+          className="text-wrapper"
+          onClick={sendOTP}
+          disabled={resendDisabled}
+        >
+          Resend Code
+        </button>
 
-                {/* Error Message */}
-                {error && (
-                  <p className="absolute top-[320px] left-[66px] w-[300px] text-red-600 text-sm font-medium text-center">
-                    {error}
-                  </p>
-                )}
-              </div>
-            </div>
+        {error && <p className="error-message">{error}</p>}
+      </div>
+    </div>
 
 
           </>
