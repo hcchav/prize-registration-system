@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 export default function VirusGame() {
   const gameAreaRef = useRef<HTMLDivElement>(null);
@@ -44,7 +44,7 @@ export default function VirusGame() {
       const kit = document.createElement('div');
       kit.className = 'testkit';
       kit.textContent = '🧪';
-      kit.onclick = () => useTestKit(kit, virusElements);
+      kit.onclick = () => activateTestKit(kit, virusElements);
       gameArea.appendChild(kit);
       newIntervals.push(startMovement(kit));
     }
@@ -82,7 +82,8 @@ export default function VirusGame() {
     }
   };
 
-  const useTestKit = (kit: HTMLElement, virusElements: HTMLDivElement[]) => {
+  const activateTestKit = (kit: HTMLElement, virusElements: HTMLDivElement[]) => {
+
     if (prizeGiven) return;
     const kitPos = getCoords(kit);
     let newCount = killCount;
