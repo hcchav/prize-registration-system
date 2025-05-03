@@ -65,9 +65,7 @@ export default function VirusGame() {
       }
     `;
     document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
+    return () => document.head.removeChild(style);
   }, []);
 
   const getCoords = (el: HTMLElement) => {
@@ -106,7 +104,7 @@ export default function VirusGame() {
     intervals.push(interval);
   };
 
-  const useTestKit = (kit: HTMLElement) => {
+  const handleTestKitClick = (kit: HTMLElement) => {
     if (!running) return;
     const kitPos = getCoords(kit);
     const viruses = gameAreaRef.current?.querySelectorAll('.virus');
@@ -165,7 +163,7 @@ export default function VirusGame() {
       const kit = document.createElement('div');
       kit.className = 'testkit';
       kit.textContent = '🧪';
-      kit.onclick = () => useTestKit(kit);
+      kit.onclick = () => handleTestKitClick(kit);
       gameArea.appendChild(kit);
       moveElement(kit);
     }
