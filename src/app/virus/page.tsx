@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
+import './virus.css';
 
 export default function VirusGame() {
   const gameAreaRef = useRef<HTMLDivElement>(null);
@@ -20,53 +21,6 @@ export default function VirusGame() {
     { text: 'You won a T-shirt!', emoji: '👕' },
     { text: 'You won a treat!', emoji: '🍬' },
   ];
-
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.innerHTML = `
-      .virus, .testkit {
-        position: absolute;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 50%;
-        font-size: 1.5rem;
-        cursor: pointer;
-        transition: transform 0.8s ease-in-out;
-      }
-      .virus {
-        background-color: #ff4c4c;
-        color: white;
-        border: 2px solid white;
-      }
-      .testkit {
-        background-color: #03c4eb;
-        color: white;
-        border: 2px solid white;
-      }
-      .prize-popup {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #00b86b;
-        color: white;
-        padding: 20px 30px;
-        border-radius: 12px;
-        box-shadow: 0 0 20px #00b86b80;
-        font-size: 1.3em;
-        font-weight: bold;
-        z-index: 100;
-        line-height: 1.6;
-        text-align: center;
-        pointer-events: none;
-      }
-    `;
-    document.head.appendChild(style);
-    return () => document.head.removeChild(style);
-  }, []);
 
   const getCoords = (el: HTMLElement) => {
     const matrix = window.getComputedStyle(el).transform;
