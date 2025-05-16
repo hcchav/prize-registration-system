@@ -113,10 +113,6 @@ export default function WheelPicker() {
       ctx.fillStyle = segment.color
       ctx.fill()
 
-      ctx.strokeStyle = "#FFFFFF"
-      ctx.lineWidth = 2
-      ctx.stroke()
-
       // Draw text
       ctx.save()
       ctx.translate(centerX, centerY)
