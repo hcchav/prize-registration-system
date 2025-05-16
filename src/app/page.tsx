@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import 'react-phone-input-2/lib/style.css';
+import PhoneInput, { CountryData } from 'react-phone-input-2';
+
 
 export default function Home() {
   const [step, setStep] = useState(1);
@@ -24,6 +27,7 @@ export default function Home() {
   const [resendDisabled, setResendDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [countryCode, setCountryCode] = useState('+1');
 
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -33,10 +37,14 @@ export default function Home() {
 
   const sendOTP = async () => {
     setError('');
-    const { email, consent } = formData;
+    const { email, consent, phone, method } = formData;
 
-    if (!email || !isValidEmail(email)) {
+    if (method === 'email' && (!email || !isValidEmail(email))) {
       setError('Valid email is required.');
+      return;
+    }
+    if (method === 'sms' && (!phone || phone.length < 10)) {
+      setError('Valid phone number is required.');
       return;
     }
     if (!consent) {
@@ -71,7 +79,7 @@ export default function Home() {
   const verifyCode = async () => {
     setError('');
 
-    if (!code || code.length < 4) {
+    if (!code || code.length < 5) {
       setError('Please enter the verification code.');
       return;
     }
@@ -81,7 +89,13 @@ export default function Home() {
     const res = await fetch('/api/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: formData.email, code }),
+      body: JSON.stringify({
+        email: formData.email,
+        phone: formData.phone,
+        countryCode: countryCode,
+        method: formData.method,
+        code,
+      }),
     });
 
     const data = await res.json();
@@ -188,8 +202,28 @@ export default function Home() {
 
               <label>Email Address</label>
               <input className="w-full border border-gray-600 p-2 rounded" type="email" onChange={(e) => handleChange('email', e.target.value)} />
+
+             
+
+
               <label>Phone Number</label>
-              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('phone', e.target.value)} />
+            
+              <PhoneInput 
+              country={'us'}
+              value={formData.phone}
+              onChange={(phone: string, countryData: CountryData) => {
+                handleChange('phone', phone);
+                setCountryCode(`+${countryData.dialCode}`);
+              }}
+
+              inputClass="!w-full !pl-12 !border !border-gray-600 !rounded !h-10"
+              buttonClass="!bg-white !border-gray-600"
+              containerClass="!w-full"
+            />          
+
+
+
+           
 
               <label className="font-semibold">Verification Method:</label>
               <div className="flex gap-4 mt-1">
@@ -219,10 +253,10 @@ export default function Home() {
         <input
           type="text"
           className="element-digit-code"
-          placeholder="5-digit code"
+          placeholder="6-digit code"
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          maxLength={5}
+          maxLength={6}
         />
 
         <button

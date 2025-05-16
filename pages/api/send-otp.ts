@@ -1,8 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '../../lib/supabase';
 import { Resend } from 'resend';
+import { Twilio } from 'twilio';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const accountSid = process.env.TWILIO_ACCOUNT_SID!;
+const authToken = process.env.TWILIO_AUTH_TOKEN!;
+const verifyServiceSid = process.env.TWILIO_VERIFY_SERVICE_SID!;
+const twilioTemplateSid = process.env.TWILIO_TEMPLATE_SID!;
+const client = new Twilio(accountSid, authToken);
 
 function htmlTemplateWithOTP(otp: string) {
   return `
@@ -29,9 +35,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     email,
     phone,
     method,
+    countryCode,
   } = req.body;
 
-  const otp = Math.floor(10000 + Math.random() * 90000).toString();
+  const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+  const normalizedPhone = phone.startsWith('+') ? phone : `${'+'}${phone}`;
+
+  console.log('send-otp start');
+  console.log(normalizedPhone);
+
 
   const { data: existing } = await supabase
     .from('attendees')
@@ -49,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     function: companyFunction,
     subcategory,
     email,
-    phone,
+    phone: normalizedPhone,
     method,
     otp,
     verified: false,
@@ -67,6 +79,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       to: email,
       subject: 'Your Biome Brigade OTP Code',
       html: htmlTemplateWithOTP(otp),
+    });
+  } else if (method === 'sms') {
+
+    await client.verify.v2.services(verifyServiceSid).verifications.create({
+      to: normalizedPhone,
+      channel: 'sms',
+      templateSid: twilioTemplateSid,
     });
   }
 

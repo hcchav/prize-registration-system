@@ -77,6 +77,8 @@ export default function VirusGame() {
       }
     });
 
+    kit.remove(); // remove test kit after use
+
     if (localKills > 0) {
       setKillCount(prev => {
         const newTotal = prev + localKills;
