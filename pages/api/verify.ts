@@ -11,7 +11,7 @@ const client = new Twilio(accountSid, authToken);
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { email, phone, countryCode, method, code } = req.body;
+  const { email, phone, method, code } = req.body;
   console.log('verify start');
   console.log(phone);
   const normalizedPhone = phone.startsWith('+') ? phone : `${'+'}${phone}`;

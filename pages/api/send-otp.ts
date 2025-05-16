@@ -35,7 +35,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     email,
     phone,
     method,
-    countryCode,
   } = req.body;
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 
 interface WheelSegment {
@@ -18,11 +18,11 @@ export default function WheelPicker() {
   const animationRef = useRef<number | null>(null)
   const startTimeRef = useRef<number | null>(null)
   const spinDurationRef = useRef<number>(10000) // 10 seconds in milliseconds
-  const [canvasSize, setCanvasSize] = useState({ width: 400, height: 400 })
+  const [canvasSize] = useState({ width: 400, height: 400 })
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
 
   // Define the wheel segments with brand-matching colors
-  const segments: WheelSegment[] = [
+  const segments = useMemo<WheelSegment[]>(() => [
     // Alternating pattern of prizes
     { text: "T-Shirt", color: "#4A90E2", textColor: "#FFFFFF", weight: 50 },
     { text: "ItchGuard", color: "#F7D046", textColor: "#000000", weight: 16.66 },
@@ -37,14 +37,10 @@ export default function WheelPicker() {
     { text: "Dog Bowl", color: "#6B7A8F", textColor: "#FFFFFF", weight: 50 },
     { text: "ItchGuard", color: "#F7D046", textColor: "#000000", weight: 16.67 },
     { text: "T-Shirt", color: "#4A90E2", textColor: "#FFFFFF", weight: 50 },
-    
     { text: "GutShield", color: "#009245", textColor: "#FFFFFF", weight: 16.66 },
     { text: "Dog Bowl", color: "#6B7A8F", textColor: "#FFFFFF", weight: 50 },
-
     { text: "Gut Test", color: "#E6EEF4", textColor: "#009245", weight: 10 }
-
-    
-  ]
+  ], [])
 
   // Calculate total weight for angle calculations
   const totalWeight = segments.reduce((sum, segment) => sum + segment.weight, 0)
@@ -277,15 +273,6 @@ export default function WheelPicker() {
       wheelAngleRef.current = Math.random() * 2 * Math.PI
     }
   }
-
-  // Count total units for each prize type
-  const prizeCounts = segments.reduce(
-    (counts, segment) => {
-      counts[segment.text] = (counts[segment.text] || 0) + segment.weight
-      return counts
-    },
-    {} as Record<string, number>,
-  )
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
