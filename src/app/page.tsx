@@ -5,6 +5,7 @@ import 'react-phone-input-2/lib/style.css';
 import PhoneInput, { CountryData } from 'react-phone-input-2';
 
 
+
 export default function Home() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
