@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput, { CountryData } from 'react-phone-input-2';
+import ComicAuthCode from '@/components/ComicAuthCode';
 
 
 
@@ -291,6 +292,10 @@ export default function Home() {
             <h2 className="text-3xl font-bold mb-4" style={{ color: 'rgb(0, 39, 58)' }}>🎉 Mission Complete!</h2>
             <p className="text-lg font-semibold text-green-700">You won: {prize}</p>
             <p className="text-sm mt-2" style={{ color: 'rgb(0, 39, 58)' }}>Claim your prize at Booth #9158</p>
+            <ComicAuthCode 
+              prizeId={prize} 
+              userName={`${formData.firstName} ${formData.lastName}`}
+            />
           </>
         )}
       </div>
