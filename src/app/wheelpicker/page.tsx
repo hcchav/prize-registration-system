@@ -1,95 +1,93 @@
 "use client"
 
-import { useState, useRef, useEffect, useCallback, useMemo } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
+import { PRIZES, type Prize } from "@/constants/prizes"
+import Image from "next/image"
 
-
-interface WheelSegment {
-  text: string
-  color: string
-  textColor: string
-  weight: number // Represents the relative size of the segment
-}
+interface WheelSegment extends Prize {}
 
 export default function WheelPicker() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [spinning, setSpinning] = useState(false)
-  const [result, setResult] = useState<string | null>(null)
+  const [result, setResult] = useState<Prize | null>(null)
   const wheelAngleRef = useRef<number>(0)
   const animationRef = useRef<number | null>(null)
   const startTimeRef = useRef<number | null>(null)
-  const spinDurationRef = useRef<number>(10000) // 10 seconds in milliseconds
+  const spinDurationRef = useRef<number>(10000)
   const [canvasSize] = useState({ width: 400, height: 400 })
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
-
-  // Define the wheel segments with brand-matching colors
-  const segments = useMemo<WheelSegment[]>(() => [
-    // Alternating pattern of prizes
-    { text: "T-Shirt", color: "#4A90E2", textColor: "#FFFFFF", weight: 50 },
-    { text: "ItchGuard", color: "#F7D046", textColor: "#000000", weight: 16.66 },
-    { text: "Dog Bowl", color: "#6B7A8F", textColor: "#FFFFFF", weight: 50 },
-    { text: "GutShield", color: "#009245", textColor: "#FFFFFF", weight: 16.67 },
-    { text: "T-Shirt", color: "#4A90E2", textColor: "#FFFFFF", weight: 50 },
-    { text: "ItchGuard", color: "#F7D046", textColor: "#000000", weight: 16.67 },
-    { text: "Dog Bowl", color: "#6B7A8F", textColor: "#FFFFFF", weight: 50 },
-    { text: "Gut Test", color: "#E6EEF4", textColor: "#009245", weight: 10 },
-    { text: "T-Shirt", color: "#4A90E2", textColor: "#FFFFFF", weight: 50 },
-    { text: "GutShield", color: "#009245", textColor: "#FFFFFF", weight: 16.67 },
-    { text: "Dog Bowl", color: "#6B7A8F", textColor: "#FFFFFF", weight: 50 },
-    { text: "ItchGuard", color: "#F7D046", textColor: "#000000", weight: 16.67 },
-    { text: "T-Shirt", color: "#4A90E2", textColor: "#FFFFFF", weight: 50 },
-    { text: "GutShield", color: "#009245", textColor: "#FFFFFF", weight: 16.66 },
-    { text: "Dog Bowl", color: "#6B7A8F", textColor: "#FFFFFF", weight: 50 },
-    { text: "Gut Test", color: "#E6EEF4", textColor: "#009245", weight: 10 }
-  ], [])
+  const imageRefs = useRef<{ [key: string]: HTMLImageElement }>({})
+  const [error, setError] = useState<string | null>(null)
+  const [imagesLoaded, setImagesLoaded] = useState(0)
 
   // Calculate total weight for angle calculations
-  const totalWeight = segments.reduce((sum, segment) => sum + segment.weight, 0)
-
-  // Function to determine which segment is at the pointer
-  const getSegmentAtPointer = useCallback((wheelAngle: number) => {
-    // Calculate segment angles and boundaries
-    let segmentStart = 0
-
-    for (let i = 0; i < segments.length; i++) {
-      const segmentAngle = (segments[i].weight / totalWeight) * (2 * Math.PI)
-      const segmentEnd = segmentStart + segmentAngle
-
-      // Normalize the wheel angle to 0-2π
-      let normalizedWheelAngle = wheelAngle % (2 * Math.PI)
-      if (normalizedWheelAngle < 0) normalizedWheelAngle += 2 * Math.PI
-
-      // The pointer is at 3π/2 (270 degrees), so we need to check which segment contains that position
-      // relative to the current wheel rotation
-      let pointerPosition = ((3 * Math.PI) / 2 - normalizedWheelAngle) % (2 * Math.PI)
-      if (pointerPosition < 0) pointerPosition += 2 * Math.PI
-
-      // Check if the pointer position is within this segment
-      if (pointerPosition >= segmentStart && pointerPosition < segmentEnd) {
-        return segments[i].text
-      }
-
-      segmentStart = segmentEnd
-    }
-
-    // Default to the first segment if something goes wrong
-    return segments[0].text
-  }, [segments, totalWeight])
+  const totalWeight = PRIZES.reduce((sum, segment) => sum + segment.weight, 0)
 
   // Initialize canvas context
   useEffect(() => {
     const canvas = canvasRef.current
     if (canvas) {
-      const context = canvas.getContext("2d", { willReadFrequently: true })
+      canvas.width = canvasSize.width
+      canvas.height = canvasSize.height
+      const context = canvas.getContext("2d")
+      if (!context) {
+        setError("Could not initialize canvas context")
+        return
+      }
       setCtx(context)
-      wheelAngleRef.current = 0 // Initialize wheel angle
+      wheelAngleRef.current = 0
     }
+  }, [canvasSize])
+
+  // Preload images
+  useEffect(() => {
+    let loadedCount = 0
+    PRIZES.forEach(prize => {
+      const img = new window.Image()
+      img.src = prize.image
+      img.onload = () => {
+        loadedCount++
+        imageRefs.current[prize.id] = img
+        setImagesLoaded(loadedCount)
+      }
+      img.onerror = () => {
+        setError(`Failed to load image: ${prize.image}`)
+      }
+    })
   }, [])
+
+  // Function to determine which segment is at the pointer
+  const getSegmentAtPointer = useCallback((wheelAngle: number) => {
+    let segmentStart = 0
+
+    for (let i = 0; i < PRIZES.length; i++) {
+      const segmentAngle = (PRIZES[i].weight / totalWeight) * (2 * Math.PI)
+      const segmentEnd = segmentStart + segmentAngle
+
+      let normalizedWheelAngle = wheelAngle % (2 * Math.PI)
+      if (normalizedWheelAngle < 0) normalizedWheelAngle += 2 * Math.PI
+
+      let pointerPosition = ((3 * Math.PI) / 2 - normalizedWheelAngle) % (2 * Math.PI)
+      if (pointerPosition < 0) pointerPosition += 2 * Math.PI
+
+      if (pointerPosition >= segmentStart && pointerPosition < segmentEnd) {
+        return PRIZES[i]
+      }
+
+      segmentStart = segmentEnd
+    }
+
+    return PRIZES[0]
+  }, [totalWeight])
 
   // Draw the wheel with weighted segments
   const drawWheel = useCallback(() => {
     const canvas = canvasRef.current
-    if (!canvas || !ctx) return
+    if (!canvas || !ctx) {
+      setError("Canvas or context not available")
+      return
+    }
 
     const centerX = canvas.width / 2
     const centerY = canvas.height / 2
@@ -101,81 +99,72 @@ export default function WheelPicker() {
     // Draw segments with variable sizes based on weights
     let startAngle = wheelAngleRef.current
 
-    segments.forEach((segment) => {
-      // Calculate segment angle based on weight
+    PRIZES.forEach((segment) => {
       const segmentAngle = (segment.weight / totalWeight) * (2 * Math.PI)
       const endAngle = startAngle + segmentAngle
 
+      // Draw segment background
       ctx.beginPath()
       ctx.moveTo(centerX, centerY)
       ctx.arc(centerX, centerY, radius, startAngle, endAngle)
       ctx.closePath()
-
       ctx.fillStyle = segment.color
       ctx.fill()
+      ctx.strokeStyle = "#FFFFFF"
+      ctx.lineWidth = 2
+      ctx.stroke()
 
-      // Draw text
-      ctx.save()
-      ctx.translate(centerX, centerY)
-      ctx.rotate(startAngle + segmentAngle / 2)
-      ctx.textAlign = "right"
-      ctx.textBaseline = "middle"
+      // Draw image if loaded
+      const img = imageRefs.current[segment.id]
+      if (img && img.complete) {
+        ctx.save()
+        ctx.translate(centerX, centerY)
+        ctx.rotate(startAngle + segmentAngle / 2)
+        
+        // Add extra rotation for the image itself
+        ctx.translate(radius * 0.69, 0)
+        ctx.rotate(Math.PI / 2) // Rotate 90 degrees
+        ctx.translate(-radius * 0.69, 0)
 
-      // Adjust font size based on segment size
-      const fontSize = Math.min(18, Math.max(12, (15 * segmentAngle) / (Math.PI / 4)))
-      ctx.font = `bold ${fontSize}px Arial`
+        const segmentSize = (segmentAngle / (2 * Math.PI)) * radius
+        const imgWidth = Math.min(70, Math.max(40, segmentSize * 0.9))
+        const imgHeight = imgWidth * 1.2
+        const imgRadius = radius * 0.69
 
-      ctx.fillStyle = segment.textColor
-      // Position text at 75% of radius from center
-      const textRadius = radius * 0.75
-
-      // For smaller segments, we might need to adjust text or use abbreviations
-      let displayText = segment.text
-      if (segmentAngle < 0.2 && segment.text.length > 10) {
-        displayText = segment.text.substring(0, 10) + "..."
+        ctx.drawImage(
+          img,
+          imgRadius - imgWidth / 2,
+          -imgHeight / 2,
+          imgWidth,
+          imgHeight
+        )
+        ctx.restore()
       }
 
-      ctx.fillText(displayText, textRadius, 0)
-      ctx.restore()
-
-      // Update start angle for next segment
       startAngle = endAngle
     })
 
     // Draw center circle
     ctx.beginPath()
     ctx.arc(centerX, centerY, radius * 0.15, 0, 2 * Math.PI)
-    ctx.fillStyle = "#1E3A8A" // Dark blue for center
+    ctx.fillStyle = "#1E3A8A"
     ctx.fill()
-
-    // Draw "SPIN" text in center
-    ctx.font = "bold 16px Arial"
-    ctx.fillStyle = "#FFFFFF"
-    ctx.textAlign = "center"
-    ctx.textBaseline = "middle"
-    ctx.fillText("", centerX, centerY)
+    ctx.strokeStyle = "#FFFFFF"
+    ctx.lineWidth = 2
+    ctx.stroke()
 
     // Draw pointer
     ctx.beginPath()
-    ctx.moveTo(centerX, centerY - radius + 15) // Point toward wheel (inward)
-    ctx.lineTo(centerX - 10, centerY - radius - 5) // Left corner (outward)
-    ctx.lineTo(centerX + 10, centerY - radius - 5) // Right corner (outward)
+    ctx.moveTo(centerX, centerY - radius + 15)
+    ctx.lineTo(centerX - 10, centerY - radius - 5)
+    ctx.lineTo(centerX + 10, centerY - radius - 5)
     ctx.closePath()
-    ctx.fillStyle = "#1E3A8A" // Dark blue for pointer
+    ctx.fillStyle = "#1E3A8A"
     ctx.fill()
     ctx.strokeStyle = "#FFFFFF"
-    ctx.lineWidth = 1
+    ctx.lineWidth = 2
     ctx.stroke()
-
-    // Add a small circle at the base of the pointer for better appearance
-    // ctx.beginPath()
-    // ctx.arc(centerX, centerY - radius, 5, 0, 2 * Math.PI)
-    // ctx.fillStyle = "#1E3A8A"
-    // ctx.fill()
-    // ctx.strokeStyle = "#FFFFFF"
-    // ctx.lineWidth = 1
-    // ctx.stroke()
-  }, [segments, totalWeight, ctx])
+  }, [ctx, totalWeight])
 
   // Animation function
   const animate = useCallback((timestamp: DOMHighResTimeStamp) => {
@@ -222,26 +211,12 @@ export default function WheelPicker() {
     }
   }, [drawWheel, getSegmentAtPointer])
 
-  // Initialize the wheel
+  // Draw wheel when context is ready and images are loaded
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (canvas && ctx) {
-      // Set canvas size
-      canvas.width = canvasSize.width
-      canvas.height = canvasSize.height
-
-      // Initial draw
+    if (ctx && imagesLoaded === PRIZES.length) {
       drawWheel()
     }
-
-    // Cleanup
-    return () => {
-      if (animationRef.current !== null) {
-        cancelAnimationFrame(animationRef.current)
-        animationRef.current = null
-      }
-    }
-  }, [canvasSize, drawWheel, ctx])
+  }, [ctx, imagesLoaded, drawWheel])
 
   // Handle spinning state changes
   useEffect(() => {
@@ -281,28 +256,48 @@ export default function WheelPicker() {
             ref={canvasRef}
             width={canvasSize.width}
             height={canvasSize.height}
-            className="max-w-full h-auto"
+            className="max-w-full h-auto border-2 border-gray-200 rounded-full"
             style={{ maxWidth: '400px' }}
           />
+          {error && (
+            <div className="absolute top-0 left-0 right-0 bg-red-100 text-red-600 p-2 rounded">
+              {error}
+            </div>
+          )}
+          {imagesLoaded < PRIZES.length && (
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              Loading... ({imagesLoaded}/{PRIZES.length})
+            </div>
+          )}
         </div>
 
         {result && (
           <div className="text-center">
             <h2 className="text-xl font-semibold text-gray-900">
-              You won: <span className="text-blue-600">{result}</span>!
+              You won: <span className="text-blue-600">{result.name}!</span>
             </h2>
+            <div className="mt-2">
+              <Image
+                src={result.image}
+                alt={result.name}
+                width={100}
+                height={100}
+                className="mx-auto"
+              />
+            </div>
           </div>
         )}
 
         <div className="flex justify-center">
           <Button
             onClick={handleSpin}
-            disabled={spinning}
+            disabled={spinning || imagesLoaded < PRIZES.length}
             size="lg"
             variant="primary"
             className="w-full max-w-xs bg-[#1E3A8A] text-white hover:bg-[#2B4BA8]"
           >
-            {spinning ? 'Spinning...' : 'Spin the Wheel!'}
+            {spinning ? 'Spinning...' : 
+             imagesLoaded < PRIZES.length ? 'Loading...' : 'Spin the Wheel!'}
           </Button>
         </div>
       </div>
