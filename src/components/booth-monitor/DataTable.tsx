@@ -106,7 +106,7 @@ export function DataTable({ data, loading }: DataTableProps) {
                 {formatRegNumber(attendee.id)}
               </td>
               <td style={{ padding: '1rem 1.5rem', color: 'var(--brand-navy-500)', fontWeight: 600, fontSize: '1rem', fontFamily: 'inherit' }}>
-                {attendee.firstName} {attendee.lastName}
+                {attendee.firstName} {attendee.lastName.charAt(0)}.
               </td>
               <td style={{ padding: '1rem 1.5rem', color: 'var(--brand-navy-500)', fontSize: '1rem', fontFamily: 'inherit' }}>
                 {attendee.company}
