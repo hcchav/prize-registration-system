@@ -80,12 +80,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       html: htmlTemplateWithOTP(otp),
     });
   } else if (method === 'sms') {
-
-    await client.verify.v2.services(verifyServiceSid).verifications.create({
-      to: normalizedPhone,
-      channel: 'sms',
-      templateSid: twilioTemplateSid,
-    });
+    try {
+      console.log('Sending SMS to:', normalizedPhone);
+      const verification = await client.verify.v2.services(verifyServiceSid).verifications.create({
+        to: normalizedPhone,
+        channel: 'sms',
+        templateSid: twilioTemplateSid,
+      });
+      console.log('SMS verification response:', verification);
+    } catch (error) {
+      console.error('SMS sending error:', error);
+      return res.status(500).json({ success: false, error: 'Failed to send SMS' });
+    }
   }
 
   res.status(200).json({ success: true });

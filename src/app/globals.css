@@ -1,5 +1,78 @@
 @import "tailwindcss";
 
+:root {
+  /* Brand Navy */
+  --brand-navy-50:  #e6eaf0;
+  --brand-navy-100: #c0c9d6;
+  --brand-navy-200: #97a6ba;
+  --brand-navy-300: #6e839e;
+  --brand-navy-400: #4b678a;
+  --brand-navy-500: #002639;
+  --brand-navy-600: #001f2e;
+  --brand-navy-700: #001823;
+  --brand-navy-800: #001218;
+  --brand-navy-900: #000a0c;
+
+  /* Brand Green */
+  --brand-green-50:  #e6f7e6;
+  --brand-green-100: #c1eec1;
+  --brand-green-200: #97e297;
+  --brand-green-300: #6cd66c;
+  --brand-green-400: #41ca41;
+  --brand-green-500: #18b318;
+  --brand-green-600: #139113;
+  --brand-green-700: #0e6e0e;
+  --brand-green-800: #094b09;
+  --brand-green-900: #042604;
+
+  /* Brand Light Blue */
+  --brand-lightblue-50:  #e0f7fc;
+  --brand-lightblue-100: #b3eaf7;
+  --brand-lightblue-200: #80dcf2;
+  --brand-lightblue-300: #4dceec;
+  --brand-lightblue-400: #abcae9;
+  --brand-lightblue-500: #428fdf;
+  --brand-lightblue-600: #0091b6;
+  --brand-lightblue-700: #006b89;
+  --brand-lightblue-800: #00455c;
+  --brand-lightblue-900: #001f2f;
+
+  /* Brand Red */
+  --brand-red-50:  #fde8e7;
+  --brand-red-100: #fac5c2;
+  --brand-red-200: #f69e99;
+  --brand-red-300: #f27770;
+  --brand-red-400: #ef584f;
+  --brand-red-500: #e3170e;
+  --brand-red-600: #b3100a;
+  --brand-red-700: #820a06;
+  --brand-red-800: #520503;
+  --brand-red-900: #210100;
+
+  /* Brand Orange */
+  --brand-orange-50:  #fff7e6;
+  --brand-orange-100: #ffe0b3;
+  --brand-orange-200: #ffc980;
+  --brand-orange-300: #ffb24d;
+  --brand-orange-400: #ff9c26;
+  --brand-orange-500: #ff9900;
+  --brand-orange-600: #cc7a00;
+  --brand-orange-700: #995c00;
+  --brand-orange-800: #663d00;
+  --brand-orange-900: #331f00;
+
+  /* Brand Yellow */
+  --brand-yellow-50:  #fffde6;
+  --brand-yellow-100: #fff9b3;
+  --brand-yellow-200: #fff480;
+  --brand-yellow-300: #ffef4d;
+  --brand-yellow-400: #ffeb26;
+  --brand-yellow-500: #ffe600;
+  --brand-yellow-600: #ccb800;
+  --brand-yellow-700: #998900;
+  --brand-yellow-800: #665b00;
+  --brand-yellow-900: #332c00;
+}
 
 body {
   @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-white;
