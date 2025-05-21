@@ -96,30 +96,27 @@ export default function WheelPicker() {
 
       // Draw text
       const midAngle = startAngle + segmentAngle / 2;
-      const textRadius = radius * 0.7; // Position text between center and edge
-      const textX = Math.cos(midAngle) * textRadius;
-      const textY = Math.sin(midAngle) * textRadius;
-      
-      // Calculate text rotation (90 degrees from the segment's angle)
-      let textRotation = midAngle + Math.PI / 2;
-      
-      // Draw text background for better readability
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.translate(textX, textY);
+      const textRadius = radius * 0.6; // Calculate text position (60% from center)
       
       // Draw text with rotation
-      ctx.rotate(textRotation);
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.translate(Math.cos(midAngle) * textRadius, Math.sin(midAngle) * textRadius);
+      
+      // Rotate text to be perpendicular to the radius
+      ctx.rotate(midAngle + Math.PI);
+      
+      // Set text style
       ctx.fillStyle = segment.textColor;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       
       // Calculate font size based on segment size
-      const fontSize = Math.min(16, Math.max(10, segmentAngle * 10));
+      const fontSize = Math.min(14, Math.max(12, segmentAngle * 12));
       ctx.font = `bold ${fontSize}px Arial, sans-serif`;
       
-      // Draw text using name property
-      ctx.fillText(segment.name, 0, 0);
+      // Draw text using displayText property
+      ctx.fillText(segment.displayText, 0, 0);
       ctx.restore();
       
 
@@ -254,12 +251,13 @@ export default function WheelPicker() {
           <div className="mt-4 p-4 bg-blue-50 rounded-lg text-center">
             <div className="flex items-center justify-center mb-2">
               <h2 className="text-xl font-semibold text-blue-800">
-                {result.name}
+              Congratulations! You won: 
               </h2>
             </div>
-            <p className="text-blue-600">
-              Congratulations! You won: <span className="font-bold">{result.name}</span>
-            </p>
+            <h1 className="brand-blue-500 text-2xl font-bold">
+              
+              {result.name}
+            </h1>
           </div>
         )}
 
