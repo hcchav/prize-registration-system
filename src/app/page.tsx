@@ -133,8 +133,29 @@ export default function Home() {
         throw new Error('No attendee identifier found');
       }
       
-      console.log('Assigning prize to attendee:', { attendeeId, method: formData.method });
+      console.log('Claiming prize for attendee:', { attendeeId, prizeId: prize.id });
 
+      // First, try to claim the prize (increment claimed count and check stock)
+      const claimResponse = await fetch('/api/claim-prize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prizeId: prize.id,
+        }),
+      });
+
+      const claimData = await claimResponse.json();
+      
+      if (!claimResponse.ok) {
+        console.error('Prize claim failed:', claimData);
+        throw new Error(claimData.error || 'Failed to claim prize. It may be out of stock.');
+      }
+
+      console.log('Prize claimed successfully, now assigning to attendee');
+
+      // If prize was successfully claimed, assign it to the attendee
       const res = await fetch('/api/assign-prize', {
         method: 'POST',
         headers: {
@@ -142,6 +163,8 @@ export default function Home() {
         },
         body: JSON.stringify({
           attendeeId,
+          prizeId: prize.id,
+          prizeName: prize.name,
           method: formData.method
         }),
       });
@@ -150,6 +173,8 @@ export default function Home() {
       
       if (!res.ok) {
         console.error('Prize assignment failed:', data);
+        // If assignment fails after claiming, we might want to revert the claim
+        // For now, just show the error
         throw new Error(data.error || 'Failed to assign prize');
       }
       
@@ -160,8 +185,8 @@ export default function Home() {
       console.log('Prize assigned successfully:', data);
       
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to assign prize. Please try again.';
-      console.error('Prize assignment error:', errorMessage);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to process prize. Please try again.';
+      console.error('Prize processing error:', errorMessage);
       throw new Error(errorMessage); // Re-throw to be caught by Wheel component
     } finally {
       setVerifying(false);

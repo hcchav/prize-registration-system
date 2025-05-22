@@ -46,28 +46,25 @@ export interface Database {
       }
       prizes: {
         Row: {
-          id: string
+          id?: string
           name: string
-          weight: number
           stock: number
-          created_at: string
-          updated_at: string
+          claimed: number
+          created_at?: string
         }
         Insert: {
           id?: string
           name: string
-          weight?: number
           stock: number
+          claimed: number
           created_at?: string
-          updated_at?: string
         }
         Update: {
           id?: string
-          name?: string
-          weight?: number
-          stock?: number
+          name: string
+          stock: number
+          claimed: number
           created_at?: string
-          updated_at?: string
         }
       }
     }
