@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput, { CountryData } from 'react-phone-input-2';
+import Wheel from '@/components/Wheel';
+import { type Prize } from '@/constants/prizes';
 
 
 
@@ -24,7 +26,8 @@ export default function Home() {
     consent: false,
   });
   const [code, setCode] = useState('');
-  const [prize, setPrize] = useState('');
+  const [prize, setPrize] = useState<Prize | null>(null);
+  const [showWheel, setShowWheel] = useState(false);
   const [error, setError] = useState('');
   const [resendDisabled, setResendDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -91,26 +94,90 @@ export default function Home() {
 
     setVerifying(true);
 
-    const res = await fetch('/api/verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: formData.email,
-        phone: formData.phone,
-        countryCode: countryCode,
-        method: formData.method,
-        code,
-      }),
-    });
+    try {
+      const res = await fetch('/api/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          phone: formData.phone,
+          method: formData.method,
+          code,
+        }),
+      });
 
-    const data = await res.json();
-    setVerifying(false);
+      const data = await res.json();
+      setVerifying(false);
 
-    if (data.error) {
-      setError(data.error);
-    } else {
-      setPrize(data.prize || data.message);
-      setStep(3);
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setShowWheel(true);
+        setStep(3);
+      }
+    } catch (err) {
+      setVerifying(false);
+      setError('Verification failed. Please try again.');
+    }
+  };
+
+  const handleSpinComplete = async (prize: Prize) => {
+    try {
+      setVerifying(true);
+      setError('');
+      
+      const attendeeId = formData.email || formData.phone;
+      if (!attendeeId) {
+        throw new Error('No attendee ID found');
+      }
+      
+      const res = await fetch('/api/assign-prize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          attendeeId,
+        }),
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to assign prize');
+      }
+      
+      // Update the prize state with the assigned prize
+      setPrize(prize);
+      setShowWheel(false);
+      
+      // Update the attendee's record with the prize information
+      const { error: updateError } = await fetch('/api/update-attendee', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: attendeeId,
+          prize: prize.name,
+          prize_assigned: true,
+        }),
+      }).then(res => res.json());
+      
+      if (updateError) {
+        console.error('Failed to update attendee record:', updateError);
+        // Don't show error to user as prize was assigned successfully
+      }
+      
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to assign prize. Please try again.';
+      console.error('Prize assignment error:', errorMessage);
+      throw new Error(errorMessage); // Re-throw to be caught by Wheel component
+    } finally {
+      setVerifying(false);
+      setLoading(false);
     }
   };
 
@@ -208,27 +275,19 @@ export default function Home() {
               <label>Email Address</label>
               <input className="w-full border border-gray-600 p-2 rounded" type="email" onChange={(e) => handleChange('email', e.target.value)} />
 
-             
-
-
               <label>Phone Number</label>
-            
               <PhoneInput 
-              country={'us'}
-              value={formData.phone}
-              onChange={(phone: string, countryData: CountryData) => {
-                handleChange('phone', phone);
-                setCountryCode(`+${countryData.dialCode}`);
-              }}
+                country={'us'}
+                value={formData.phone}
+                onChange={(phone: string, countryData: CountryData) => {
+                  handleChange('phone', phone);
+                  setCountryCode(`+${countryData.dialCode}`);
+                }}
 
-              inputClass="!w-full !pl-12 !border !border-gray-600 !rounded !h-10"
-              buttonClass="!bg-white !border-gray-600"
-              containerClass="!w-full"
-            />          
-
-
-
-           
+                inputClass="!w-full !pl-12 !border !border-gray-600 !rounded !h-10"
+                buttonClass="!bg-white !border-gray-600"
+                containerClass="!w-full"
+              />          
 
               <label className="font-semibold">Verification Method:</label>
               <div className="flex gap-4 mt-1">
@@ -251,52 +310,70 @@ export default function Home() {
 
         {step === 2 && (
           <>
-              <div className="frame" data-model-id="2:3">
-      <div className="div">
-        <div className="text-wrapper-3">🔐 Enter Access Code</div>
+            <div className="frame" data-model-id="2:3">
+              <div className="div">
+                <div className="text-wrapper-3">🔐 Enter Access Code</div>
 
-        <input
-          type="text"
-          className="element-digit-code"
-          placeholder="6-digit code"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          maxLength={6}
-        />
+                <input
+                  type="text"
+                  className="element-digit-code"
+                  placeholder="6-digit code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  maxLength={6}
+                />
 
-        <button
-          className="overlap-group"
-          onClick={verifyCode}
-          disabled={verifying}
-        >
-          <span className="text-wrapper-2">
-            {verifying ? 'Verifying...' : 'Confirm Identity'}
-          </span>
-        </button>
+                <button
+                  className="overlap-group"
+                  onClick={verifyCode}
+                  disabled={verifying}
+                >
+                  <span className="text-wrapper-2">
+                    {verifying ? 'Verifying...' : 'Confirm Identity'}
+                  </span>
+                </button>
 
-        <button
-          className="text-wrapper"
-          onClick={sendOTP}
-          disabled={resendDisabled}
-        >
-          Resend Code
-        </button>
+                <button
+                  className="text-wrapper"
+                  onClick={sendOTP}
+                  disabled={resendDisabled}
+                >
+                  Resend Code
+                </button>
 
-        {error && <p className="error-message">{error}</p>}
-      </div>
-    </div>
-
-
+                {error && <p className="error-message">{error}</p>}
+              </div>
+            </div>
           </>
         )}
 
         {step === 3 && (
-          <>
-            <h2 className="text-3xl font-bold mb-4" style={{ color: 'rgb(0, 39, 58)' }}>🎉 Mission Complete!</h2>
-            <p className="text-lg font-semibold text-green-700">You won: {prize}</p>
-            <p className="text-sm mt-2" style={{ color: 'rgb(0, 39, 58)' }}>Claim your prize at Booth #9158</p>
-         
-          </>
+          <div className="text-center">
+            {showWheel ? (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Spin the Wheel!</h2>
+                <Wheel 
+                  onSpinStart={() => setLoading(true)}
+                  onSpinComplete={handleSpinComplete}
+                  onError={(error) => {
+                    setError(error);
+                    setLoading(false);
+                  }}
+                />
+              </div>
+            ) : prize ? (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Congratulations!</h2>
+                <p className="text-lg mb-6">You've won: <span className="font-bold">{prize.name}</span></p>
+                <p className="text-gray-600">Thank you for participating!</p>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+                <p>Preparing your prize...</p>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </main>

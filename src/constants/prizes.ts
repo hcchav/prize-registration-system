@@ -5,6 +5,7 @@ export interface Prize {
   weight: number;
   color: string;
   textColor: string;
+  stock?: number;
 }
 
 export const PRIZES: Prize[] = [

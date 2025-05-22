@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../src/lib/supabase';
 import { Resend } from 'resend';
 import { Twilio } from 'twilio';
 
@@ -68,8 +68,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (existing && existing.length > 0) {
     await supabase.from('attendees').update(payload).eq('id', existing[0].id);
+    // i want confirmation that the update was successful
+    const { data: updated } = await supabase.from('attendees').select('*').eq('id', existing[0].id).order('created_at', { ascending: false }).limit(1);
+    console.log('updated attendee', updated);
   } else {
     await supabase.from('attendees').insert([payload]);
+    // i want confirmation that the insert was successful
+    console.log(payload);
+    const { data: inserted } = await supabase.from('attendees').select('*').order('created_at', { ascending: false }).limit(1);
+    console.log('inserted attendee', inserted);
   }
 
   if (method === 'email') {

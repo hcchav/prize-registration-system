@@ -1,7 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { supabase } from '../../lib/supabase';
-import { getAvailablePrize } from '../../lib/prize-logic';
+import { supabase } from '../../src/lib/supabase';
+import { Database } from '../../src/types/database.types';
 import { Twilio } from 'twilio';
+
+type Attendee = Database['public']['Tables']['attendees']['Row'];
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID!;
 const authToken = process.env.TWILIO_AUTH_TOKEN!;
@@ -10,7 +12,10 @@ const client = new Twilio(accountSid, authToken);
 
 
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const { email, phone, method, code } = req.body;
   console.log('verify start');
   console.log(phone);
@@ -18,70 +23,87 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log('verify normalize phone');
   console.log(normalizedPhone);
 
-  let attendee;
-  console.log(phone);
+  let attendee: Attendee | null = null;
 
   // 📩 EMAIL VERIFICATION
   if (method === 'email') {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('attendees')
       .select('*')
       .eq('email', email)
       .order('created_at', { ascending: false })
       .limit(1);
 
-    if (!data || data.length === 0 || data[0].otp !== code) {
+    if (error) {
+      console.error('Error fetching attendee:', error);
+      return res.status(500).json({ error: 'Failed to fetch attendee' });
+    }
+
+    const attendeeData = data as unknown as Attendee[];
+    if (!attendeeData.length || (attendeeData[0] as any).otp !== code) {
       return res.status(400).json({ error: 'Invalid OTP' });
     }
 
-    attendee = data[0];
+    attendee = attendeeData[0];
   }
 
   // 📲 SMS VERIFICATION
   if (method === 'sms') {
     try {
-
       const verification = await client.verify.v2
         .services(verifyServiceSid)
         .verificationChecks.create({
           code: code,
-          to:  normalizedPhone
+          to: normalizedPhone
         });
       console.log(verification);
       console.log('verify - SMS');
       console.log(normalizedPhone);
-    
 
       if (verification.status !== 'approved') {
         return res.status(400).json({ error: 'Invalid or expired code' });
       }
 
-      const { data } = await supabase
+      const { data: attendeeData, error } = await supabase
         .from('attendees')
         .select('*')
-        .eq('phone', normalizedPhone)
+        .or(`email.eq.${email},phone.eq.${normalizedPhone}`)
         .order('created_at', { ascending: false })
         .limit(1);
 
-      if (!data || data.length === 0) {
+      if (error) {
+        console.error('Error fetching attendee:', error);
+        return res.status(500).json({ error: 'Failed to fetch attendee' });
+      }
+
+      const attendees = attendeeData as unknown as Attendee[];
+      if (!attendees || attendees.length === 0) {
         return res.status(400).json({ error: 'Attendee not found' });
       }
 
-      attendee = data[0];
-    } catch (err) {
-      console.log(err);
-      return res.status(400).json({ error: 'Verification failed' });
+      attendee = attendees[0];
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Verification failed';
+      console.error('Verification error:', errorMessage);
+      return res.status(400).json({ error: errorMessage });
     }
   }
 
-  // 🏆 PRIZE LOGIC
-  const prize = await getAvailablePrize();
-  if (!prize) return res.status(200).json({ message: 'All prizes claimed' });
+  // Mark attendee as verified
+  if (!attendee) {
+    return res.status(404).json({ error: 'Attendee not found' });
+  }
 
-  await supabase
+  const { error: updateError } = await supabase
     .from('attendees')
-    .update({ verified: true, prize })
-    .eq('id', attendee.id);
+    .update({ verified: true })
+    .eq('id', attendee.id)
+    .single();
 
-  return res.status(200).json({ prize });
+  if (updateError) {
+    console.error('Error updating attendee:', updateError);
+    return res.status(500).json({ error: 'Failed to update attendee' });
+  }
+
+  return res.status(200).json({ success: true });
 }
