@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { PRIZES, type Prize } from "@/constants/prizes"
-import Image from "next/image"
 
 interface WheelSegment extends Prize {}
 
@@ -17,9 +16,7 @@ export default function WheelPicker() {
   const spinDurationRef = useRef<number>(10000)
   const [canvasSize] = useState({ width: 400, height: 400 })
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
-  const imageRefs = useRef<{ [key: string]: HTMLImageElement }>({})
   const [error, setError] = useState<string | null>(null)
-  const [imagesLoaded, setImagesLoaded] = useState(0)
 
   // Calculate total weight for angle calculations
   const totalWeight = PRIZES.reduce((sum, segment) => sum + segment.weight, 0)
@@ -40,22 +37,7 @@ export default function WheelPicker() {
     }
   }, [canvasSize])
 
-  // Preload images
-  useEffect(() => {
-    let loadedCount = 0
-    PRIZES.forEach(prize => {
-      const img = new window.Image()
-      img.src = prize.image
-      img.onload = () => {
-        loadedCount++
-        imageRefs.current[prize.id] = img
-        setImagesLoaded(loadedCount)
-      }
-      img.onerror = () => {
-        setError(`Failed to load image: ${prize.image}`)
-      }
-    })
-  }, [])
+
 
   // Function to determine which segment is at the pointer
   const getSegmentAtPointer = useCallback((wheelAngle: number) => {
@@ -113,33 +95,6 @@ export default function WheelPicker() {
       ctx.strokeStyle = "#FFFFFF"
       ctx.lineWidth = 2
       ctx.stroke()
-
-      // Draw image if loaded
-      const img = imageRefs.current[segment.id]
-      if (img && img.complete) {
-        ctx.save()
-        ctx.translate(centerX, centerY)
-        ctx.rotate(startAngle + segmentAngle / 2)
-        
-        // Add extra rotation for the image itself
-        ctx.translate(radius * 0.69, 0)
-        ctx.rotate(Math.PI / 2) // Rotate 90 degrees
-        ctx.translate(-radius * 0.69, 0)
-
-        const segmentSize = (segmentAngle / (2 * Math.PI)) * radius
-        const imgWidth = Math.min(70, Math.max(40, segmentSize * 0.9))
-        const imgHeight = imgWidth * 1.2
-        const imgRadius = radius * 0.69
-
-        ctx.drawImage(
-          img,
-          imgRadius - imgWidth / 2,
-          -imgHeight / 2,
-          imgWidth,
-          imgHeight
-        )
-        ctx.restore()
-      }
 
       startAngle = endAngle
     })
@@ -211,12 +166,12 @@ export default function WheelPicker() {
     }
   }, [drawWheel, getSegmentAtPointer])
 
-  // Draw wheel when context is ready and images are loaded
+  // Draw wheel when context is ready
   useEffect(() => {
-    if (ctx && imagesLoaded === PRIZES.length) {
+    if (ctx) {
       drawWheel()
     }
-  }, [ctx, imagesLoaded, drawWheel])
+  }, [ctx, drawWheel])
 
   // Handle spinning state changes
   useEffect(() => {
@@ -264,11 +219,7 @@ export default function WheelPicker() {
               {error}
             </div>
           )}
-          {imagesLoaded < PRIZES.length && (
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              Loading... ({imagesLoaded}/{PRIZES.length})
-            </div>
-          )}
+
         </div>
 
         {result && (
@@ -276,28 +227,18 @@ export default function WheelPicker() {
             <h2 className="text-xl font-semibold text-gray-900">
               You won: <span className="text-blue-600">{result.name}!</span>
             </h2>
-            <div className="mt-2">
-              <Image
-                src={result.image}
-                alt={result.name}
-                width={100}
-                height={100}
-                className="mx-auto"
-              />
-            </div>
           </div>
         )}
 
         <div className="flex justify-center">
           <Button
             onClick={handleSpin}
-            disabled={spinning || imagesLoaded < PRIZES.length}
+            disabled={spinning}
             size="lg"
             variant="primary"
             className="w-full max-w-xs bg-[#1E3A8A] text-white hover:bg-[#2B4BA8]"
           >
-            {spinning ? 'Spinning...' : 
-             imagesLoaded < PRIZES.length ? 'Loading...' : 'Spin the Wheel!'}
+            {spinning ? 'Spinning...' : 'Spin the Wheel!'}
           </Button>
         </div>
       </div>

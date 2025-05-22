@@ -20,44 +20,36 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Prize | null>(null);
-  const [rotation, setRotation] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
-  const startTimeRef = useRef<number>(0);
-  const spinDuration = 5000; // 5 seconds
+  const startTimeRef = useRef<number | null>(null);
+  const wheelAngleRef = useRef<number>(0);
+  const spinDurationRef = useRef<number>(5000); // 5 seconds
+  const [canvasSize] = useState({ width: 400, height: 400 });
 
-  // Fetch available prizes from the database
+  // Use prizes from the constants file
   useEffect(() => {
-    const fetchPrizes = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from('prizes')
-          .select('*')
-          .gt('stock', 0);
-
-        console.log('prizes', data);
-
-        if (error) throw error;
-        
-        if (data && data.length > 0) {
-          setAvailablePrizes(data);
-        } else {
-          setError('No prizes available');
-        }
-      } catch (err) {
-        console.error('Error fetching prizes:', err);
-        setError('Failed to load prizes');
-        onError?.('Failed to load prizes. Please try again later.');
-      } finally {
-        setLoading(false);
+    try {
+      setLoading(true);
+      // Filter out any prizes with weight <= 0
+      const validPrizes = PRIZES.filter(prize => prize.weight > 0);
+      
+      if (validPrizes.length > 0) {
+        setAvailablePrizes(validPrizes);
+      } else {
+        setError('No valid prizes available');
+        onError?.('No valid prizes available');
       }
-    };
-
-    fetchPrizes();
+    } catch (err) {
+      console.error('Error initializing prizes:', err);
+      setError('Failed to initialize prizes');
+      onError?.('Failed to initialize prizes. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   }, [onError]);
 
-  // Draw the wheel
+  // Draw the wheel with weighted segments
   const drawWheel = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -73,22 +65,21 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw segments
-    let startAngle = 0;
+    // Draw segments with variable sizes based on weights
+    let startAngle = wheelAngleRef.current;
+
     availablePrizes.forEach((prize) => {
-      const segmentAngle = (prize.weight / totalWeight) * Math.PI * 2;
+      const segmentAngle = (prize.weight / totalWeight) * (2 * Math.PI);
       const endAngle = startAngle + segmentAngle;
 
-      // Draw segment
+      // Draw segment background
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
       ctx.closePath();
       ctx.fillStyle = prize.color;
       ctx.fill();
-
-      // Draw border
-      ctx.strokeStyle = '#fff';
+      ctx.strokeStyle = "#FFFFFF";
       ctx.lineWidth = 2;
       ctx.stroke();
 
@@ -97,9 +88,9 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
       ctx.translate(centerX, centerY);
       ctx.rotate(startAngle + segmentAngle / 2);
       ctx.textAlign = 'right';
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 14px Arial';
-      ctx.fillText(prize.name, radius - 20, 5);
+      ctx.fillStyle = prize.textColor || '#fff';
+      ctx.font = 'bold 12px Arial';
+      ctx.fillText(prize.displayText, radius - 20, 0);
       ctx.restore();
 
       startAngle = endAngle;
@@ -107,140 +98,174 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
 
     // Draw center circle
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 20, 0, Math.PI * 2);
-    ctx.fillStyle = '#fff';
+    ctx.arc(centerX, centerY, radius * 0.15, 0, 2 * Math.PI);
+    ctx.fillStyle = "#1E3A8A";
     ctx.fill();
-    ctx.strokeStyle = '#e5e7eb';
+    ctx.strokeStyle = "#FFFFFF";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Draw pointer
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY - radius + 15);
+    ctx.lineTo(centerX - 10, centerY - radius - 5);
+    ctx.lineTo(centerX + 10, centerY - radius - 5);
+    ctx.closePath();
+    ctx.fillStyle = "#1E3A8A";
+    ctx.fill();
+    ctx.strokeStyle = "#FFFFFF";
     ctx.lineWidth = 2;
     ctx.stroke();
   }, [availablePrizes]);
 
-  // Animation frame
-  const animate = useCallback((timestamp: number) => {
+  // Function to determine which segment is at the pointer
+  const getSegmentAtPointer = useCallback((wheelAngle: number) => {
+    const totalWeight = availablePrizes.reduce((sum, p) => sum + p.weight, 0);
+    let segmentStart = 0;
+
+    for (let i = 0; i < availablePrizes.length; i++) {
+      const segmentAngle = (availablePrizes[i].weight / totalWeight) * (2 * Math.PI);
+      const segmentEnd = segmentStart + segmentAngle;
+
+      let normalizedWheelAngle = wheelAngle % (2 * Math.PI);
+      if (normalizedWheelAngle < 0) normalizedWheelAngle += 2 * Math.PI;
+
+      let pointerPosition = ((3 * Math.PI) / 2 - normalizedWheelAngle) % (2 * Math.PI);
+      if (pointerPosition < 0) pointerPosition += 2 * Math.PI;
+
+      if (pointerPosition >= segmentStart && pointerPosition < segmentEnd) {
+        return availablePrizes[i];
+      }
+
+      segmentStart = segmentEnd;
+    }
+
+    return availablePrizes[0];
+  }, [availablePrizes]);
+
+  // Animation function
+  const animate = useCallback((timestamp: DOMHighResTimeStamp) => {
     if (!startTimeRef.current) {
       startTimeRef.current = timestamp;
     }
 
     const elapsed = timestamp - startTimeRef.current;
-    const progress = Math.min(elapsed / spinDuration, 1);
-    
-    // Easing function (easeOutCubic)
-    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
-    const easedProgress = easeOut(progress);
-    
-    // Calculate rotation (5 full rotations + random segment)
-    const totalRotation = 5 * 360 + (Math.random() * 360);
-    const currentRotation = easedProgress * totalRotation;
-    
-    // Update rotation
-    setRotation(currentRotation);
-    
-    if (progress < 1) {
-      // Continue animation
-      animationRef.current = requestAnimationFrame(animate);
-    } else {
-      // Animation complete
+    const progress = Math.min(elapsed / spinDurationRef.current, 1);
+
+    // Easing function for natural deceleration
+    const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+
+    // Calculate current speed based on progress
+    const initialSpeed = 0.3;
+    const currentSpeed = initialSpeed * (1 - easeOutCubic);
+
+    // Update wheel angle
+    const currentAngle = wheelAngleRef.current;
+    wheelAngleRef.current = (currentAngle + currentSpeed) % (2 * Math.PI);
+
+    // Draw the wheel
+    drawWheel();
+
+    // If animation is complete
+    if (progress >= 1) {
+      // Stop the animation
       setSpinning(false);
+      startTimeRef.current = null;
+
+      // Determine the winning segment
+      const winningPrize = getSegmentAtPointer(wheelAngleRef.current);
+      setResult(winningPrize);
       
-      // Determine winner
-      const totalWeight = availablePrizes.reduce((sum, p) => sum + p.weight, 0);
-      const winningAngle = (currentRotation % 360) * (Math.PI / 180);
-      let currentAngle = 0;
-      
-      for (const prize of availablePrizes) {
-        const segmentAngle = (prize.weight / totalWeight) * Math.PI * 2;
-        if (winningAngle >= currentAngle && winningAngle < currentAngle + segmentAngle) {
-          setResult(prize);
-          const spinCompleteResult = onSpinComplete(prize);
-          if (spinCompleteResult && typeof spinCompleteResult.catch === 'function') {
-            spinCompleteResult.catch((error: Error) => {
-              console.error('Error in onSpinComplete:', error);
-              onError?.('Failed to process your prize. Please try again.');
-            });
-          }
-          break;
-        }
-        currentAngle += segmentAngle;
+      // Call the onSpinComplete callback
+      const spinCompleteResult = onSpinComplete(winningPrize);
+      if (spinCompleteResult && typeof spinCompleteResult.catch === 'function') {
+        spinCompleteResult.catch((error: Error) => {
+          console.error('Error in onSpinComplete:', error);
+          onError?.('Failed to process your prize. Please try again.');
+        });
       }
+
+      // Cancel the animation frame
+      if (animationRef.current !== null) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+    } else {
+      // Continue the animation
+      const nextFrame = requestAnimationFrame(animate);
+      animationRef.current = nextFrame;
     }
-  }, [availablePrizes, onSpinComplete, onError]);
+  }, [drawWheel, getSegmentAtPointer, onSpinComplete, onError]);
 
   // Handle spin
-  const handleSpin = useCallback(async () => {
-    if (spinning) return;
-    
-    try {
-      // Reset state
-      setResult(null);
+  const spinWheel = useCallback(() => {
+    if (!spinning) {
       setSpinning(true);
-      startTimeRef.current = 0;
+      onSpinStart?.();
+      setResult(null);
+      // Add a random initial rotation to make each spin feel unique
+      wheelAngleRef.current = Math.random() * 2 * Math.PI;
       
-      // Fetch available prizes
-      const { data: prizes, error } = await supabase
-        .from('prizes')
-        .select('*')
-        .gt('stock', 0);
-      
-      if (error) throw error;
-      
-      // Update available prizes
-      if (prizes?.length) {
-        const available = PRIZES.filter(p => prizes.some(prize => prize.id === p.id && prize.stock > 0));
-        if (!available.length) {
-          throw new Error('No prizes available');
-        }
-        setAvailablePrizes(available);
-      }
-      
-      // Start animation
-      animationRef.current = requestAnimationFrame(animate);
-      
-    } catch (error) {
-      console.error('Error spinning wheel:', error);
-      onError?.(error instanceof Error ? error.message : 'Failed to spin the wheel');
-      setSpinning(false);
+      // Start the animation
+      startTimeRef.current = null;
+      const frame = requestAnimationFrame(animate);
+      animationRef.current = frame;
     }
-  }, [spinning, animate, onError]);
+  }, [spinning, onSpinStart, animate]);
 
-  // Clean up on unmount
+  // Handle spinning state changes and cleanup
   useEffect(() => {
+    // Cleanup on unmount
     return () => {
-      if (animationRef.current) {
+      if (animationRef.current !== null) {
         cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
       }
     };
   }, []);
 
-  // Handle window resize and initial draw
+  // Initialize canvas context and handle window resize
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      // Set canvas size
+      const container = canvas.parentElement;
+      if (container) {
+        const size = Math.min(container.clientWidth, container.clientHeight);
+        canvas.width = size;
+        canvas.height = size;
+      }
+      
+      // Initialize context
+      const context = canvas.getContext('2d');
+      if (!context) {
+        setError('Could not initialize canvas context');
+        return;
+      }
+      
+      // Initial draw
+      drawWheel();
+    }
+    
+    // Handle window resize
     const handleResize = () => {
       const canvas = canvasRef.current;
       if (canvas) {
-        // Set canvas size to match parent container
         const container = canvas.parentElement;
         if (container) {
           const size = Math.min(container.clientWidth, container.clientHeight);
           canvas.width = size;
           canvas.height = size;
+          drawWheel();
         }
-        drawWheel();
       }
     };
-
-    // Initial setup
-    handleResize();
     
-    // Add event listener for window resize
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [drawWheel]);
 
-  // Initial draw when prizes are loaded
-  useEffect(() => {
-    if (availablePrizes.length > 0) {
-      drawWheel();
-    }
-  }, [availablePrizes, drawWheel]);
+
 
   if (loading) {
     return (
@@ -259,33 +284,34 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
   }
 
   return (
-    <div className="relative w-full max-w-md mx-auto">
-      <div className="relative" style={{ width: '100%', paddingBottom: '100%' }}>
+    <div className="flex flex-col items-center justify-center gap-4">
+      <div className="relative w-full max-w-md aspect-square">
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full"
-          style={{
-            transform: `rotate(${rotation}deg)`,
-            transition: spinning ? 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none',
-          }}
+          width={canvasSize.width}
+          height={canvasSize.height}
+          className="w-full h-auto border-2 border-gray-200 rounded-full"
         />
       </div>
-      <div className="mt-8 text-center">
-        {result ? (
-          <div className="mb-4">
-            <p className="text-xl font-bold">Congratulations! You won:</p>
-            <p className="text-2xl text-primary">{result.name}</p>
-          </div>
-        ) : (
-          <Button
-            onClick={handleSpin}
-            disabled={spinning || availablePrizes.length === 0}
-            className="px-8 py-6 text-lg"
-          >
-            {spinning ? 'Spinning...' : 'Spin the Wheel'}
-          </Button>
-        )}
-      </div>
+      
+      {!spinning && !result && (
+        <Button onClick={spinWheel} disabled={loading || !!error}>
+          {loading ? 'Loading...' : error ? 'Error Loading Prizes' : 'Spin the Wheel!'}
+        </Button>
+      )}
+      
+      {spinning && <div className="text-lg font-semibold">Spinning...</div>}
+      
+      {result && !spinning && (
+        <div className="mt-4 p-4 bg-green-100 rounded-lg text-center">
+          <h3 className="text-xl font-bold text-green-800">Congratulations!</h3>
+          <p className="text-green-700">You won: {result.name}</p>
+        </div>
+      )}
+      
+      {error && !spinning && (
+        <div className="text-red-500 text-center">{error}</div>
+      )}
     </div>
   );
 }

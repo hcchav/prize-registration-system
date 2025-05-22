@@ -1,52 +1,83 @@
 export interface Prize {
-  id: string;
+  id: number;
   name: string;
-  image: string;
+  displayText: string;
   weight: number;
   color: string;
   textColor: string;
-  stock?: number;
 }
 
 export const PRIZES: Prize[] = [
   {
-    id: 'tshirt',
-    name: 'T-Shirt',
-    image: '/images/prizes/tshirt.png',
+    id: 1,
+    name: 'Biome Brigade T-Shirt',
+    displayText: 'T-Shirt',
+    weight: 250,
+    color: '#4A90E2', // Blue
+    textColor: '#FFFFFF'
+  },
+  {
+    id: 6,
+    name: 'Biome Brigade Hat',
+    displayText: 'Hat',
+    weight: 250,
+    color: '#F7D046', // Yellow
+    textColor: '#000000'
+  },
+  {
+    id: 5,
+    name: 'Biome Brigade GutShield Daily Supplements',
+    displayText: 'GutShield',
+    weight: 100,
+    color: '#009245', // Green
+    textColor: '#FFFFFF'
+  },
+  {
+    id: 3,
+    name: 'Biome Brigade ItchGuard Daily Supplements',
+    displayText: 'ItchGuard',
+    weight: 100,
+    color: '#FF6B6B', // Red
+    textColor: '#FFFFFF'
+  },
+  {
+    id: 4,
+    name: 'Biome Brigade Gut Health Test',
+    displayText: 'Gut Test',
+    weight: 25,
+    color: '#6B7A8F', // Gray
+    textColor: '#FFFFFF'
+  },
+  {
+    id: 2,
+    name: 'Eli Cole Dog Toy',
+    displayText: 'Eli Toy',
     weight: 50,
-    color: "#4A90E2",
-    textColor: "#FFFFFF"
+    color: '#9B59B6', // Purple
+    textColor: '#FFFFFF'
   },
   {
-    id: 'itch-guard',
-    name: 'ItchGuard',
-    image: '/images/prizes/itch-guard.png',
-    weight: 16.66,
-    color: "#F7D046",
-    textColor: "#000000"
-  },
-  {
-    id: 'dog-bowl',
-    name: 'Dog Bowl',
-    image: '/images/prizes/dog-bowl.png',
+    id: 7,
+    name: 'Flaky Jake Dog Toy',
+    displayText: 'Flaky Toy',
     weight: 50,
-    color: "#6B7A8F",
-    textColor: "#FFFFFF"
+    color: '#E74C3C', // Red-Orange
+    textColor: '#FFFFFF'
   },
   {
-    id: 'gut-shield',
-    name: 'GutShield',
-    image: '/images/prizes/gut-shield.png',
-    weight: 16.67,
-    color: "#009245",
-    textColor: "#FFFFFF"
+    id: 8,
+    name: 'Claus Stridium Dog Toy',
+    displayText: 'Claus Toy',
+    weight: 50,
+    color: '#3498DB', // Light Blue
+    textColor: '#FFFFFF'
   },
   {
-    id: 'gut-test',
-    name: 'Gut Test',
-    image: '/images/prizes/gut-test.png',
-    weight: 10,
-    color: "#E6EEF4",
-    textColor: "#009245"
+    id: 9,
+    name: 'Biome Brigade Poster',
+    displayText: 'Poster',
+    weight: 350,
+    color: '#2C3E50', // Dark Blue
+    textColor: '#FFFFFF'
   }
-]; 
+];
