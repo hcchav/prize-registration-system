@@ -130,9 +130,11 @@ export default function Home() {
       
       const attendeeId = formData.email || formData.phone;
       if (!attendeeId) {
-        throw new Error('No attendee ID found');
+        throw new Error('No attendee identifier found');
       }
       
+      console.log('Assigning prize to attendee:', { attendeeId, method: formData.method });
+
       const res = await fetch('/api/assign-prize', {
         method: 'POST',
         headers: {
@@ -140,12 +142,14 @@ export default function Home() {
         },
         body: JSON.stringify({
           attendeeId,
+          method: formData.method
         }),
       });
 
       const data = await res.json();
       
       if (!res.ok) {
+        console.error('Prize assignment failed:', data);
         throw new Error(data.error || 'Failed to assign prize');
       }
       
@@ -153,23 +157,7 @@ export default function Home() {
       setPrize(prize);
       setShowWheel(false);
       
-      // Update the attendee's record with the prize information
-      const { error: updateError } = await fetch('/api/update-attendee', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: attendeeId,
-          prize: prize.name,
-          prize_assigned: true,
-        }),
-      }).then(res => res.json());
-      
-      if (updateError) {
-        console.error('Failed to update attendee record:', updateError);
-        // Don't show error to user as prize was assigned successfully
-      }
+      console.log('Prize assigned successfully:', data);
       
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to assign prize. Please try again.';

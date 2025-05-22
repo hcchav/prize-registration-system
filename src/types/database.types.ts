@@ -19,7 +19,7 @@ export interface Database {
           updated_at: string
           otp: string | null
           prize: string | null
-          prize_assigned: boolean
+          prize_id: string | null
         }
         Insert: {
           id?: string
@@ -30,7 +30,7 @@ export interface Database {
           updated_at?: string
           otp?: string | null
           prize?: string | null
-          prize_assigned?: boolean
+          prize_id?: string | null
         }
         Update: {
           id?: string
@@ -41,7 +41,7 @@ export interface Database {
           updated_at?: string
           otp?: string | null
           prize?: string | null
-          prize_assigned?: boolean
+          prize_id?: string | null
         }
       }
       prizes: {
