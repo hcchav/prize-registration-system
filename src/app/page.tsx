@@ -17,6 +17,7 @@ export default function Home() {
     lastName: '',
     company: '',
     address: '',
+    aptSuiteBuilding: '',
     function: '',
     subcategory: '',
     manufacturerOptions: [] as string[],
@@ -240,7 +241,7 @@ export default function Home() {
                     <input
                       id="firstName"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular peer
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
                       ${formData.firstName ? 'text-[14px]  translate-y-1' : 'top-3'}`}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       value={formData.firstName}
@@ -248,7 +249,7 @@ export default function Home() {
                     />
                     <label 
                       htmlFor="firstName"
-                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
+                      className={`absolute left-3.5 text-[#418FDE] text-[14px] transition-all duration-200 pointer-events-none
                         ${formData.firstName ? 'text-[10px]  translate-y-1' : 'top-3'}`}
                     >
                       First Name
@@ -261,7 +262,7 @@ export default function Home() {
                     <input
                       id="lastName"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular peer
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
                       ${formData.lastName ? 'text-[14px] translate-y-1' : 'top-3'}`}
                       onChange={(e) => handleChange('lastName', e.target.value)}
                       value={formData.lastName}
@@ -269,7 +270,7 @@ export default function Home() {
                     />
                     <label 
                       htmlFor="lastName"
-                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
+                      className={`absolute left-3.5 text-[#418FDE] text-[14px] transition-all duration-200 pointer-events-none
                         ${formData.lastName ? 'text-[10px] translate-y-1' : 'top-3'}`}
                     >
                       Last Name
@@ -280,7 +281,7 @@ export default function Home() {
                 <div className="relative w-full">
                   <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <input
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  placeholder:text-[#418FDE] placeholder:opacity-100"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular  placeholder:text-[#418FDE] text-[14px] placeholder:opacity-100"
                       placeholder="Company Name"
                       onChange={(e) => handleChange('company', e.target.value)}
                     />
@@ -292,7 +293,7 @@ export default function Home() {
                     <input
                       id="address"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular peer
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
                       ${formData.address ? 'text-[14px] translate-y-1' : 'top-3'}`}
                       onChange={(e) => handleChange('address', e.target.value)}
                       value={formData.address}
@@ -300,10 +301,30 @@ export default function Home() {
                     />
                     <label 
                       htmlFor="address"
-                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
+                      className={`absolute left-3.5 text-[#418FDE] text-[14px] transition-all duration-200 pointer-events-none
                         ${formData.address ? 'text-[10px] translate-y-1' : 'top-3'}`}
                     >
-                      Company Address
+                      Company Street Address
+                    </label>
+                  </div>
+                </div>
+
+                <div className="relative w-full group">
+                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                    <input
+                      id="aptSuiteBuilding"
+                      type="text"
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
+                      ${formData.aptSuiteBuilding ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                      onChange={(e) => handleChange('aptSuiteBuilding', e.target.value)}
+                      value={formData.aptSuiteBuilding}
+                      placeholder=" "
+                    />
+                    <label 
+                      htmlFor="aptSuiteBuilding"
+                      className={`absolute left-3.5 text-[#418FDE] text-[14px] transition-all duration-200 pointer-events-none
+                        ${formData.aptSuiteBuilding ? 'text-[10px] translate-y-1' : 'top-3'}`}
+                    >Apt, Suite, Building (Optional)
                     </label>
                   </div>
                 </div>
@@ -311,7 +332,7 @@ export default function Home() {
                 <div className="relative w-full">
                   <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <select
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  appearance-none"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular  appearance-none"
                       value={formData.function}
                       onChange={(e) => handleChange('function', e.target.value)}
                     >
@@ -395,7 +416,7 @@ export default function Home() {
                   <input
                     id="email"
                     type="email"
-                    className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular peer
+                    className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
                     ${formData.email ? 'text-[14px] translate-y-1' : 'top-3'}`}
                     onChange={(e) => handleChange('email', e.target.value)}
                     value={formData.email}
@@ -403,7 +424,7 @@ export default function Home() {
                   />
                   <label 
                     htmlFor="email"
-                    className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
+                    className={`absolute left-3.5 text-[#418FDE] text-[14px] transition-all duration-200 pointer-events-none
                       ${formData.email ? 'text-[10px] translate-y-1' : 'top-3'}`}
                   >
                     Email Address
@@ -420,8 +441,8 @@ export default function Home() {
                       handleChange('phone', phone);
                       setCountryCode(`+${countryData.dialCode}`);
                     }}
-                    inputClass="w-full h-full px-3.5 bg-transparent outline-none text-[#418FDE] text-sm font-regular  pl-20"
-                    buttonClass="!bg-transparent !border-none !text-[#418FDE] !px-3 !absolute !left-0 !top-0 !h-full !flex !items-center"
+                    inputClass="w-full h-full px-3.5 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular  pl-20"
+                    buttonClass="!bg-transparent !border-none !text-[#418FDE] text-[14px] !px-3 !absolute !left-0 !top-0 !h-full !flex !items-center"
                     dropdownClass="!bg-white !border !border-[#abcae9] !rounded-[5px] !z-50"
                     containerClass="!w-full h-full relative !z-50"
                     inputStyle={{
@@ -464,7 +485,7 @@ export default function Home() {
                     placeholder="(123) 456-7890"
                   />
                   <label 
-                    className={`absolute left-15 text-[#418FDE] text-sm  transition-all duration-200 ${formData.phone ? 'top-1 text-xs' : 'top-3'}`}
+                    className={`absolute left-15 text-[#418FDE] text-[14px] text-sm  transition-all duration-200 ${formData.phone ? 'top-1 text-xs' : 'top-3'}`}
                   >
                     Phone Number
                   </label>
