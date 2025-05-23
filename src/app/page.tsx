@@ -6,6 +6,7 @@ import PhoneInput, { CountryData } from 'react-phone-input-2';
 import Image from 'next/image';
 import Wheel from '@/components/Wheel';
 import { type Prize } from '@/constants/prizes';
+import Dropdown from '@/components/Dropdown';
 
 
 
@@ -198,6 +199,10 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  function setSelectedValue(value: string): void {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -413,9 +418,9 @@ export default function Home() {
                 </div>
 
                 <div className="relative w-full">
-                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
+                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative ">
                     <select
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular  appearance-none"
+                      className="w-full h-full px-3.5 rounded-[5px] border border-solid border-[#abcae9]   pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular  appearance-none"
                       value={formData.function}
                       onChange={(e) => handleChange('function', e.target.value)}
                     >
@@ -423,7 +428,7 @@ export default function Home() {
                       <option value="Supplier">Supplier</option>
                       <option value="Manufacturer">Manufacturer</option>
                       <option value="Retailer">Retailer</option>
-                      <option value="Wholesaler">Wholesaler</option>
+                      <option value="">Wholesaler</option>
                       <option value="Other">Other</option>
                     </select>
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -434,6 +439,20 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+
+              <Dropdown
+              label="Select an option"
+              value={''}
+              onChange={(value) => setSelectedValue(value)}
+              options={[
+                { value: '', label: 'Company Function (Select One)' },
+                { value: 'Supplier', label: 'Supplier' },
+                { value: 'Manufacturer', label: 'Manufacturer' },
+                { value: 'Retailer', label: 'Retailer' },
+                { value: 'Wholesaler', label: 'Wholesaler' },
+                { value: 'Other', label: 'Other' },
+              ]}
+            />           
 
               {step === 1 && formData.function === 'Supplier' && (
                 <>
