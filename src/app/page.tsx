@@ -230,7 +230,7 @@ export default function Home() {
                 Join the Biome Brigade®
               </div>
 
-              <p className="relative self-stretch [font-family:'Poppins-Regular',Helvetica] font-regular font-[Poppins-extrabold] text-[#00263a] text-base text-center tracking-[0] leading-[25.6px]">
+              <p className="relative self-stretch [font-family:'Poppins-Regular',Helvetica] font-regular  text-[#00263a] text-base text-center tracking-[0] leading-[25.6px]">
                 Register to win exclusive swag!
               </p>
 
@@ -238,7 +238,7 @@ export default function Home() {
                 <div className="relative w-full">
                   <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <input
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  placeholder:text-[#418FDE] placeholder:opacity-100"
                       placeholder="First Name"
                       onChange={(e) => handleChange('firstName', e.target.value)}
                     />
@@ -248,7 +248,7 @@ export default function Home() {
                 <div className="relative w-full">
                   <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <input
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  placeholder:text-[#418FDE] placeholder:opacity-100"
                       placeholder="Last Name"
                       onChange={(e) => handleChange('lastName', e.target.value)}
                     />
@@ -258,7 +258,7 @@ export default function Home() {
                 <div className="relative w-full">
                   <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <input
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  placeholder:text-[#418FDE] placeholder:opacity-100"
                       placeholder="Company Name"
                       onChange={(e) => handleChange('company', e.target.value)}
                     />
@@ -268,7 +268,7 @@ export default function Home() {
                 <div className="relative w-full">
                   <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <input
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  placeholder:text-[#418FDE] placeholder:opacity-100"
                       placeholder="Company Address"
                       onChange={(e) => handleChange('address', e.target.value)}
                     />
@@ -278,7 +278,7 @@ export default function Home() {
                 <div className="relative w-full">
                   <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <select
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] appearance-none"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  appearance-none"
                       value={formData.function}
                       onChange={(e) => handleChange('function', e.target.value)}
                     >
@@ -361,7 +361,7 @@ export default function Home() {
                 <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                   <input
                     type="email"
-                    className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                    className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  placeholder:text-[#418FDE] placeholder:opacity-100"
                     placeholder="Email Address"
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
@@ -378,7 +378,7 @@ export default function Home() {
                       handleChange('phone', phone);
                       setCountryCode(`+${countryData.dialCode}`);
                     }}
-                    inputClass="w-full h-full px-3.5 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] pl-20"
+                    inputClass="w-full h-full px-3.5 bg-transparent outline-none text-[#418FDE] text-sm font-regular  pl-20"
                     buttonClass="!bg-transparent !border-none !text-[#418FDE] !px-3 !absolute !left-0 !top-0 !h-full !flex !items-center"
                     dropdownClass="!bg-white !border !border-[#abcae9] !rounded-[5px] !z-50"
                     containerClass="!w-full h-full relative !z-50"
@@ -422,7 +422,7 @@ export default function Home() {
                     placeholder="(123) 456-7890"
                   />
                   <label 
-                    className={`absolute left-15 text-[#418FDE] text-sm font-[Poppins-extrabold] transition-all duration-200 ${formData.phone ? 'top-1 text-xs' : 'top-3'}`}
+                    className={`absolute left-15 text-[#418FDE] text-sm  transition-all duration-200 ${formData.phone ? 'top-1 text-xs' : 'top-3'}`}
                   >
                     Phone Number
                   </label>
@@ -442,7 +442,7 @@ export default function Home() {
               <button 
                 onClick={sendOTP} 
                 disabled={loading} 
-                className={`w-full py-3 rounded-md text-white font-regular font-[Poppins-extrabold] mt-4 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
+                className={`w-full py-3 rounded-md text-white font-regular  mt-4 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
               >
                 {loading ? 'Sending...' : 'Activate Entry'}
               </button>
