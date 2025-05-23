@@ -390,15 +390,24 @@ export default function Home() {
                 </>
               )}
 
-              <div className="relative w-full">
-                <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
+              <div className="relative w-full group">
+                <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
                   <input
+                    id="email"
                     type="email"
-                    className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  placeholder:text-[#418FDE] placeholder:opacity-100"
-                    placeholder="Email Address"
-                    value={formData.email}
+                    className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular peer
+                    ${formData.email ? 'text-[14px] translate-y-1' : 'top-3'}`}
                     onChange={(e) => handleChange('email', e.target.value)}
+                    value={formData.email}
+                    placeholder=" "
                   />
+                  <label 
+                    htmlFor="email"
+                    className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
+                      ${formData.email ? 'text-[10px] translate-y-1' : 'top-3'}`}
+                  >
+                    Email Address
+                  </label>
                 </div>
               </div>
 
