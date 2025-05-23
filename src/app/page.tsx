@@ -256,13 +256,24 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="relative w-full">
-                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
+                <div className="relative w-full group">
+                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
                     <input
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  placeholder:text-[#418FDE] placeholder:opacity-100"
-                      placeholder="Last Name"
+                      id="lastName"
+                      type="text"
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular peer
+                      ${formData.lastName ? 'text-[14px] translate-y-1' : 'top-3'}`}
                       onChange={(e) => handleChange('lastName', e.target.value)}
+                      value={formData.lastName}
+                      placeholder=" "
                     />
+                    <label 
+                      htmlFor="lastName"
+                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
+                        ${formData.lastName ? 'text-[10px] translate-y-1' : 'top-3'}`}
+                    >
+                      Last Name
+                    </label>
                   </div>
                 </div>
 
@@ -276,13 +287,24 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="relative w-full">
-                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
+                <div className="relative w-full group">
+                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
                     <input
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  placeholder:text-[#418FDE] placeholder:opacity-100"
-                      placeholder="Company Address"
+                      id="address"
+                      type="text"
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular peer
+                      ${formData.address ? 'text-[14px] translate-y-1' : 'top-3'}`}
                       onChange={(e) => handleChange('address', e.target.value)}
+                      value={formData.address}
+                      placeholder=" "
                     />
+                    <label 
+                      htmlFor="address"
+                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
+                        ${formData.address ? 'text-[10px] translate-y-1' : 'top-3'}`}
+                    >
+                      Company Address
+                    </label>
                   </div>
                 </div>
 
