@@ -17,6 +17,9 @@ export default function Home() {
     lastName: '',
     company: '',
     address: '',
+    city: '',
+    state: '',
+    zip: '',
     aptSuiteBuilding: '',
     function: '',
     subcategory: '',
@@ -241,7 +244,7 @@ export default function Home() {
                     <input
                       id="firstName"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm text-[12px]  font-regular peer
                       ${formData.firstName ? 'text-[14px]  translate-y-1' : 'top-3'}`}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       value={formData.firstName}
@@ -249,8 +252,8 @@ export default function Home() {
                     />
                     <label 
                       htmlFor="firstName"
-                      className={`absolute left-3.5 text-[#418FDE] text-[14px] transition-all duration-200 pointer-events-none
-                        ${formData.firstName ? 'text-[10px]  translate-y-1' : 'top-3'}`}
+                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
+                        ${formData.firstName ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
                     >
                       First Name
                     </label>
@@ -270,21 +273,32 @@ export default function Home() {
                     />
                     <label 
                       htmlFor="lastName"
-                      className={`absolute left-3.5 text-[#418FDE] text-[14px] transition-all duration-200 pointer-events-none
-                        ${formData.lastName ? 'text-[10px] translate-y-1' : 'top-3'}`}
+                      className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
+                        ${formData.lastName ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
                     >
                       Last Name
                     </label>
                   </div>
                 </div>
 
-                <div className="relative w-full">
-                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
+                <div className="relative w-full group">
+                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
                     <input
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular  placeholder:text-[#418FDE] text-[14px] placeholder:opacity-100"
-                      placeholder="Company Name"
+                      id="company"
+                      type="text"
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
+                      ${formData.company ? 'text-[14px] translate-y-1' : 'top-3'}`}
                       onChange={(e) => handleChange('company', e.target.value)}
+                      value={formData.company}
+                      placeholder=" "
                     />
+                    <label 
+                      htmlFor="company"
+                      className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
+                        ${formData.company ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                    >
+                      Company Name
+                    </label>
                   </div>
                 </div>
 
@@ -301,8 +315,8 @@ export default function Home() {
                     />
                     <label 
                       htmlFor="address"
-                      className={`absolute left-3.5 text-[#418FDE] text-[14px] transition-all duration-200 pointer-events-none
-                        ${formData.address ? 'text-[10px] translate-y-1' : 'top-3'}`}
+                      className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
+                        ${formData.address ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
                     >
                       Company Street Address
                     </label>
@@ -318,15 +332,84 @@ export default function Home() {
                       ${formData.aptSuiteBuilding ? 'text-[14px] translate-y-1' : 'top-3'}`}
                       onChange={(e) => handleChange('aptSuiteBuilding', e.target.value)}
                       value={formData.aptSuiteBuilding}
-                      placeholder=" "
+                      placeholder=""
                     />
                     <label 
                       htmlFor="aptSuiteBuilding"
-                      className={`absolute left-3.5 text-[#418FDE] text-[14px] transition-all duration-200 pointer-events-none
-                        ${formData.aptSuiteBuilding ? 'text-[10px] translate-y-1' : 'top-3'}`}
-                    >Apt, Suite, Building (Optional)
+                      className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
+                        ${formData.aptSuiteBuilding ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                    >
+                      Apt, Suite, Building (Optional)
                     </label>
                   </div>
+                </div>
+                {/* City */}
+                <div className="relative w-full group">
+                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                    <input
+                      id="city"
+                      type="text"
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
+                      ${formData.city ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                      onChange={(e) => handleChange('city', e.target.value)}
+                      value={formData.city}
+                      placeholder=""
+                    />
+                    <label 
+                      htmlFor= "city"
+                      className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
+                        ${formData.city ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                    >
+                      City
+                    </label>
+                  </div>
+                </div>
+
+             
+                <div className="flex gap-2">
+                     {/* state */}
+                  <div className="w-1/2">
+                    <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                      <input
+                        id="state"
+                        type="text"
+                        className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
+                        ${formData.state ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                        onChange={(e) => handleChange('state', e.target.value)}
+                        value={formData.state}
+                        placeholder=" "
+                      />
+                      <label 
+                        htmlFor="state"
+                        className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
+                          ${formData.state ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                      >
+                        State
+                      </label>
+                    </div>
+                  </div>
+                  {/* zip code */}
+                  <div className="w-1/2">
+                    <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                      <input
+                        id="zip"
+                        type="text"
+                        className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
+                        ${formData.zip ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                        onChange={(e) => handleChange('zip', e.target.value)}
+                        value={formData.zip}
+                        placeholder=" "
+                      />
+                      <label 
+                        htmlFor="zip"
+                        className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
+                          ${formData.zip ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                      >
+                        Zip Code
+                      </label>
+                    </div>
+                  </div>
+   
                 </div>
 
                 <div className="relative w-full">
@@ -336,7 +419,7 @@ export default function Home() {
                       value={formData.function}
                       onChange={(e) => handleChange('function', e.target.value)}
                     >
-                      <option value="" className="text-gray-400">Company Function</option>
+                      <option value="" className="text-gray-400">Company Function (Select One)</option>
                       <option value="Supplier">Supplier</option>
                       <option value="Manufacturer">Manufacturer</option>
                       <option value="Retailer">Retailer</option>
@@ -424,8 +507,8 @@ export default function Home() {
                   />
                   <label 
                     htmlFor="email"
-                    className={`absolute left-3.5 text-[#418FDE] text-[14px] transition-all duration-200 pointer-events-none
-                      ${formData.email ? 'text-[10px] translate-y-1' : 'top-3'}`}
+                    className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
+                      ${formData.email ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
                   >
                     Email Address
                   </label>
