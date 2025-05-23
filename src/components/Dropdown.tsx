@@ -48,8 +48,8 @@ export default function Dropdown({
           {options.map((option) => (
             <div
               key={option.value}
-              className={`px-4 py-3 cursor-pointer hover:bg-gray-50 text-teal-950 text-sm font-normal font-['Poppins'] leading-snug ${
-                value === option.value ? 'bg-blue-50' : ''
+              className={`px-4 py-3 cursor-pointer hover:bg-gray-200 text-[#418FDE] text-sm text-[14px]  font-regular peer ${
+                value === option.value ? 'bg-blue-200' : ''
               }`}
               onClick={() => {
                 onChange(option.value);
