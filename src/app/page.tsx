@@ -235,13 +235,24 @@ export default function Home() {
               </p>
 
               <div className="w-full space-y-3">
-                <div className="relative w-full">
-                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
+                <div className="relative w-full group">
+                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
                     <input
-                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular  placeholder:text-[#418FDE] placeholder:opacity-100"
-                      placeholder="First Name"
+                      id="firstName"
+                      type="text"
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular peer
+                      ${formData.firstName ? 'text-[14px]  translate-y-1' : 'top-3'}`}
                       onChange={(e) => handleChange('firstName', e.target.value)}
+                      value={formData.firstName}
+                      placeholder=" "
                     />
+                    <label 
+                      htmlFor="firstName"
+                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
+                        ${formData.firstName ? 'text-[10px]  translate-y-1' : 'top-3'}`}
+                    >
+                      First Name
+                    </label>
                   </div>
                 </div>
 
