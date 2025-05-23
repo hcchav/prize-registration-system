@@ -357,21 +357,77 @@ export default function Home() {
                 </>
               )}
 
-              <label>Email Address</label>
-              <input className="w-full border border-gray-600 p-2 rounded" type="email" onChange={(e) => handleChange('email', e.target.value)} value={formData.email} />
+              <div className="relative w-full">
+                <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                  <input
+                    type="email"
+                    className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                    placeholder="Email Address"
+                    value={formData.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                  />
+                </div>
+              </div>
 
-              <label>Phone Number</label>
-              <PhoneInput 
-                country={'us'}
-                value={formData.phone}
-                onChange={(phone: string, countryData: CountryData) => {
-                  handleChange('phone', phone);
-                  setCountryCode(`+${countryData.dialCode}`);
-                }}
-                inputClass="!w-full !pl-12 !border !border-gray-600 !rounded !h-10"
-                buttonClass="!bg-white !border-gray-600"
-                containerClass="!w-full"
-              />          
+              <div className="relative w-full">
+                <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                  <PhoneInput 
+                    country={'us'}
+                    value={formData.phone}
+                    onChange={(phone: string, countryData: CountryData) => {
+                      handleChange('phone', phone);
+                      setCountryCode(`+${countryData.dialCode}`);
+                    }}
+                    inputClass="w-full h-full px-3.5 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] pl-20"
+                    buttonClass="!bg-transparent !border-none !text-[#418FDE] !px-3 !absolute !left-0 !top-0 !h-full !flex !items-center"
+                    dropdownClass="!bg-white !border !border-[#abcae9] !rounded-[10px] !z-50"
+                    containerClass="!w-full h-full relative !z-50"
+                    inputStyle={{
+                      width: '100%',
+                      height: '100%',
+                      color: formData.phone ? '#418FDE' : 'transparent',
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      outline: 'none',
+                      fontSize: '14px',
+                      fontFamily: 'Poppins-regular',
+                      paddingLeft: '60px',
+                      paddingTop: formData.phone ? '12px' : '24px',
+                    }}
+                    buttonStyle={{
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      padding: '0 10px',
+                      color: '#00263a',
+                      height: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                    dropdownStyle={{
+                      backgroundColor: 'white',
+                      color: '#00263a',
+                      border: '1px solid #abcae9',
+                      borderRadius: '10px',
+                      zIndex: 9999,
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      marginTop: '5px',
+                    }}
+                    searchStyle={{
+                      padding: '10px',
+                      borderBottom: '1px solid #e2e8f0',
+                    }}
+                    searchPlaceholder="Search..."
+                    placeholder="(123) 456-7890"
+                  />
+                  <label 
+                    className={`absolute left-15 text-[#418FDE] text-sm font-[Poppins-extrabold] transition-all duration-200 ${formData.phone ? 'top-1 text-xs' : 'top-3'}`}
+                  >
+                    Phone Number
+                  </label>
+                </div>
+              </div>          
               <label className="font-semibold">Verification Method:</label>
               <div className="flex gap-4 mt-1">
                 <label><input type="radio" name="method" value="email" checked={formData.method === 'email'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> Email</label>
