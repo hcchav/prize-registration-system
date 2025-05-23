@@ -213,7 +213,7 @@ export default function Home() {
       {step === 1 && (
         <div id="registration-form" className="bg-white flex flex-row justify-center w-full">
           <div className="bg-white w-[375px] h-auto relative">
-            <div className="w-80 h-auto mt-5 mx-auto rounded-[10px] border-2 border-solid border-[#abcae9] overflow-hidden">
+            <div className="w-80 h-auto mt-5 mx-auto rounded-[5px] border-2 border-solid border-[#abcae9] overflow-hidden">
             <div className="relative w-full h-[162px] overflow-hidden">
               <Image
                 src="/images/prizes/registration-banner-mobile-1.png"
@@ -236,9 +236,9 @@ export default function Home() {
 
               <div className="w-full space-y-3">
                 <div className="relative w-full">
-                  <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <input
-                      className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
                       placeholder="First Name"
                       onChange={(e) => handleChange('firstName', e.target.value)}
                     />
@@ -246,9 +246,9 @@ export default function Home() {
                 </div>
 
                 <div className="relative w-full">
-                  <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <input
-                      className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
                       placeholder="Last Name"
                       onChange={(e) => handleChange('lastName', e.target.value)}
                     />
@@ -256,9 +256,9 @@ export default function Home() {
                 </div>
 
                 <div className="relative w-full">
-                  <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <input
-                      className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
                       placeholder="Company Name"
                       onChange={(e) => handleChange('company', e.target.value)}
                     />
@@ -266,9 +266,9 @@ export default function Home() {
                 </div>
 
                 <div className="relative w-full">
-                  <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <input
-                      className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
                       placeholder="Company Address"
                       onChange={(e) => handleChange('address', e.target.value)}
                     />
@@ -276,9 +276,9 @@ export default function Home() {
                 </div>
 
                 <div className="relative w-full">
-                  <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                     <select
-                      className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] appearance-none"
+                      className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] appearance-none"
                       value={formData.function}
                       onChange={(e) => handleChange('function', e.target.value)}
                     >
@@ -358,10 +358,10 @@ export default function Home() {
               )}
 
               <div className="relative w-full">
-                <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                   <input
                     type="email"
-                    className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                    className="w-full h-full px-3.5  pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
                     placeholder="Email Address"
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
@@ -370,7 +370,7 @@ export default function Home() {
               </div>
 
               <div className="relative w-full">
-                <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
                   <PhoneInput 
                     country={'us'}
                     value={formData.phone}
@@ -380,7 +380,7 @@ export default function Home() {
                     }}
                     inputClass="w-full h-full px-3.5 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] pl-20"
                     buttonClass="!bg-transparent !border-none !text-[#418FDE] !px-3 !absolute !left-0 !top-0 !h-full !flex !items-center"
-                    dropdownClass="!bg-white !border !border-[#abcae9] !rounded-[10px] !z-50"
+                    dropdownClass="!bg-white !border !border-[#abcae9] !rounded-[5px] !z-50"
                     containerClass="!w-full h-full relative !z-50"
                     inputStyle={{
                       width: '100%',
