@@ -19,15 +19,15 @@ export default function Dropdown({
   const selectedOption = options.find(opt => opt.value === value) || options[0];
 
   return (
-    <div className={`w-72 h-36 relative ${className}`}>
+    <div className={`w-full h-12 relative ${className}`}>
       {/* Selected option display */}
       <div 
-        className={`w-full h-12 px-4 py-3 border border-indigo-300 bg-white flex items-center justify-between cursor-pointer ${
+        className={`w-full h-12 px-4 py-3 border border-solid border-[#abcae9] flex items-center justify-between cursor-pointer  ${
           isOpen ? 'rounded-t-[5px]' : 'rounded-[5px]'
         }`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="text-blue-500 text-sm font-normal font-['Poppins'] leading-snug">
+        <span className="text-[#418FDE] text-sm text-[14px]  font-regular peer">
           {selectedOption?.label || label}
         </span>
         <svg 
