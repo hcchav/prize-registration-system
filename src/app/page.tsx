@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput, { CountryData } from 'react-phone-input-2';
+import Image from 'next/image';
 import Wheel from '@/components/Wheel';
 import { type Prize } from '@/constants/prizes';
 
@@ -195,38 +196,109 @@ export default function Home() {
   };
 
   return (
-    <main className="flex items-center justify-center min-h-[100dvh] overflow-auto px-4" style={{ backgroundColor: 'white', fontFamily: 'Poppins, sans-serif' }}>
-      <div className="p-8 rounded-2xl shadow-xl w-full max-w-md text-center border-[3px]" style={{ backgroundColor: 'white', borderColor: 'rgb(236, 242, 243)' }}>
-        {step === 1 && (
-          <>
-            <img
-              src="https://biomebrigade.com/cdn/shop/files/Untitled_design_2.png?v=1742993065&width=450"
-              alt="Biome Brigade Mascot"
-              className="w-40 h-auto mx-auto mb-4 rounded-lg shadow-md"
-            />
-            <h1 className="text-3xl font-bold mb-2" style={{ color: 'rgb(0, 39, 58)' }}>Join the Biome Brigade!</h1>
-            <p className="mb-4 text-gray-600 font-medium">Register to win exclusive superhero swag.</p>
-            <div className="space-y-3 text-left text-sm" style={{ color: 'rgb(42, 42, 52)' }}>
-              <label>First Name</label>
-              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('firstName', e.target.value)} />
-              <label>Last Name</label>
-              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('lastName', e.target.value)} />
-              <label>Company Name</label>
-              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('company', e.target.value)} />
-              <label>Company Address</label>
-              <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('address', e.target.value)} />
+    <div className="min-h-screen bg-white">
+      <div id="registration-header" className="w-full flex justify-center items-center h-15 bg-white relative">
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#abcae9] to-transparent"></div>
+        <div className="w-60 h-12 relative">
+          <Image
+            src="/Mockup.svg"
+            alt="Registration Header"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+      </div>
+      
+      {step === 1 && (
+        <div id="registration-form" className="bg-white flex flex-row justify-center w-full">
+          <div className="bg-white w-[375px] h-auto relative">
+            <div className="w-80 h-auto mt-5 mx-auto rounded-[10px] border-2 border-solid border-[#abcae9] overflow-hidden">
+            <div className="relative w-full h-[162px] overflow-hidden">
+              <Image
+                src="/images/prizes/registration-banner-mobile-1.png"
+                alt="Biome Brigade Mascot"
+                className="w-full h-full object-cover"
+                width={320}
+                height={162}
+                priority
+              />
+            </div>
 
-              <label>Company Function</label>
-              <select className="w-full border border-gray-600 p-2 rounded" value={formData.function} onChange={(e) => handleChange('function', e.target.value)}>
-                <option value="">Select One</option>
-                <option value="Supplier">Supplier</option>
-                <option value="Manufacturer">Manufacturer</option>
-                <option value="Retailer">Retailer</option>
-                <option value="Wholesaler">Wholesaler</option>
-                <option value="Other">Other</option>
-              </select>
+            <div className="flex flex-col w-80 items-center justify-center gap-3 px-3 py-6">
+              <div className="relative self-stretch [font-family:'Poppins-Bold',Helvetica] font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
+                Join the Biome Brigade®
+              </div>
 
-              {formData.function === 'Supplier' && (
+              <p className="relative self-stretch [font-family:'Poppins-Regular',Helvetica] font-regular font-[Poppins-extrabold] text-[#00263a] text-base text-center tracking-[0] leading-[25.6px]">
+                Register to win exclusive swag!
+              </p>
+
+              <div className="w-full space-y-3">
+                <div className="relative w-full">
+                  <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                    <input
+                      className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      placeholder="First Name"
+                      onChange={(e) => handleChange('firstName', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="relative w-full">
+                  <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                    <input
+                      className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      placeholder="Last Name"
+                      onChange={(e) => handleChange('lastName', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="relative w-full">
+                  <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                    <input
+                      className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      placeholder="Company Name"
+                      onChange={(e) => handleChange('company', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="relative w-full">
+                  <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                    <input
+                      className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] placeholder:text-[#418FDE] placeholder:opacity-100"
+                      placeholder="Company Address"
+                      onChange={(e) => handleChange('address', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="relative w-full">
+                  <div className="w-full h-12 rounded-[10px] border border-solid border-[#abcae9] relative">
+                    <select
+                      className="w-full h-full px-3.5 pt-3.5 pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-sm font-regular font-[Poppins-extrabold] appearance-none"
+                      value={formData.function}
+                      onChange={(e) => handleChange('function', e.target.value)}
+                    >
+                      <option value="" className="text-gray-400">Company Function</option>
+                      <option value="Supplier">Supplier</option>
+                      <option value="Manufacturer">Manufacturer</option>
+                      <option value="Retailer">Retailer</option>
+                      <option value="Wholesaler">Wholesaler</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                      <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 1.5L6 6.5L11 1.5" stroke="#418FDE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {step === 1 && formData.function === 'Supplier' && (
                 <>
                   <label>Supplier Subcategory</label>
                   <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)}>
@@ -238,7 +310,7 @@ export default function Home() {
                 </>
               )}
 
-              {formData.function === 'Manufacturer' && (
+              {step === 1 && formData.function === 'Manufacturer' && (
                 <>
                   <label>Manufacturer Categories</label>
                   <div className="flex flex-col gap-1">
@@ -265,7 +337,7 @@ export default function Home() {
                 </>
               )}
 
-              {['Retailer', 'Wholesaler'].includes(formData.function) && (
+              {step === 1 && ['Retailer', 'Wholesaler'].includes(formData.function) && (
                 <>
                   <label>{formData.function} Region</label>
                   <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)}>
@@ -278,7 +350,7 @@ export default function Home() {
                 </>
               )}
 
-              {formData.function === 'Other' && (
+              {step === 1 && formData.function === 'Other' && (
                 <>
                   <label>Other Description</label>
                   <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)} />
@@ -286,7 +358,7 @@ export default function Home() {
               )}
 
               <label>Email Address</label>
-              <input className="w-full border border-gray-600 p-2 rounded" type="email" onChange={(e) => handleChange('email', e.target.value)} />
+              <input className="w-full border border-gray-600 p-2 rounded" type="email" onChange={(e) => handleChange('email', e.target.value)} value={formData.email} />
 
               <label>Phone Number</label>
               <PhoneInput 
@@ -296,12 +368,10 @@ export default function Home() {
                   handleChange('phone', phone);
                   setCountryCode(`+${countryData.dialCode}`);
                 }}
-
                 inputClass="!w-full !pl-12 !border !border-gray-600 !rounded !h-10"
                 buttonClass="!bg-white !border-gray-600"
                 containerClass="!w-full"
               />          
-
               <label className="font-semibold">Verification Method:</label>
               <div className="flex gap-4 mt-1">
                 <label><input type="radio" name="method" value="email" checked={formData.method === 'email'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> Email</label>
@@ -309,58 +379,61 @@ export default function Home() {
               </div>
 
               <label className="inline-flex items-center mt-3">
-                <input type="checkbox" className="mr-2" onChange={(e) => handleChange('consent', e.target.checked)} />
+                <input type="checkbox" className="mr-2" onChange={(e) => handleChange('consent', e.target.checked)} checked={formData.consent} />
                 I consent to receive a verification code and be entered into the prize giveaway.
               </label>
 
-              <button onClick={sendOTP} disabled={loading} style={{ backgroundColor: loading ? 'rgb(2, 32, 41)' : 'rgb(102, 158, 224)' }} className="text-white font-bold py-2 px-4 rounded w-full mt-4">
+              <button 
+                onClick={sendOTP} 
+                disabled={loading} 
+                className={`w-full py-3 rounded-md text-white font-regular font-[Poppins-extrabold] mt-4 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
+              >
                 {loading ? 'Sending...' : 'Activate Entry'}
               </button>
               {error && <p className="text-red-600 mt-2 text-sm">{error}</p>}
             </div>
-          </>
-        )}
-
-        {step === 2 && (
-          <>
-            <div className="frame" data-model-id="2:3">
-              <div className="div">
-                <div className="text-wrapper-3">🔐 Enter Access Code</div>
-
-                <input
-                  type="text"
-                  className="element-digit-code"
-                  placeholder="6-digit code"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  maxLength={6}
-                />
-
-                <button
-                  className="overlap-group"
-                  onClick={verifyCode}
-                  disabled={verifying}
-                >
-                  <span className="text-wrapper-2">
-                    {verifying ? 'Verifying...' : 'Confirm Identity'}
-                  </span>
-                </button>
-
-                <button
-                  className="text-wrapper"
-                  onClick={sendOTP}
-                  disabled={resendDisabled}
-                >
-                  Resend Code
-                </button>
-
-                {error && <p className="error-message">{error}</p>}
-              </div>
             </div>
-          </>
-        )}
+          </div>
+        </div>
+      )}
 
-        {step === 3 && (
+      {step === 2 && (
+        <div className="flex justify-center w-full">
+          <div className="frame" data-model-id="2:3">
+            <div className="div">
+              <div className="text-wrapper-3">🔐 Enter Access Code</div>
+              <input
+                type="text"
+                className="element-digit-code"
+                placeholder="6-digit code"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                maxLength={6}
+              />
+              <button
+                className="overlap-group"
+                onClick={verifyCode}
+                disabled={verifying}
+              >
+                <span className="text-wrapper-2">
+                  {verifying ? 'Verifying...' : 'Confirm Identity'}
+                </span>
+              </button>
+              <button
+                className="text-wrapper"
+                onClick={sendOTP}
+                disabled={resendDisabled}
+              >
+                Resend Code
+              </button>
+              {error && <p className="error-message">{error}</p>}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div className="flex justify-center w-full">
           <div className="text-center">
             {showWheel ? (
               <div>
@@ -387,8 +460,8 @@ export default function Home() {
               </div>
             )}
           </div>
-        )}
-      </div>
-    </main>
+        </div>
+      )}
+    </div>
   );
 }
