@@ -19,10 +19,10 @@ export default function Dropdown({
   const selectedOption = options.find(opt => opt.value === value) || options[0];
 
   return (
-    <div className={`w-full h-12 relative ${className}`}>
+    <div className={`w-full relative ${className}`}>
       {/* Selected option display */}
       <div 
-        className={`w-full h-12 px-4 py-3 border border-solid border-[#abcae9] flex items-center justify-between cursor-pointer  ${
+        className={`w-full h-12 px-4 py-3 border border-solid border-[#abcae9] flex items-center justify-between cursor-pointer ${
           isOpen ? 'rounded-t-[5px]' : 'rounded-[5px]'
         }`}
         onClick={() => setIsOpen(!isOpen)}
@@ -44,7 +44,7 @@ export default function Dropdown({
 
       {/* Dropdown options */}
       {isOpen && (
-        <div className="absolute w-full mt-0 rounded-b-[5px] border border-t-0 border-indigo-300 bg-white z-10">
+        <div className="w-full rounded-b-[5px] border border-t-0 border-[#abcae9] bg-white">
           {options.map((option) => (
             <div
               key={option.value}
