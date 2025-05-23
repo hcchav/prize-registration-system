@@ -14,9 +14,23 @@ export default function RegistrationForm() {
     const testvariable = "test";
   
   return (
-    <div className="bg-white flex flex-row justify-center w-full">
+    <div>
+   
+<div id="registration-header" className="w-full flex justify-center items-center h-15 bg-white relative">
+  <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#abcae9] to-transparent" />
+  <div className="w-60 h-12 relative">
+    <Image
+      src="/Mockup.svg"
+      alt="Registration Header"
+      fill
+      className="object-contain"
+      priority
+    />
+  </div>
+</div>
+    <div id="registration-form" className="bg-white flex flex-row justify-center w-full">
       <div className="bg-white w-[375px] h-[1309px] relative">
-        <div className="absolute w-80 h-[1138px] top-[83px] left-[27px] rounded-[10px] border-2 border-solid border-[#abcae9] overflow-hidden">
+        <div className="absolute w-80 h-[1138px] top-[20px] left-[27px] rounded-[10px] border-2 border-solid border-[#abcae9] overflow-hidden">
           <div className="relative w-full h-[162px] overflow-hidden">
             <Image
               className="w-full h-full object-cover"
@@ -169,6 +183,7 @@ export default function RegistrationForm() {
 
       </div>
     </div>
+   </div>
    </div>
   );
 }
