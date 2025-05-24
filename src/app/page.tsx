@@ -428,7 +428,7 @@ export default function Home() {
                       <option value="Supplier">Supplier</option>
                       <option value="Manufacturer">Manufacturer</option>
                       <option value="Retailer">Retailer</option>
-                      <option value="">Wholesaler</option>
+                      <option value="Wholesaler">Wholesaler</option>
                       <option value="Other">Other</option>
                     </select>
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -455,15 +455,19 @@ export default function Home() {
             />           
 
               {step === 1 && formData.function === 'Supplier' && (
-                <>
-                  <label>Supplier Subcategory</label>
-                  <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)}>
-                    <option value="">Select</option>
-                    <option value="Ingredients">Ingredients</option>
-                    <option value="Toys">Toys</option>
-                    <option value="Packaging">Packaging</option>
-                  </select>
-                </>
+                <div className="w-full">
+                  <Dropdown
+                    label="Supplier Subcategory"
+                    value={formData.subcategory}
+                    onChange={(value) => handleChange('subcategory', value)}
+                    options={[
+                      { value: '', label: 'Supplier Subcategory (Select)' },
+                      { value: 'Ingredients', label: 'Ingredients' },
+                      { value: 'Toys', label: 'Toys' },
+                      { value: 'Packaging', label: 'Packaging' },
+                    ]}
+                  />
+                </div>
               )}
 
               {step === 1 && formData.function === 'Manufacturer' && (
@@ -494,23 +498,43 @@ export default function Home() {
               )}
 
               {step === 1 && ['Retailer', 'Wholesaler'].includes(formData.function) && (
-                <>
-                  <label>{formData.function} Region</label>
-                  <select className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)}>
-                    <option value="">Select</option>
-                    <option value="Local">Local</option>
-                    <option value="Regional">Regional</option>
-                    <option value="National">National</option>
-                    <option value="International">International</option>
-                  </select>
-                </>
+                <div className="w-full">
+                  <Dropdown
+                    label={`${formData.function} Region`}
+                    value={formData.subcategory}
+                    onChange={(value) => handleChange('subcategory', value)}
+                    options={[
+                      { value: '', label: `${formData.function} Region (Select)` },
+                      { value: 'Local', label: 'Local' },
+                      { value: 'Regional', label: 'Regional' },
+                      { value: 'National', label: 'National' },
+                      { value: 'International', label: 'International' },
+                    ]}
+                  />
+                </div>
               )}
 
               {step === 1 && formData.function === 'Other' && (
-                <>
-                  <label>Other Description</label>
-                  <input className="w-full border border-gray-600 p-2 rounded" onChange={(e) => handleChange('subcategory', e.target.value)} />
-                </>
+                <div className="relative w-full">
+                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                    <input
+                      id="otherDescription"
+                      type="text"
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm text-[12px] font-regular peer
+                      ${formData.subcategory ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                      onChange={(e) => handleChange('subcategory', e.target.value)}
+                      value={formData.subcategory}
+                      placeholder=" "
+                    />
+                    <label 
+                      htmlFor="otherDescription"
+                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
+                        ${formData.subcategory ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'}`}
+                    >
+                      Other Description
+                    </label>
+                  </div>
+                </div>
               )}
 
               <div className="relative w-full group">
