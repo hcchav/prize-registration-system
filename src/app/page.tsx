@@ -417,42 +417,22 @@ export default function Home() {
    
                 </div>
 
-                <div className="relative w-full">
-                  <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative ">
-                    <select
-                      className="w-full h-full px-3.5 rounded-[5px] border border-solid border-[#abcae9]   pb-0 absolute top-0 left-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular  appearance-none"
-                      value={formData.function}
-                      onChange={(e) => handleChange('function', e.target.value)}
-                    >
-                      <option value="" className="text-gray-400">Company Function (Select One)</option>
-                      <option value="Supplier">Supplier</option>
-                      <option value="Manufacturer">Manufacturer</option>
-                      <option value="Retailer">Retailer</option>
-                      <option value="Wholesaler">Wholesaler</option>
-                      <option value="Other">Other</option>
-                    </select>
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 1.5L6 6.5L11 1.5" stroke="#418FDE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </div>
-                  </div>
+                <div className="w-full">
+                  <Dropdown
+                    label="Company Function (Select One)"
+                    value={formData.function}
+                    onChange={(value) => handleChange('function', value)}
+                    options={[
+                      { value: '', label: 'Company Function (Select One)' },
+                      { value: 'Supplier', label: 'Supplier' },
+                      { value: 'Manufacturer', label: 'Manufacturer' },
+                      { value: 'Retailer', label: 'Retailer' },
+                      { value: 'Wholesaler', label: 'Wholesaler' },
+                      { value: 'Other', label: 'Other' },
+                    ]}
+                  />
                 </div>
               </div>
-
-              <Dropdown
-              label="Select an option"
-              value={''}
-              onChange={(value) => setSelectedValue(value)}
-              options={[
-                { value: '', label: 'Company Function (Select One)' },
-                { value: 'Supplier', label: 'Supplier' },
-                { value: 'Manufacturer', label: 'Manufacturer' },
-                { value: 'Retailer', label: 'Retailer' },
-                { value: 'Wholesaler', label: 'Wholesaler' },
-                { value: 'Other', label: 'Other' },
-              ]}
-            />           
 
               {step === 1 && formData.function === 'Supplier' && (
                 <div className="w-full">
