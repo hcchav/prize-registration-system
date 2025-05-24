@@ -511,7 +511,7 @@ export default function Home() {
                       className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
                         ${formData.subcategory ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'}`}
                     >
-                      Other Description
+                      Please specify
                     </label>
                   </div>
                 </div>
@@ -596,14 +596,39 @@ export default function Home() {
                     Phone Number
                   </label>
                 </div>
-              </div>          
-              <label className="font-semibold">Verification Method:</label>
-              <div className="flex gap-4 mt-1">
-                <label><input type="radio" name="method" value="email" checked={formData.method === 'email'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> Email</label>
-                <label><input type="radio" name="method" value="sms" checked={formData.method === 'sms'} onChange={(e) => handleChange('method', e.target.value)} className="mr-1" /> SMS</label>
+              </div>    
+              
+
+              <div className="text-left w-full font-semibold text-[#00263A] text-sm peer  [font-family:'Poppins-Bold',Helvetica]">Confirm verification method:</div>
+              
+
+              
+              <div className="flex gap-6 w-full">
+                <label className="flex items-center gap-3 cursor-pointer  [font-family:'Poppins-Bold',Helvetica]">
+                  <input 
+                    type="radio" 
+                    name="method" 
+                    value="email" 
+                    checked={formData.method === 'email'} 
+                    onChange={(e) => handleChange('method', e.target.value)} 
+                    className="h-4 w-4 text-[#418FDE] "
+                  />
+                  <span>Email</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer  [font-family:'Poppins-Bold',Helvetica]">
+                  <input 
+                    type="radio" 
+                    name="method" 
+                    value="sms" 
+                    checked={formData.method === 'sms'} 
+                    onChange={(e) => handleChange('method', e.target.value)} 
+                    className="h-4 w-4 text-[#418FDE]"
+                  />
+                  <span>SMS</span>
+                </label>
               </div>
 
-              <label className="inline-flex items-center mt-3">
+              <label className="inline-flex items-center mt-3 [font-family:'Poppins-Regular',Helvetica]">
                 <input type="checkbox" className="mr-2" onChange={(e) => handleChange('consent', e.target.checked)} checked={formData.consent} />
                 I consent to receive a verification code and be entered into the prize giveaway.
               </label>
@@ -613,7 +638,7 @@ export default function Home() {
                 disabled={loading} 
                 className={`w-full py-3 rounded-md text-white font-regular  mt-4 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
               >
-                {loading ? 'Sending...' : 'Activate Entry'}
+                {loading ? 'Sending...' : 'Join the Brigade'}
               </button>
               {error && <p className="text-red-600 mt-2 text-sm">{error}</p>}
             </div>
