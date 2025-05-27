@@ -35,7 +35,9 @@ function htmlTemplateWithOTP(otp: string) {
           width: 100%; 
           height: auto; 
           border: 0; 
-          outline: none; 
+          outline: none;
+          margin: 0 auto;
+          display: block; 
           text-decoration: none; 
           display: block;
         }
@@ -68,9 +70,14 @@ function htmlTemplateWithOTP(otp: string) {
         /* For email clients that don't support background images */
         .fallback-bg {
           background-color: #f0f7ff;
-          background-size: cover;
+          background-size: 100% auto;
           background-position: center center;
           background-repeat: no-repeat;
+          width: 100%;
+          max-width: 600px;
+          height: 0;
+          padding-bottom: 50.7%; /* 162/319.37 = 0.507 (maintains aspect ratio) */
+          margin: 0 auto;
         }
         @media screen and (min-width: 1px) {
           .fallback-bg {
@@ -90,7 +97,7 @@ function htmlTemplateWithOTP(otp: string) {
           <tr>
             <td style="padding: 0 20px;">
               <div class="content-box">
-                <div class="fallback-bg" style="width: 100%; height: 200px;">
+                <div class="fallback-bg">
                   <!-- Fallback content for email clients that don't support background images -->
                   <div style="display: none; max-height: 0; overflow: hidden; mso-hide: all;">
                     Welcome to Biome Brigade
