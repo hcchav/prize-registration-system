@@ -548,27 +548,32 @@ export default function Home() {
                     country={'us'}
                     value={formData.phone}
                     placeholder="(123) 456-7890"
-                    // default
-                  
+                    enableSearch
+                    countryCodeEditable={false}
+                    autoFormat={true}
+                    disableSearchIcon
                     onChange={(phone: string, countryData: CountryData) => {
                       handleChange('phone', phone);
                       setCountryCode(`+${countryData.dialCode}`);
                     }}
-                    inputClass="w-full h-full px-3.5 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular  pl-20"
-                    buttonClass="!bg-transparent !border-none !text-[#418FDE] text-[14px] !px-3 !absolute !left-0 !top-0 !h-full !flex !items-center"
+                    inputClass="w-full h-full px-3.5 bg-transparent outline-none text-[#418FDE] text-sm font-regular pl-20 caret-[#418FDE]"
+                    buttonClass="!bg-transparent !border-none !text-[#418FDE] !px-3 !absolute !left-0 !top-0 !h-full !flex !items-center"
                     dropdownClass="!bg-white !border !border-[#abcae9] !rounded-[5px] !z-50"
                     containerClass="!w-full h-full relative !z-50"
+
                     inputStyle={{
                       width: '100%',
                       height: '100%',
-                      color: formData.phone ? '#418FDE' : 'transparent',
+                      color: formData.phone ? '#418FDE' : '#418FDE',
                       backgroundColor: 'transparent',
                       border: 'none',
                       outline: 'none',
                       fontSize: '14px',
                       fontFamily: 'Poppins-regular',
                       paddingLeft: '60px',
-                      paddingTop: formData.phone ? '12px' : '24px',
+                      paddingTop: '24px',
+                      caretColor: '#418FDE',
+                      top: '-5px'
                     }}
                     buttonStyle={{
                       backgroundColor: 'transparent',
@@ -578,6 +583,7 @@ export default function Home() {
                       height: '100%',
                       display: 'flex',
                       alignItems: 'center',
+            
                     }}
                     dropdownStyle={{
                       backgroundColor: 'white',
@@ -595,10 +601,9 @@ export default function Home() {
                       borderBottom: '1px solid #e2e8f0',
                     }}
                     searchPlaceholder="Search..."
-                    placeholder="(123) 456-7890"
                   />
                   <label 
-                    className={`absolute left-15 text-[#418FDE] text-[12px] text-sm  transition-all duration-200 ${formData.phone ? 'top-1 text-xs' : 'top-3'}`}
+                    className={`absolute left-15 text-[#418FDE] text-[12px] text-sm   duration-200 top-1`}
                   >
                     Phone Number
                   </label>
