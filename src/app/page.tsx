@@ -547,6 +547,9 @@ export default function Home() {
                   <PhoneInput 
                     country={'us'}
                     value={formData.phone}
+                    placeholder="(123) 456-7890"
+                    // default
+                  
                     onChange={(phone: string, countryData: CountryData) => {
                       handleChange('phone', phone);
                       setCountryCode(`+${countryData.dialCode}`);
@@ -595,7 +598,7 @@ export default function Home() {
                     placeholder="(123) 456-7890"
                   />
                   <label 
-                    className={`absolute left-15 text-[#418FDE] text-[14px] text-sm  transition-all duration-200 ${formData.phone ? 'top-1 text-xs' : 'top-3'}`}
+                    className={`absolute left-15 text-[#418FDE] text-[12px] text-sm  transition-all duration-200 ${formData.phone ? 'top-1 text-xs' : 'top-3'}`}
                   >
                     Phone Number
                   </label>
@@ -617,7 +620,7 @@ export default function Home() {
                     onChange={(e) => handleChange('method', e.target.value)} 
                     className="h-4 w-4 text-[#418FDE] "
                   />
-                  <span>Email</span>
+                  <span className="text-[14px] [font-family:'Poppins-Regular',Helvetica]">Email</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer  [font-family:'Poppins-Bold',Helvetica]">
                   <input 
@@ -628,12 +631,12 @@ export default function Home() {
                     onChange={(e) => handleChange('method', e.target.value)} 
                     className="h-4 w-4 text-[#418FDE]"
                   />
-                  <span>SMS</span>
+                  <span className="text-[14px] [font-family:'Poppins-Regular',Helvetica]">SMS</span>
                 </label>
               </div>
 
-              <label className="inline-flex items-center mt-3 [font-family:'Poppins-Regular',Helvetica]">
-                <input type="checkbox" className="mr-2" onChange={(e) => handleChange('consent', e.target.checked)} checked={formData.consent} />
+              <label className="inline-flex items-center mt-3 text-[14px] [font-family:'Poppins-Regular',Helvetica]">
+                <input type="checkbox" className="mr-2 p-1.5" onChange={(e) => handleChange('consent', e.target.checked)} checked={formData.consent} />
                 I consent to receive a verification code and be entered into the prize giveaway.
               </label>
 
