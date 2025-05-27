@@ -59,13 +59,13 @@ function htmlTemplateWithOTP(otp: string) {
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto;">
           <tr>
             <td style="padding: 20px 0; text-align: center;">
-              <img src="https://yourdomain.com/Mockup.svg" alt="Biome Brigade" class="header-logo" style="max-width: 244px; width: 100%; height: auto;" />
+              <img src="${process.env.VERCEL_URL || 'https://prize-registration-system.vercel.app'}/Mockup.svg" alt="Biome Brigade" class="header-logo" style="max-width: 244px; width: 100%; height: auto;" />
             </td>
           </tr>
           <tr>
             <td style="padding: 0 20px;">
               <div class="content-box">
-                <img src="../../public/images/prizes/verification-banner-mobile-828x420.png" alt="Welcome to Biome Brigade" style="width: 100%; max-width: 100%; height: auto; display: block;" />
+                <img src="${process.env.VERCEL_URL || 'https://prize-registration-system.vercel.app'}/images/prizes/verification-banner-mobile-828x420.png" alt="Welcome to Biome Brigade" style="width: 100%; max-width: 100%; height: auto; display: block;" />
                 <div style="padding: 20px;">
                   <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
                     Greetings, Hero!<br /><br />
