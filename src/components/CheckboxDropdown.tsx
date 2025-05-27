@@ -83,7 +83,7 @@ export default function CheckboxDropdown({
                 checked={selectedValues.includes(option.value)}
                 onChange={() => {}} // Keep this to satisfy React
                 onClick={(e) => toggleOption(option.value, e)}
-                className="h-4 w-4 text-[#418FDE] border-gray-300 rounded focus:ring-[#418FDE] mr-2 cursor-pointer"
+                className="mr-2"
               />
               <label 
                 htmlFor={`checkbox-${option.value}`}
