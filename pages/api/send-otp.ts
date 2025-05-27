@@ -11,6 +11,15 @@ const twilioTemplateSid = process.env.TWILIO_TEMPLATE_SID!;
 const client = new Twilio(accountSid, authToken);
 
 function htmlTemplateWithOTP(otp: string) {
+  // Base64 encoded 1x1 transparent pixel as fallback
+  const transparentPixel = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+  
+  // Placeholder for the logo (replace with your actual base64 encoded SVG or use a URL)
+  const logoUrl = 'https://prize-registration-system.vercel.app/Mockup.svg';
+  
+  // Placeholder for the banner (replace with your actual base64 encoded image or use a URL)
+  const bannerUrl = 'https://prize-registration-system.vercel.app/images/prizes/verification-banner-mobile-828x420.png';
+
   return `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <html lang="en" dir="auto" xmlns="http://www.w3.org/1999/xhtml">
@@ -21,6 +30,8 @@ function htmlTemplateWithOTP(otp: string) {
           font-family: Poppins, Tahoma, sans-serif;
           margin: 0;
           padding: 0;
+          -webkit-text-size-adjust: 100%;
+          -ms-text-size-adjust: 100%;
         }
         .bg-fffffe { background-color: #fffffe !important; }
         .color-00263a { color: #00263a !important; }
@@ -52,27 +63,51 @@ function htmlTemplateWithOTP(otp: string) {
           color: #418fde;
           text-decoration: none;
         }
+        /* For email clients that don't support background images */
+        .fallback-bg {
+          background-color: #ffffff;
+        }
+        /* For email clients that support background images */
+        @media screen and (min-width: 1px) {
+          .fallback-bg {
+            background: url('${bannerUrl}') no-repeat center center / cover !important;
+          }
+        }
       </style>
     </head>
-    <body style="margin: 0; padding: 0; font-family: Poppins, Tahoma, sans-serif;">
+    <body style="margin: 0; padding: 0; font-family: Poppins, Tahoma, sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
       <center style="width: 100%;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto;">
           <tr>
             <td style="padding: 20px 0; text-align: center;">
-              <img src="https://${process.env.VERCEL_URL || 'prize-registration-system.vercel.app'}/Mockup.svg" alt="Biome Brigade" class="header-logo" style="max-width: 244px; width: 100%; height: auto;" />
+              <!--[if mso]>
+                <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="#" style="height:60px;v-text-anchor:middle;width:244px;" arcsize="10%" stroke="f" fillcolor="#ffffff">
+                  <w:anchorlock/>
+                  <center style="color:#00263a;font-family:Poppins, Tahoma, sans-serif;font-size:18px;font-weight:bold;">Biome Brigade</center>
+                </v:roundrect>
+              <![endif]-->
+              <a href="#" style="text-decoration: none; display: inline-block;" target="_blank">
+                <img src="${logoUrl}" alt="Biome Brigade" class="header-logo" style="max-width: 244px; width: 100%; height: auto; border: 0; outline: none; text-decoration: none; display: block;" />
+              </a>
             </td>
           </tr>
           <tr>
             <td style="padding: 0 20px;">
               <div class="content-box">
-                <img src="https://${process.env.VERCEL_URL || 'prize-registration-system.vercel.app'}/images/prizes/verification-banner-mobile-828x420.png" alt="Welcome to Biome Brigade" style="width: 100%; max-width: 100%; height: auto; display: block;" />
+                <!-- Background image with fallback -->
+                <div class="fallback-bg" style="width: 100%; max-width: 100%; height: 200px; background-color: #f0f7ff; background-size: cover; background-position: center center; background-repeat: no-repeat;">
+                  <!-- Fallback content for email clients that don't support background images -->
+                  <div style="display: none; max-height: 0; overflow: hidden; mso-hide: all;">
+                    Welcome to Biome Brigade
+                  </div>
+                </div>
                 <div style="padding: 20px;">
                   <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
                     Greetings, Hero!<br /><br />
                     You are one step away from joining the Biome Brigade prize squad!
                   </p>
                   <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; margin: 0 0 10px 0;">Your OTP Code:</p>
-                  <div class="otp-code">
+                  <div class="otp-code" style="font-size: 24px; font-weight: bold; color: #418fde; text-align: center; margin: 15px 0; letter-spacing: 5px;">
                     ${otp.match(/\d/g)?.join(' ')}
                   </div>
                 </div>
@@ -81,8 +116,8 @@ function htmlTemplateWithOTP(otp: string) {
           </tr>
           <tr>
             <td class="footer">
-              <p style="margin: 0 0 10px 0;">Please do not reply to this email.</p>
-              <p style="margin: 0;">If you have any questions, contact <a href="mailto:info@biomebrigade.com">info@biomebrigade.com</a>.</p>
+              <p style="margin: 0 0 10px 0; color: #666666; font-size: 12px; line-height: 1.5;">Please do not reply to this email.</p>
+              <p style="margin: 0; color: #666666; font-size: 12px; line-height: 1.5;">If you have any questions, contact <a href="mailto:info@biomebrigade.com" style="color: #418fde; text-decoration: none;">info@biomebrigade.com</a>.</p>
             </td>
           </tr>
         </table>
