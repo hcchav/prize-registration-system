@@ -35,13 +35,9 @@ export default function CheckboxDropdown({
     onChange(newSelectedValues);
   };
 
-  const getSelectedLabels = () => {
-    if (selectedValues.length === 0) return placeholder;
-    if (selectedValues.length === 1) {
-      const option = options.find(opt => opt.value === selectedValues[0]);
-      return option?.label || placeholder;
-    }
-    return `${selectedValues.length} selected`;
+  const getSelectedCount = () => {
+    if (selectedValues.length === 0) return '';
+    return ` (${selectedValues.length} selected)`;
   };
 
   return (
@@ -51,7 +47,7 @@ export default function CheckboxDropdown({
         className="w-full min-h-12 px-4 py-3 border border-solid border-[#abcae9] flex items-center justify-between cursor-default rounded-t-[5px]"
       >
         <span className="text-[#418FDE] text-sm text-[14px] font-regular truncate">
-          {selectedValues.length > 0 ? getSelectedLabels() : label}
+          {label}
         </span>
         <div className="flex items-center">
           {selectedValues.length > 0 && (
