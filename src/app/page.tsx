@@ -7,6 +7,8 @@ import Image from 'next/image';
 import Wheel from '@/components/Wheel';
 import { type Prize } from '@/constants/prizes';
 import Dropdown from '@/components/Dropdown';
+import CheckboxDropdown from '@/components/CheckboxDropdown';
+
 
 
 
@@ -39,6 +41,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [countryCode, setCountryCode] = useState('+1');
+
 
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -432,6 +435,8 @@ export default function Home() {
                     ]}
                   />
                 </div>
+
+            
               </div>
 
               {step === 1 && formData.function === 'Supplier' && (
@@ -451,30 +456,29 @@ export default function Home() {
               )}
 
               {step === 1 && formData.function === 'Manufacturer' && (
-                <>
-                  <label>Manufacturer Categories</label>
-                  <div className="flex flex-col gap-1">
-                    {['Foods', 'Supplements', 'Treats', 'All of the Above', 'Other'].map(option => (
-                      <label key={option}>
-                        <input
-                          type="checkbox"
-                          className="mr-2"
-                          checked={formData.manufacturerOptions.includes(option)}
-                          onChange={(e) => {
-                            const updated = e.target.checked
-                              ? [...formData.manufacturerOptions, option]
-                              : formData.manufacturerOptions.filter(item => item !== option);
-                            handleChange('manufacturerOptions', updated);
-                          }}
-                        />
-                        {option}
-                      </label>
-                    ))}
-                  </div>
+                <div className="w-full">
+                  <CheckboxDropdown
+                    label="Manufacturer Categories"
+                    value={formData.manufacturerOptions}
+                    onChange={(value) => handleChange('manufacturerOptions', value)}
+                    options={[
+                      { value: 'Foods', label: 'Foods' },
+                      { value: 'Supplements', label: 'Supplements' },
+                      { value: 'Treats', label: 'Treats' },
+                      { value: 'All of the Above', label: 'All of the Above' },
+                      { value: 'Other', label: 'Other' },
+                    ]}
+                    placeholder="Select categories..."
+                  />
                   {formData.manufacturerOptions.includes('Other') && (
-                    <input className="w-full border border-gray-600 p-2 rounded mt-2" placeholder="Please specify" onChange={(e) => handleChange('manufacturerOther', e.target.value)} />
+                    <input 
+                      className="w-full border border-[#abcae9] p-3 rounded-[5px] mt-2 text-[#418FDE] text-sm" 
+                      placeholder="Please specify" 
+                      onChange={(e) => handleChange('manufacturerOther', e.target.value)}
+                      style={{ height: '48px' }}
+                    />
                   )}
-                </>
+                </div>
               )}
 
               {step === 1 && ['Retailer', 'Wholesaler'].includes(formData.function) && (
