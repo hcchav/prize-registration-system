@@ -17,7 +17,7 @@ export default function CheckboxDropdown({
   className = '',
   placeholder = 'Select options...'
 }: CheckboxDropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true); // Set to true to keep it permanently open
   const [selectedValues, setSelectedValues] = useState<string[]>(value);
 
   // Update internal state when external value changes
@@ -25,7 +25,8 @@ export default function CheckboxDropdown({
     setSelectedValues(value);
   }, [value]);
 
-  const toggleOption = (optionValue: string) => {
+  const toggleOption = (optionValue: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent dropdown from closing
     const newSelectedValues = selectedValues.includes(optionValue)
       ? selectedValues.filter(val => val !== optionValue)
       : [...selectedValues, optionValue];
@@ -47,10 +48,7 @@ export default function CheckboxDropdown({
     <div className={`w-full relative ${className}`}>
       {/* Selected options display */}
       <div 
-        className={`w-full min-h-12 px-4 py-3 border border-solid border-[#abcae9] flex items-center justify-between cursor-pointer ${
-          isOpen ? 'rounded-t-[5px]' : 'rounded-[5px]'
-        }`}
-        onClick={() => setIsOpen(!isOpen)}
+        className="w-full min-h-12 px-4 py-3 border border-solid border-[#abcae9] flex items-center justify-between cursor-default rounded-t-[5px]"
       >
         <span className="text-[#418FDE] text-sm text-[14px] font-regular truncate">
           {selectedValues.length > 0 ? getSelectedLabels() : label}
@@ -74,9 +72,9 @@ export default function CheckboxDropdown({
         </div>
       </div>
 
-      {/* Dropdown options */}
+      {/* Dropdown options - Removed absolute positioning and added margin-top */}
       {isOpen && (
-        <div className="w-full rounded-b-[5px] border border-t-0 border-[#abcae9] bg-white max-h-60 overflow-y-auto z-10 absolute bg-white shadow-lg">
+        <div className="w-full mt-[-1px] rounded-b-[5px] border border-t-0 border-[#abcae9] bg-white max-h-60 overflow-y-auto z-10 shadow-lg">
           {options.map((option) => (
             <div
               key={option.value}
@@ -87,8 +85,9 @@ export default function CheckboxDropdown({
                 type="checkbox"
                 id={`checkbox-${option.value}`}
                 checked={selectedValues.includes(option.value)}
-                onChange={() => toggleOption(option.value)}
-                className="h-4 w-4 text-[#418FDE] border-gray-300 rounded focus:ring-[#418FDE] mr-2"
+                onChange={() => {}} // Keep this to satisfy React
+                onClick={(e) => toggleOption(option.value, e)}
+                className="h-4 w-4 text-[#418FDE] border-gray-300 rounded focus:ring-[#418FDE] mr-2 cursor-pointer"
               />
               <label 
                 htmlFor={`checkbox-${option.value}`}
@@ -101,13 +100,7 @@ export default function CheckboxDropdown({
         </div>
       )}
       
-      {/* Click outside to close */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-0"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+      {/* Remove click outside to close functionality */}
     </div>
   );
 }

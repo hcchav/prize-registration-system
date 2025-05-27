@@ -458,7 +458,7 @@ export default function Home() {
               {step === 1 && formData.function === 'Manufacturer' && (
                 <div className="w-full">
                   <CheckboxDropdown
-                    label="Manufacturer Categories"
+                    label="Manufacturer Category"
                     value={formData.manufacturerOptions}
                     onChange={(value) => handleChange('manufacturerOptions', value)}
                     options={[
