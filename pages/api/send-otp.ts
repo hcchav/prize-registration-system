@@ -11,15 +11,9 @@ const twilioTemplateSid = process.env.TWILIO_TEMPLATE_SID!;
 const client = new Twilio(accountSid, authToken);
 
 function htmlTemplateWithOTP(otp: string) {
-  // Base64 encoded 1x1 transparent pixel as fallback
-  const transparentPixel = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+  const logoUrl = 'https://drive.google.com/uc?export=view&id=1OGYj6rWbDnBUrY0FzZIABZn5xuOPehSV';
+  const bannerUrl = 'https://drive.google.com/uc?export=view&id=1A3ORLqe09fmiWphlIr6H3VxKPYrn7zGW';
   
-  // Placeholder for the logo (replace with your actual base64 encoded SVG or use a URL)
-  const logoUrl = 'https://prize-registration-system.vercel.app/Mockup.svg';
-  
-  // Placeholder for the banner (replace with your actual base64 encoded image or use a URL)
-  const bannerUrl = 'https://prize-registration-system.vercel.app/images/prizes/verification-banner-mobile-828x420.png';
-
   return `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <html lang="en" dir="auto" xmlns="http://www.w3.org/1999/xhtml">
@@ -36,7 +30,15 @@ function htmlTemplateWithOTP(otp: string) {
         .bg-fffffe { background-color: #fffffe !important; }
         .color-00263a { color: #00263a !important; }
         .color-418fde { color: #418fde !important; }
-        .header-logo { max-width: 244px; width: 100%; height: auto; }
+        .header-logo { 
+          max-width: 244px; 
+          width: 100%; 
+          height: auto; 
+          border: 0; 
+          outline: none; 
+          text-decoration: none; 
+          display: block;
+        }
         .content-box {
           border-radius: 10px;
           border: 2px solid #abcae9;
@@ -45,12 +47,12 @@ function htmlTemplateWithOTP(otp: string) {
           margin: 0 auto;
         }
         .otp-code {
-          font-size: 20px;
+          font-size: 24px;
           font-weight: 700;
           color: #418fde;
           text-align: center;
           margin: 15px 0;
-          letter-spacing: 2px;
+          letter-spacing: 3px;
         }
         .footer {
           text-align: center;
@@ -65,12 +67,14 @@ function htmlTemplateWithOTP(otp: string) {
         }
         /* For email clients that don't support background images */
         .fallback-bg {
-          background-color: #ffffff;
+          background-color: #f0f7ff;
+          background-size: cover;
+          background-position: center center;
+          background-repeat: no-repeat;
         }
-        /* For email clients that support background images */
         @media screen and (min-width: 1px) {
           .fallback-bg {
-            background: url('${bannerUrl}') no-repeat center center / cover !important;
+            background-image: url('${bannerUrl}') !important;
           }
         }
       </style>
@@ -80,22 +84,13 @@ function htmlTemplateWithOTP(otp: string) {
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto;">
           <tr>
             <td style="padding: 20px 0; text-align: center;">
-              <!--[if mso]>
-                <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="#" style="height:60px;v-text-anchor:middle;width:244px;" arcsize="10%" stroke="f" fillcolor="#ffffff">
-                  <w:anchorlock/>
-                  <center style="color:#00263a;font-family:Poppins, Tahoma, sans-serif;font-size:18px;font-weight:bold;">Biome Brigade</center>
-                </v:roundrect>
-              <![endif]-->
-              <a href="#" style="text-decoration: none; display: inline-block;" target="_blank">
-                <img src="${logoUrl}" alt="Biome Brigade" class="header-logo" style="max-width: 244px; width: 100%; height: auto; border: 0; outline: none; text-decoration: none; display: block;" />
-              </a>
+              <img src="${logoUrl}" alt="Biome Brigade" class="header-logo" />
             </td>
           </tr>
           <tr>
             <td style="padding: 0 20px;">
               <div class="content-box">
-                <!-- Background image with fallback -->
-                <div class="fallback-bg" style="width: 100%; max-width: 100%; height: 200px; background-color: #f0f7ff; background-size: cover; background-position: center center; background-repeat: no-repeat;">
+                <div class="fallback-bg" style="width: 100%; height: 200px;">
                   <!-- Fallback content for email clients that don't support background images -->
                   <div style="display: none; max-height: 0; overflow: hidden; mso-hide: all;">
                     Welcome to Biome Brigade
@@ -107,7 +102,7 @@ function htmlTemplateWithOTP(otp: string) {
                     You are one step away from joining the Biome Brigade prize squad!
                   </p>
                   <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; margin: 0 0 10px 0;">Your OTP Code:</p>
-                  <div class="otp-code" style="font-size: 24px; font-weight: bold; color: #418fde; text-align: center; margin: 15px 0; letter-spacing: 5px;">
+                  <div class="otp-code">
                     ${otp.match(/\d/g)?.join(' ')}
                   </div>
                 </div>
