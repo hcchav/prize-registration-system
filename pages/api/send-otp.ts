@@ -12,15 +12,83 @@ const client = new Twilio(accountSid, authToken);
 
 function htmlTemplateWithOTP(otp: string) {
   return `
-    <div style="font-family: sans-serif; max-width: 480px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px;">
-      <h2 style="color: #0072CE;">🛡️ Biome Brigade Verification</h2>
-      <p>Greetings, Hero!</p>
-      <p>You're one step away from joining the Biome Brigade prize squad.</p>
-      <p style="font-size: 24px; font-weight: bold; text-align: center;">Your OTP Code:</p>
-      <p style="font-size: 32px; font-weight: bold; color: #0072CE; text-align: center;">${otp}</p>
-      <p>Enter this code on the registration screen to complete your mission. 🦸‍♀️</p>
-      <p style="font-size: 12px; color: #888;">Code expires in 10 minutes.</p>
-    </div>
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html lang="en" dir="auto" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <style type="text/css">
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700");
+        body {
+          font-family: Poppins, Tahoma, sans-serif;
+          margin: 0;
+          padding: 0;
+        }
+        .bg-fffffe { background-color: #fffffe !important; }
+        .color-00263a { color: #00263a !important; }
+        .color-418fde { color: #418fde !important; }
+        .header-logo { max-width: 244px; width: 100%; height: auto; }
+        .content-box {
+          border-radius: 10px;
+          border: 2px solid #abcae9;
+          overflow: hidden;
+          max-width: 320px;
+          margin: 0 auto;
+        }
+        .otp-code {
+          font-size: 20px;
+          font-weight: 700;
+          color: #418fde;
+          text-align: center;
+          margin: 15px 0;
+          letter-spacing: 2px;
+        }
+        .footer {
+          text-align: center;
+          padding: 20px 0;
+          color: #00263a;
+          font-size: 14px;
+          line-height: 1.5;
+        }
+        .footer a {
+          color: #418fde;
+          text-decoration: none;
+        }
+      </style>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: Poppins, Tahoma, sans-serif;">
+      <center style="width: 100%;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto;">
+          <tr>
+            <td style="padding: 20px 0; text-align: center;">
+              <img src="https://yourdomain.com/Mockup.svg" alt="Biome Brigade" class="header-logo" style="max-width: 244px; width: 100%; height: auto;" />
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 0 20px;">
+              <div class="content-box">
+                <img src="../../public/images/prizes/verification-banner-mobile-828x420.png" alt="Welcome to Biome Brigade" style="width: 100%; max-width: 100%; height: auto; display: block;" />
+                <div style="padding: 20px;">
+                  <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
+                    Greetings, Hero!<br /><br />
+                    You are one step away from joining the Biome Brigade prize squad!
+                  </p>
+                  <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; margin: 0 0 10px 0;">Your OTP Code:</p>
+                  <div class="otp-code">
+                    ${otp.match(/\d/g)?.join(' ')}
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="footer">
+              <p style="margin: 0 0 10px 0;">Please do not reply to this email.</p>
+              <p style="margin: 0;">If you have any questions, contact <a href="mailto:info@biomebrigade.com">info@biomebrigade.com</a>.</p>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </body>
+  </html>
   `;
 }
 
@@ -80,12 +148,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (method === 'email') {
-    await resend.emails.send({
-      from: 'noreply@syncworkflow.com',
-      to: email,
-      subject: 'Your Biome Brigade OTP Code',
-      html: htmlTemplateWithOTP(otp),
-    });
+    try {
+      console.log('Sending email to:', email);
+      const { data, error } = await resend.emails.send({
+        from: 'noreply@syncworkflow.com',
+        to: email,
+        subject: 'Your Biome Brigade OTP Code',
+        html: htmlTemplateWithOTP(otp),
+      });
+      
+      if (error) {
+        console.error('Email sending error:', error);
+        return res.status(500).json({ success: false, error: 'Failed to send email' });
+      }
+      
+      console.log('Email sent successfully:', data);
+    } catch (error) {
+      console.error('Error in email sending:', error);
+      return res.status(500).json({ success: false, error: 'Error sending email' });
+    }
   } else if (method === 'sms') {
     try {
       console.log('Sending SMS to:', normalizedPhone);
