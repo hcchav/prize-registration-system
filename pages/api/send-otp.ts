@@ -118,8 +118,8 @@ function htmlTemplateWithOTP(otp: string) {
           </tr>
           <tr>
             <td class="footer">
-              <p style="margin: 0 0 10px 0; color: #666666; font-size: 12px; line-height: 1.5;">Please do not reply to this email.</p>
-              <p style="margin: 0; color: #666666; font-size: 12px; line-height: 1.5;">If you have any questions, contact <a href="mailto:info@biomebrigade.com" style="color: #418fde; text-decoration: none;">info@biomebrigade.com</a>.</p>
+              <p style="margin: 0 0 10px 0; color: #666666; font-size: 16px; line-height: 1.5;">Please do not reply to this email.</p>
+              <p style="margin: 0; color: #666666; font-size: 16px; line-height: 1.5;">If you have any questions, contact <a href="mailto:info@biomebrigade.com" style="color: #418fde; text-decoration: none;">info@biomebrigade.com</a>.</p>
             </td>
           </tr>
         </table>
