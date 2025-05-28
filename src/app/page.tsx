@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput, { CountryData } from 'react-phone-input-2';
 import Image from 'next/image';
@@ -660,35 +660,75 @@ export default function Home() {
       )}
 
       {step === 2 && (
-        <div className="flex justify-center w-full">
-          <div className="frame" data-model-id="2:3">
-            <div className="div">
-              <div className="text-wrapper-3">🔐 Enter Access Code</div>
-              <input
-                type="text"
-                className="element-digit-code"
-                placeholder="6-digit code"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                maxLength={6}
-              />
-              <button
-                className="overlap-group"
-                onClick={verifyCode}
-                disabled={verifying}
-              >
-                <span className="text-wrapper-2">
-                  {verifying ? 'Verifying...' : 'Confirm Identity'}
-                </span>
-              </button>
-              <button
-                className="text-wrapper"
-                onClick={sendOTP}
-                disabled={resendDisabled}
-              >
-                Resend Code
-              </button>
-              {error && <p className="error-message">{error}</p>}
+        <div id="verification-form" className="bg-white flex flex-row justify-center w-full">
+          <div className="bg-white w-[375px] h-auto relative">
+            <div className="w-80 h-auto mt-5 mx-auto rounded-[5px] border-2 border-solid border-[#abcae9] overflow-hidden">
+              <div className="relative w-full h-[162px] overflow-hidden">
+                <Image
+                  src="/images/prizes/access-code-banner-mobile-828x420.png"
+                  alt="Biome Brigade Mascot"
+                  className="w-full h-full object-cover"
+                  width={320}
+                  height={162}
+                  priority
+                />
+              </div>
+              <div className="flex flex-col w-80 items-center justify-center gap-3 px-6 py-6">
+                <div className="relative self-stretch [font-family:'Poppins-Bold',Helvetica] font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
+                  Code Deployed!
+                </div>
+
+                <p className="relative self-stretch [font-family:'Poppins-Regular',Helvetica] font-regular text-[#00263a] text-base text-center tracking-[0] leading-[25.6px]">
+                  Enter the 6-digit code below to continue your mission.
+                </p>
+                
+                <div className="w-full space-y-4 mt-2">
+                  <div className="relative w-full group">
+                    <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                      <input
+                        id="verificationCode"
+                        type="text"
+                        className="w-full h-full px-4 py-2 bg-transparent outline-none text-[#00263a] text-base font-regular"
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        maxLength={6}
+                        placeholder=" "
+                      />
+                      <label 
+                        htmlFor="verificationCode"
+                        className={`absolute left-4 text-[#418FDE] transition-all duration-200 pointer-events-none
+                          ${code ? 'text-xs -top-2 bg-white px-1' : 'text-base top-3'}`}
+                      >
+                        6-digit code
+                      </label>
+                    </div>
+                  </div>
+
+                  <button
+                    className="w-full h-12 bg-[#418FDE] hover:bg-[#2e7bc4] rounded-[5px] text-white font-medium text-base transition-colors duration-200 flex items-center justify-center"
+                    onClick={verifyCode}
+                    disabled={verifying || !code}
+                  >
+                    {verifying ? 'Verifying...' : 'Confirm Identity'}
+                  </button>
+
+                  <div className="text-center">
+                    <button
+                      className="text-[#418FDE] text-sm font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={sendOTP}
+                      disabled={resendDisabled}
+                    >
+                      Resend Code
+                    </button>
+                  </div>
+                  
+                  {error && (
+                    <p className="text-red-500 text-sm text-center mt-2">
+                      {error}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
