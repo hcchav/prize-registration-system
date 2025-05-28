@@ -295,9 +295,13 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
       </div>
       
       {!spinning && !result && (
-        <Button onClick={spinWheel} disabled={loading || !!error}>
+        <button
+          onClick={spinWheel}
+          disabled={loading || !!error}
+          className="w-full h-12 bg-[#418FDE] hover:bg-[#2e7bc4] rounded-[5px] text-white font-medium text-base transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           {loading ? 'Loading...' : error ? 'Error Loading Prizes' : 'Spin the Wheel!'}
-        </Button>
+        </button>
       )}
       
       {spinning && <div className="text-lg font-semibold">Spinning...</div>}

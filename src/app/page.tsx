@@ -735,32 +735,74 @@ export default function Home() {
       )}
 
       {step === 3 && (
-        <div className="flex justify-center w-full">
-          <div className="text-center">
-            {showWheel ? (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">Spin the Wheel!</h2>
-                <Wheel 
-                  onSpinStart={() => setLoading(true)}
-                  onSpinComplete={handleSpinComplete}
-                  onError={(error) => {
-                    setError(error);
-                    setLoading(false);
-                  }}
+        <div id="prize-wheel" className="bg-white flex flex-row justify-center w-full">
+          <div className="bg-white w-[375px] h-auto relative">
+            <div className="w-80 h-auto mt-5 mx-auto rounded-[5px] border-2 border-solid border-[#abcae9] overflow-hidden">
+              {/* <div className="relative w-full h-[162px] overflow-hidden">
+                <Image
+                  src="/images/prizes/wheel-banner-mobile-828x420.png"
+                  alt="Spin to Win"
+                  className="w-full h-full object-cover"
+                  width={320}
+                  height={162}
+                  priority
                 />
+              </div> */}
+              <div className="flex flex-col w-80 items-center justify-center gap-3 px-6 py-6">
+                {showWheel ? (
+                  <>
+                    <div className="relative self-stretch [font-family:'Poppins-Bold',Helvetica] font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
+                      Your Mission Awaits!
+                    </div>
+                    <p className="relative self-stretch [font-family:'Poppins-Regular',Helvetica] font-regular text-[#00263a] text-base text-center tracking-[0] leading-[25.6px] mb-4">
+                      Spin the wheel to discover your prize. Every spin is a chance to win something amazing!
+                    </p>
+                    <div className="w-full flex justify-center">
+                      <Wheel 
+                        onSpinStart={() => setLoading(true)}
+                        onSpinComplete={handleSpinComplete}
+                        onError={(error) => {
+                          setError(error);
+                          setLoading(false);
+                        }}
+                      />
+                    </div>
+                    {error && (
+                      <p className="text-red-500 text-sm text-center mt-2">
+                        {error}
+                      </p>
+                    )}
+                  </>
+                ) : prize ? (
+                  <div className="text-center">
+                    <div className="relative self-stretch [font-family:'Poppins-Bold',Helvetica] font-bold text-[#00263a] text-2xl text-center tracking-[0] leading-[normal] mb-2">
+                      Mission Complete! 🎉
+                    </div>
+                    <div className="mb-6 p-4 bg-[#f0f8ff] rounded-lg border border-[#d0e4ff]">
+                      <p className="[font-family:'Poppins-SemiBold',Helvetica] text-[#1a5a96] text-lg">
+                        You've won:
+                      </p>
+                      <p className="[font-family:'Poppins-Bold',Helvetica] text-[#00263a] text-xl mt-2">
+                        {prize.name}
+                      </p>
+                    </div>
+                    <p className="[font-family:'Poppins-Regular',Helvetica] text-[#00263a] text-base">
+                      Thank you for participating in our mission!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#418FDE] mb-6"></div>
+                    <p className="[font-family:'Poppins-Medium',Helvetica] text-[#00263a] text-lg">
+                      Preparing your mission reward...
+                    </p>
+                    <p className="[font-family:'Poppins-Regular',Helvetica] text-[#666] text-sm mt-2">
+                      This will just take a moment
+                    </p>
+                  </div>
+                )}
               </div>
-            ) : prize ? (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">Congratulations!</h2>
-                <p className="text-lg mb-6">You've won: <span className="font-bold">{prize.name}</span></p>
-                <p className="text-gray-600">Thank you for participating!</p>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
-                <p>Preparing your prize...</p>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       )}
