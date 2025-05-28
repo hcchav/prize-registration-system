@@ -13,6 +13,8 @@ import CheckboxDropdown from '@/components/CheckboxDropdown';
 
 
 
+
+
 export default function Home() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -208,8 +210,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div id="registration-header" className="w-full flex justify-center items-center h-15 bg-white relative">
+    <div className="h-350  bg-white">
+      <div id="registration-header" className="fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-15 bg-white shadow-sm">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#abcae9] to-transparent"></div>
         <div className="w-60 h-12 relative">
           <Image
@@ -222,10 +224,11 @@ export default function Home() {
         </div>
       </div>
       
+      <div className="pt-16">
       {step === 1 && (
         <div id="registration-form" className="bg-white flex flex-row justify-center w-full">
           <div className="bg-white w-[375px] h-auto relative">
-            <div className="w-80 h-auto mt-5 mx-auto rounded-[5px] border-2 border-solid border-[#abcae9] overflow-hidden">
+            <div className="bg-white w-80 h-auto mt-5 mx-auto rounded-[5px] border-2 border-solid border-[#abcae9] overflow-hidden">
             <div className="relative w-full h-[162px] overflow-hidden">
               <Image
                 src="/images/prizes/registration-banner-mobile-1.png"
@@ -806,6 +809,7 @@ export default function Home() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
