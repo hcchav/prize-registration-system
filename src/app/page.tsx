@@ -210,7 +210,7 @@ export default function Home() {
   }
 
   return (
-    <div className="h-350  bg-white">
+    <div className="min-h-auto mb-20 bg-white">
       <div id="registration-header" className="fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-15 bg-white shadow-sm">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#abcae9] to-transparent"></div>
         <div className="w-60 h-12 relative">
