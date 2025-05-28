@@ -37,6 +37,8 @@ export default function WheelPicker() {
     }
   }, [canvasSize])
 
+
+
   // Function to determine which segment is at the pointer
   const getSegmentAtPointer = useCallback((wheelAngle: number) => {
     let segmentStart = 0
@@ -93,33 +95,6 @@ export default function WheelPicker() {
       ctx.strokeStyle = "#FFFFFF"
       ctx.lineWidth = 2
       ctx.stroke()
-
-      // Draw text
-      const midAngle = startAngle + segmentAngle / 2;
-      const textRadius = radius * 0.6; // Calculate text position (60% from center)
-      
-      // Draw text with rotation
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.translate(Math.cos(midAngle) * textRadius, Math.sin(midAngle) * textRadius);
-      
-      // Rotate text to be perpendicular to the radius
-      ctx.rotate(midAngle + Math.PI);
-      
-      // Set text style
-      ctx.fillStyle = segment.textColor;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      
-      // Calculate font size based on segment size
-      const fontSize = Math.min(14, Math.max(12, segmentAngle * 12));
-      ctx.font = `bold ${fontSize}px Arial, sans-serif`;
-      
-      // Draw text using displayText property
-      ctx.fillText(segment.displayText, 0, 0);
-      ctx.restore();
-      
-
 
       startAngle = endAngle
     })
@@ -248,16 +223,10 @@ export default function WheelPicker() {
         </div>
 
         {result && (
-          <div className="mt-4 p-4 bg-blue-50 rounded-lg text-center">
-            <div className="flex items-center justify-center mb-2">
-              <h2 className="text-xl font-semibold text-blue-800">
-              Congratulations! You won: 
-              </h2>
-            </div>
-            <h1 className="brand-blue-500 text-2xl font-bold">
-              
-              {result.name}
-            </h1>
+          <div className="text-center">
+            <h2 className="text-xl font-semibold text-gray-900">
+              You won: <span className="text-blue-600">{result.name}!</span>
+            </h2>
           </div>
         )}
 

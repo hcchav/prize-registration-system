@@ -36,7 +36,60 @@
   --brand-lightblue-700: #006b89;
   --brand-lightblue-800: #00455c;
   --brand-lightblue-900: #001f2f;
-
+  --brand-lightblue-1000: #418FDE; 
+  
+  /* Custom Checkbox Styles */
+  --checkbox-color: var(--brand-lightblue-1000);
+  --checkbox-hover: var(--brand-lightblue-500);
+  --checkbox-checked-bg: var(--brand-lightblue-1000);
+  --checkbox-checked-color: white;
+  
+  /* Custom Checkbox Styling */
+  input[type="checkbox"] {
+    /* Remove default styles */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Create custom checkbox */
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--checkbox-color);
+    border-radius: 0.25rem;
+    margin-right: 0.5rem;
+    position: relative;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+  
+  /* Checked state */
+  input[type="checkbox"]:checked {
+    background-color: var(--checkbox-checked-bg);
+    border-color: var(--checkbox-checked-bg);
+  }
+  
+  /* Checkmark */
+  input[type="checkbox"]:checked::before {
+    content: "✓";
+    position: absolute;
+    color: var(--checkbox-checked-color);
+    font-size: 0.75rem;
+    font-weight: bold;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Hover state */
+  input[type="checkbox"]:not(:disabled):hover {
+    border-color: var(--checkbox-hover);
+  }
+  
+  /* Focus state */
+  input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(65, 143, 222, 0.3);
+  }
+  
   /* Brand Red */
   --brand-red-50:  #fde8e7;
   --brand-red-100: #fac5c2;

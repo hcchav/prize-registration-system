@@ -1,90 +1,76 @@
 export interface Prize {
-  id: string;
+  id: number;
   name: string;
+  displayText: string;
   weight: number;
   color: string;
   textColor: string;
-  displayText: string;
 }
 
 export const PRIZES: Prize[] = [
 
   {
-    id: 'tshirt',
+    id: 1,
     name: 'Biome Brigade T-Shirt',
     displayText: 'T-Shirt',
     weight: 250,
-    color: "#002639", // brand-navy-500
-    textColor: "#FFFFFF"
+    color: '#4A90E2', // Blue
+    textColor: '#FFFFFF'
   },
   {
-    id: 'flaky-jake-toy',
-    name: 'Flaky Jake Dog Toy',
-    displayText: 'Jake Toy',
-    weight: 50,
-    color: "#abcae9", // brand-lightblue-200
-    textColor: "#FFFFFF"
-  },
-  {
-    id: 'gut-shield',
-    name: 'Biome Brigade GutShield Daily Supplements',
-    displayText: 'GutShield',
-    weight: 100,
-    color: "#18b318", // brand-green-500
-    textColor: "#FFFFFF"
-  },
-
-  {
-    id: 'hat',
+    id: 6,
     name: 'Biome Brigade Hat',
     displayText: 'Hat',
     weight: 250,
-    color: "#438ee1", // brand-green-500
-    textColor: "#FFFFFF"
+    color: '#F7D046', // Yellow
+    textColor: '#000000'
   },
-
-
   {
-    id: 'itch-guard',
+    id: 3,
     name: 'Biome Brigade ItchGuard Daily Supplements',
     displayText: 'ItchGuard',
     weight: 100,
-    color: "#ffe600", // brand-orange-500
-    textColor: "#000000"
+    color: '#FF6B6B', // Red
+    textColor: '#FFFFFF'
   },
   {
-    id: 'claus-stridium-toy',
-    name: 'Claus Stridium Dog Toy',
-    displayText: 'Claus Toy',
-    weight: 50,
-    color: "#002639", // brand-green-300
-    textColor: "#FFFFFF"
-  },
-  {
-    id: 'gut-test',
+    id: 4,
     name: 'Biome Brigade Gut Health Test',
     displayText: 'Gut Test',
     weight: 25,
-    color: "#e6f7e6", // brand-green-500
-    textColor: "#18b318"
-  },
-  
-
-  {
-    id: 'poster',
-    name: 'Biome Brigade Poster',
-    displayText: 'Poster',
-    weight: 350,
-    color: "#18b318", // brand-navy-900
-    textColor: "#FFFFFF"
+    color: '#6B7A8F', // Gray
+    textColor: '#FFFFFF'
   },
   {
-    id: 'eli-cole-toy',
+    id: 2,
     name: 'Eli Cole Dog Toy',
     displayText: 'Eli Toy',
     weight: 50,
-    color: "#438ee1", // brand-red-300
-    textColor: "#FFFFFF"
+    color: '#9B59B6', // Purple
+    textColor: '#FFFFFF'
+  },
+  {
+    id: 7,
+    name: 'Flaky Jake Dog Toy',
+    displayText: 'Flaky Toy',
+    weight: 50,
+    color: '#E74C3C', // Red-Orange
+    textColor: '#FFFFFF'
+  },
+  {
+    id: 8,
+    name: 'Claus Stridium Dog Toy',
+    displayText: 'Claus Toy',
+    weight: 50,
+    color: '#3498DB', // Light Blue
+    textColor: '#FFFFFF'
+  },
+  {
+    id: 9,
+    name: 'Biome Brigade Poster',
+    displayText: 'Poster',
+    weight: 350,
+    color: '#2C3E50', // Dark Blue
+    textColor: '#FFFFFF'
   }
-  
 ];
