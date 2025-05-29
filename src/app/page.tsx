@@ -719,6 +719,34 @@ export default function Home() {
                 </label>
               </div>
               {errors.phone && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.phone}</p>}
+              <div className="text-left w-full font-semibold text-[#00263A] text-sm peer  [font-family:'Poppins-Bold',Helvetica]">Confirm verification method:</div>
+              
+
+              
+              <div className="flex gap-6 w-full">
+                <label className="flex items-center gap-3 cursor-pointer  [font-family:'Poppins-Bold',Helvetica]">
+                  <input 
+                    type="radio" 
+                    name="method" 
+                    value="email" 
+                    checked={formData.method === 'email'} 
+                    onChange={(e) => handleChange('method', e.target.value)} 
+                    className="h-4 w-4 text-[#418FDE] "
+                  />
+                  <span className="text-[14px] [font-family:'Poppins-Regular',Helvetica]">Email</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer  [font-family:'Poppins-Bold',Helvetica]">
+                  <input 
+                    type="radio" 
+                    name="method" 
+                    value="sms" 
+                    checked={formData.method === 'sms'} 
+                    onChange={(e) => handleChange('method', e.target.value)} 
+                    className="h-4 w-4 text-[#418FDE]"
+                  />
+                  <span className="text-[14px] [font-family:'Poppins-Regular',Helvetica]">SMS</span>
+                </label>
+              </div>
 
               <label className="inline-flex items-center mt-3 text-[14px] [font-family:'Poppins-Regular',Helvetica]">
                 <input 
