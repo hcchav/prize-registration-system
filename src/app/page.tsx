@@ -9,12 +9,6 @@ import { type Prize } from '@/constants/prizes';
 import Dropdown from '@/components/Dropdown';
 import CheckboxDropdown from '@/components/CheckboxDropdown';
 
-
-
-
-
-
-
 export default function Home() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -35,6 +29,7 @@ export default function Home() {
     method: 'email',
     consent: false,
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [code, setCode] = useState('');
   const [prize, setPrize] = useState<Prize | null>(null);
   const [showWheel, setShowWheel] = useState(false);
@@ -44,30 +39,64 @@ export default function Home() {
   const [verifying, setVerifying] = useState(false);
   const [countryCode, setCountryCode] = useState('+1');
 
-
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleChange = (field: string, value: string | boolean | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!formData.firstName.trim()) newErrors.firstName = 'Please enter a first name';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Please enter a last name';
+    if (!formData.company.trim()) newErrors.company = 'Please enter a company name';
+    if (!formData.address.trim()) newErrors.address = 'Please enter an address';
+    if (!formData.city.trim()) newErrors.city = 'Please enter a city';
+    if (!formData.state.trim()) newErrors.state = 'Please enter a state';
+    if (!formData.zip.trim()) newErrors.zip = 'Please enter a zip code';
+    if (!formData.function) newErrors.function = 'Please select a company function';
+    
+    // Special validation for function-specific fields
+    if (formData.function === 'Supplier' && !formData.subcategory) {
+      newErrors.subcategory = 'Please select a supplier subcategory';
+    } else if (formData.function === 'Manufacturer' && formData.manufacturerOptions.length === 0) {
+      newErrors.manufacturerOptions = 'Please select at least one manufacturer category';
+    } else if (['Retailer', 'Wholesaler'].includes(formData.function) && !formData.subcategory) {
+      newErrors.subcategory = `Please select a ${formData.function.toLowerCase()} region`;
+    } else if (formData.function === 'Other' && !formData.subcategory) {
+      newErrors.subcategory = 'Please specify';
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = 'Please enter an email address';
+    } else if (!isValidEmail(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    // Phone validation
+    if (!formData.phone) {
+      newErrors.phone = 'Please enter a phone number';
+    } else if (formData.phone.replace(/\D/g, '').length < 10) {
+      newErrors.phone = 'Please enter a valid phone number';
+    }
+
+    // Consent validation
+    if (!formData.consent) {
+      newErrors.consent = 'Please consent to receive a verification code';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const sendOTP = async () => {
+    if (!validateForm()) {
+      return;
+    }
+    
     setError('');
-    const { email, consent, phone, method } = formData;
-
-    if (method === 'email' && (!email || !isValidEmail(email))) {
-      setError('Valid email is required.');
-      return;
-    }
-    if (method === 'sms' && (!phone || phone.length < 10)) {
-      setError('Valid phone number is required.');
-      return;
-    }
-    if (!consent) {
-      setError('You must consent to continue.');
-      return;
-    }
-
     setLoading(true);
     setResendDisabled(true);
 
@@ -251,87 +280,123 @@ export default function Home() {
 
               <div className="w-full space-y-3">
                 <div className="relative w-full group">
-                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                  <div className={`relative h-12 rounded-[5px] border border-solid ${
+                    errors.firstName ? 'border-[#D03C3C]' : 'border-[#abcae9]'
+                  } ${errors.firstName ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                     <input
                       id="firstName"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm text-[12px]  font-regular peer
-                      ${formData.firstName ? 'text-[14px]  translate-y-1' : 'top-3'}`}
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none ${
+                        errors.firstName ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                      } text-sm text-[12px] font-regular peer ${
+                        formData.firstName ? 'text-[14px] translate-y-1' : 'top-3'
+                      }`}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       value={formData.firstName}
                       placeholder=" "
                     />
                     <label 
                       htmlFor="firstName"
-                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
-                        ${formData.firstName ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                      className={`absolute left-3.5 ${
+                        errors.firstName ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                      } transition-all duration-200 pointer-events-none ${
+                        formData.firstName ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
+                      }`}
                     >
                       First Name
                     </label>
                   </div>
+                  {errors.firstName && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.firstName}</p>}
                 </div>
 
                 <div className="relative w-full group">
-                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                  <div className={`relative h-12 rounded-[5px] border border-solid ${
+                    errors.lastName ? 'border-[#D03C3C]' : 'border-[#abcae9]'
+                  } ${errors.lastName ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                     <input
                       id="lastName"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
-                      ${formData.lastName ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none ${
+                        errors.lastName ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                      } text-sm text-[12px] font-regular peer ${
+                        formData.lastName ? 'text-[14px] translate-y-1' : 'top-3'
+                      }`}
                       onChange={(e) => handleChange('lastName', e.target.value)}
                       value={formData.lastName}
                       placeholder=" "
                     />
                     <label 
                       htmlFor="lastName"
-                      className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
-                        ${formData.lastName ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                      className={`absolute left-3.5 ${
+                        errors.lastName ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                      } transition-all duration-200 pointer-events-none ${
+                        formData.lastName ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
+                      }`}
                     >
                       Last Name
                     </label>
                   </div>
+                  {errors.lastName && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.lastName}</p>}
                 </div>
 
                 <div className="relative w-full group">
-                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                  <div className={`relative h-12 rounded-[5px] border border-solid ${
+                    errors.company ? 'border-[#D03C3C]' : 'border-[#abcae9]'
+                  } ${errors.company ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                     <input
                       id="company"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
-                      ${formData.company ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none ${
+                        errors.company ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                      } text-sm text-[12px] font-regular peer ${
+                        formData.company ? 'text-[14px] translate-y-1' : 'top-3'
+                      }`}
                       onChange={(e) => handleChange('company', e.target.value)}
                       value={formData.company}
                       placeholder=" "
                     />
                     <label 
                       htmlFor="company"
-                      className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
-                        ${formData.company ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                      className={`absolute left-3.5 ${
+                        errors.company ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                      } transition-all duration-200 pointer-events-none ${
+                        formData.company ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
+                      }`}
                     >
                       Company Name
                     </label>
                   </div>
+                  {errors.company && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.company}</p>}
                 </div>
 
                 <div className="relative w-full group">
-                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                  <div className={`relative h-12 rounded-[5px] border border-solid ${
+                    errors.address ? 'border-[#D03C3C]' : 'border-[#abcae9]'
+                  } ${errors.address ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                     <input
                       id="address"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
-                      ${formData.address ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none ${
+                        errors.address ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                      } text-sm text-[12px] font-regular peer ${
+                        formData.address ? 'text-[14px] translate-y-1' : 'top-3'
+                      }`}
                       onChange={(e) => handleChange('address', e.target.value)}
                       value={formData.address}
                       placeholder=" "
                     />
                     <label 
                       htmlFor="address"
-                      className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
-                        ${formData.address ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                      className={`absolute left-3.5 ${
+                        errors.address ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                      } transition-all duration-200 pointer-events-none ${
+                        formData.address ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
+                      }`}
                     >
                       Company Street Address
                     </label>
                   </div>
+                  {errors.address && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.address}</p>}
                 </div>
 
                 <div className="relative w-full group">
@@ -339,16 +404,16 @@ export default function Home() {
                     <input
                       id="aptSuiteBuilding"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
-                      ${formData.aptSuiteBuilding ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm`}
                       onChange={(e) => handleChange('aptSuiteBuilding', e.target.value)}
                       value={formData.aptSuiteBuilding}
                       placeholder=""
                     />
                     <label 
                       htmlFor="aptSuiteBuilding"
-                      className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
-                        ${formData.aptSuiteBuilding ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none ${
+                        formData.aptSuiteBuilding ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
+                      }`}
                     >
                       Apt, Suite, Building (Optional)
                     </label>
@@ -356,69 +421,96 @@ export default function Home() {
                 </div>
                 {/* City */}
                 <div className="relative w-full group">
-                  <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                  <div className={`relative h-12 rounded-[5px] border border-solid ${
+                    errors.city ? 'border-[#D03C3C]' : 'border-[#abcae9]'
+                  } ${errors.city ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                     <input
                       id="city"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
-                      ${formData.city ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none ${
+                        errors.city ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                      } text-sm text-[12px] font-regular peer ${
+                        formData.city ? 'text-[14px] translate-y-1' : 'top-3'
+                      }`}
                       onChange={(e) => handleChange('city', e.target.value)}
                       value={formData.city}
-                      placeholder=""
+                      placeholder=" "
                     />
                     <label 
-                      htmlFor= "city"
-                      className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
-                        ${formData.city ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                      htmlFor="city"
+                      className={`absolute left-3.5 ${
+                        errors.city ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                      } transition-all duration-200 pointer-events-none ${
+                        formData.city ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
+                      }`}
                     >
                       City
                     </label>
                   </div>
+                  {errors.city && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.city}</p>}
                 </div>
 
              
                 <div className="flex gap-2">
                      {/* state */}
                   <div className="w-1/2">
-                    <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                    <div className={`relative h-12 rounded-[5px] border border-solid ${
+                      errors.state ? 'border-[#D03C3C]' : 'border-[#abcae9]'
+                    } ${errors.state ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                       <input
                         id="state"
                         type="text"
-                        className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
-                        ${formData.state ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                        className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none ${
+                          errors.state ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                        } text-sm text-[12px] font-regular peer ${
+                          formData.state ? 'text-[14px] translate-y-1' : 'top-3'
+                        }`}
                         onChange={(e) => handleChange('state', e.target.value)}
                         value={formData.state}
                         placeholder=" "
                       />
                       <label 
                         htmlFor="state"
-                        className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
-                          ${formData.state ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                        className={`absolute left-3.5 ${
+                          errors.state ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                        } transition-all duration-200 pointer-events-none ${
+                          formData.state ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
+                        }`}
                       >
                         State
                       </label>
                     </div>
+                    {errors.state && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.state}</p>}
                   </div>
                   {/* zip code */}
                   <div className="w-1/2">
-                    <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                    <div className={`relative h-12 rounded-[5px] border border-solid ${
+                      errors.zip ? 'border-[#D03C3C]' : 'border-[#abcae9]'
+                    } ${errors.zip ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                       <input
                         id="zip"
                         type="text"
-                        className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
-                        ${formData.zip ? 'text-[14px] translate-y-1' : 'top-3'}`}
+                        className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none ${
+                          errors.zip ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                        } text-sm text-[12px] font-regular peer ${
+                          formData.zip ? 'text-[14px] translate-y-1' : 'top-3'
+                        }`}
                         onChange={(e) => handleChange('zip', e.target.value)}
                         value={formData.zip}
                         placeholder=" "
                       />
                       <label 
                         htmlFor="zip"
-                        className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
-                          ${formData.zip ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
+                        className={`absolute left-3.5 ${
+                          errors.zip ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                        } transition-all duration-200 pointer-events-none ${
+                          formData.zip ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
+                        }`}
                       >
                         Zip Code
                       </label>
                     </div>
+                    {errors.zip && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.zip}</p>}
                   </div>
    
                 </div>
@@ -437,6 +529,7 @@ export default function Home() {
                       { value: 'Other', label: 'Other' },
                     ]}
                   />
+                  {errors.function && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.function}</p>}
                 </div>
 
             
@@ -455,6 +548,7 @@ export default function Home() {
                       { value: 'Packaging', label: 'Packaging' },
                     ]}
                   />
+                  {errors.subcategory && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.subcategory}</p>}
                 </div>
               )}
 
@@ -473,6 +567,7 @@ export default function Home() {
                     ]}
                     placeholder="Select categories..."
                   />
+                  {errors.manufacturerOptions && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.manufacturerOptions}</p>}
                   {formData.manufacturerOptions.includes('Other') && (
                     <input 
                       className="w-full border border-[#abcae9] p-3 rounded-[5px] mt-2 text-[#418FDE] text-sm" 
@@ -498,6 +593,7 @@ export default function Home() {
                       { value: 'International', label: 'International' },
                     ]}
                   />
+                  {errors.subcategory && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.subcategory}</p>}
                 </div>
               )}
 
@@ -521,132 +617,119 @@ export default function Home() {
                       Please specify
                     </label>
                   </div>
+                  {errors.subcategory && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.subcategory}</p>}
                 </div>
               )}
 
-              <div className="relative w-full group">
-                <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
-                  <input
-                    id="email"
-                    type="email"
-                    className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-[14px] text-sm font-regular peer
-                    ${formData.email ? 'text-[14px] translate-y-1' : 'top-3'}`}
-                    onChange={(e) => handleChange('email', e.target.value)}
-                    value={formData.email}
-                    placeholder=" "
-                  />
-                  <label 
-                    htmlFor="email"
-                    className={`absolute left-3.5 text-[#418FDE]  transition-all duration-200 pointer-events-none
-                      ${formData.email ? 'text-[10px]  translate-y-1' : 'text-[14px] top-3'}`}
-                  >
-                    Email Address
-                  </label>
-                </div>
-              </div>
-
-              <div className="relative w-full">
-                <div className="w-full h-12 rounded-[5px] border border-solid border-[#abcae9] relative">
-                  <PhoneInput 
-                    country={'us'}
-                    value={formData.phone}
-                    placeholder="(123) 456-7890"
-                    enableSearch
-                    countryCodeEditable={false}
-                    autoFormat={true}
-                    disableSearchIcon
-                    onChange={(phone: string, countryData: CountryData) => {
-                      handleChange('phone', phone);
-                      setCountryCode(`+${countryData.dialCode}`);
-                    }}
-                    inputClass="w-full h-full px-3.5 bg-transparent outline-none text-[#418FDE] text-sm font-regular pl-20 caret-[#418FDE]"
-                    buttonClass="!bg-transparent !border-none !text-[#418FDE] !px-3 !absolute !left-0 !top-0 !h-full !flex !items-center"
-                    dropdownClass="!bg-white !border !border-[#abcae9] !rounded-[5px] !z-50"
-                    containerClass="!w-full h-full relative !z-50"
-
-                    inputStyle={{
-                      width: '100%',
-                      height: '100%',
-                      color: formData.phone ? '#418FDE' : '#418FDE',
-                      backgroundColor: 'transparent',
-                      border: 'none',
-                      outline: 'none',
-                      fontSize: '14px',
-                      fontFamily: 'Poppins-regular',
-                      paddingLeft: '60px',
-                      paddingTop: '24px',
-                      caretColor: '#418FDE',
-                      top: '-5px'
-                    }}
-                    buttonStyle={{
-                      backgroundColor: 'transparent',
-                      border: 'none',
-                      padding: '0 10px',
-                      color: '#00263a',
-                      height: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-            
-                    }}
-                    dropdownStyle={{
-                      backgroundColor: 'white',
-                      color: '#00263a',
-                      border: '1px solid #abcae9',
-                      borderRadius: '10px',
-                      zIndex: 9999,
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      marginTop: '5px',
-                    }}
-                    searchStyle={{
-                      padding: '10px',
-                      borderBottom: '1px solid #e2e8f0',
-                    }}
-                    searchPlaceholder="Search..."
-                  />
-                  <label 
-                    className={`absolute left-15 text-[#418FDE] text-[12px] text-sm   duration-200 top-1`}
-                  >
-                    Phone Number
-                  </label>
-                </div>
-              </div>    
-              
-
-              <div className="text-left w-full font-semibold text-[#00263A] text-sm peer  [font-family:'Poppins-Bold',Helvetica]">Confirm verification method:</div>
-              
-
-              
-              <div className="flex gap-6 w-full">
-                <label className="flex items-center gap-3 cursor-pointer  [font-family:'Poppins-Bold',Helvetica]">
-                  <input 
-                    type="radio" 
-                    name="method" 
-                    value="email" 
-                    checked={formData.method === 'email'} 
-                    onChange={(e) => handleChange('method', e.target.value)} 
-                    className="h-4 w-4 text-[#418FDE] "
-                  />
-                  <span className="text-[14px] [font-family:'Poppins-Regular',Helvetica]">Email</span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer  [font-family:'Poppins-Bold',Helvetica]">
-                  <input 
-                    type="radio" 
-                    name="method" 
-                    value="sms" 
-                    checked={formData.method === 'sms'} 
-                    onChange={(e) => handleChange('method', e.target.value)} 
-                    className="h-4 w-4 text-[#418FDE]"
-                  />
-                  <span className="text-[14px] [font-family:'Poppins-Regular',Helvetica]">SMS</span>
+              <div className={`relative h-12 rounded-[5px] border border-solid w-full ${
+                errors.email ? 'border-[#D03C3C]' : 'border-[#abcae9]'
+              } ${errors.email ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
+                <input
+                  id="email"
+                  type="email"
+                  className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none ${
+                    errors.email ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                  } text-sm text-[12px] font-regular peer ${
+                    formData.email ? 'text-[14px] translate-y-1' : 'top-3'
+                  }`}
+                  onChange={(e) => handleChange('email', e.target.value)}
+                  value={formData.email}
+                  placeholder=" "
+                />
+                <label 
+                  htmlFor="email"
+                  className={`absolute left-3.5 ${
+                    errors.email ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                  } transition-all duration-200 pointer-events-none ${
+                    formData.email ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
+                  }`}
+                >
+                  Email Address
                 </label>
               </div>
+              {errors.email && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.email}</p>}
+
+              <div className={`w-full h-12 rounded-[5px] border border-solid ${
+                errors.phone ? 'border-[#D03C3C]' : 'border-[#abcae9]'
+              } relative ${errors.phone ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
+                <PhoneInput 
+                  country={'us'}
+                  value={formData.phone}
+                  placeholder="(123) 456-7890"
+                  enableSearch
+                  countryCodeEditable={false}
+                  autoFormat={true}
+                  disableSearchIcon
+                  onChange={(phone: string, countryData: CountryData) => {
+                    handleChange('phone', phone);
+                    setCountryCode(`+${countryData.dialCode}`);
+                  }}
+                  inputClass={`w-full h-full px-3.5 bg-transparent outline-none ${
+                    errors.phone ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                  } text-sm font-regular pl-20 caret-[#418FDE]`}
+                  buttonClass="!bg-transparent !border-none !text-[#418FDE] !px-3 !absolute !left-0 !top-0 !h-full !flex !items-center"
+                  dropdownClass="!bg-white !border !border-[#abcae9] !rounded-[5px] !z-50"
+                  containerClass="!w-full h-full relative !z-50"
+                  inputStyle={{
+                    width: '100%',
+                    height: '100%',
+                    color: errors.phone ? '#D03C3C' : '#418FDE',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    outline: 'none',
+                    fontSize: '14px',
+                    fontFamily: 'Poppins-regular',
+                    paddingLeft: '60px',
+                    paddingTop: '24px',
+                    caretColor: '#418FDE',
+                    top: '-5px'
+                  }}
+                  buttonStyle={{
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    padding: '0 10px',
+                    color: errors.phone ? '#D03C3C' : '#00263a',
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                  dropdownStyle={{
+                    backgroundColor: 'white',
+                    color: '#00263a',
+                    border: '1px solid #abcae9',
+                    borderRadius: '10px',
+                    zIndex: 9999,
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    marginTop: '5px',
+                  }}
+                  searchStyle={{
+                    padding: '10px',
+                    borderBottom: '1px solid #e2e8f0',
+                  }}
+                  searchPlaceholder="Search..."
+                />
+                <label 
+                  className={`absolute left-15 ${
+                    errors.phone ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                  } text-[12px] text-sm duration-200 top-1`}
+                >
+                  Phone Number
+                </label>
+              </div>
+              {errors.phone && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.phone}</p>}
 
               <label className="inline-flex items-center mt-3 text-[14px] [font-family:'Poppins-Regular',Helvetica]">
-                <input type="checkbox" className="mr-2 p-1.5" onChange={(e) => handleChange('consent', e.target.checked)} checked={formData.consent} />
+                <input 
+                  type="checkbox" 
+                  className={`mr-2 p-1.5 ${errors.consent ? 'border-[#D03C3C]' : ''}`} 
+                  onChange={(e) => handleChange('consent', e.target.checked)} 
+                  checked={formData.consent} 
+                />
                 I consent to receive a verification code and be entered into the prize giveaway.
               </label>
+              {errors.consent && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.consent}</p>}
 
               <button 
                 onClick={sendOTP} 
@@ -655,7 +738,7 @@ export default function Home() {
               >
                 {loading ? 'Sending...' : 'Join the Brigade'}
               </button>
-              {error && <p className="text-red-600 mt-2 text-sm">{error}</p>}
+              {error && <p className="text-red-600 mt-2 text-xs pl-4 ">{error}</p>}
             </div>
             </div>
           </div>
@@ -699,8 +782,9 @@ export default function Home() {
                       />
                       <label 
                         htmlFor="verificationCode"
-                        className={`absolute left-4 text-[#418FDE] transition-all duration-200 pointer-events-none
-                          ${code ? 'text-xs -top-2 bg-white px-1' : 'text-base top-3'}`}
+                        className={`absolute left-4 text-[#418FDE] transition-all duration-200 pointer-events-none ${
+                          code ? 'text-xs -top-2 bg-white px-1' : 'text-base top-3'
+                        }`}
                       >
                         6-digit code
                       </label>

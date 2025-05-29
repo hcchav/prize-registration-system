@@ -11,8 +11,11 @@ const twilioTemplateSid = process.env.TWILIO_TEMPLATE_SID!;
 const client = new Twilio(accountSid, authToken);
 
 function htmlTemplateWithOTP(otp: string) {
-  const logoUrl = 'https://drive.google.com/uc?export=view&id=1OGYj6rWbDnBUrY0FzZIABZn5xuOPehSV';
-  const bannerUrl = 'https://drive.google.com/uc?export=view&id=1A3ORLqe09fmiWphlIr6H3VxKPYrn7zGW';
+  const logoUrl = 'https://prize-registration-system.vercel.app/images/prizes/Mockup.png';
+  // const bannerUrl = 'https://drive.google.com/uc?export=view&id=1A3ORLqe09fmiWphlIr6H3VxKPYrn7zGW';
+  const bannerUrl = 'https://prize-registration-system.vercel.app/images/prizes/verification-banner-mobile-828x420.png';
+  
+
   
   return `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
