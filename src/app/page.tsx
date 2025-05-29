@@ -275,7 +275,7 @@ export default function Home() {
               </div>
 
               <p className="relative self-stretch [font-family:'Poppins-Regular',Helvetica] font-regular  text-[#00263a] text-base text-center tracking-[0] leading-[25.6px]">
-                Register to win exclusive swag!
+              Complete the form to receive the Biome Brigade Comic Collectible, and a FREE GIVEAWAY!
               </p>
 
               <div className="w-full space-y-3">
@@ -748,7 +748,7 @@ export default function Home() {
                 </label>
               </div>
 
-              <label className="inline-flex items-center mt-3 text-[14px] [font-family:'Poppins-Regular',Helvetica]">
+              <label className="inline-flex items-center mt-1 text-[14px] [font-family:'Poppins-Regular',Helvetica]">
                 <input 
                   type="checkbox" 
                   className={`mr-2 p-1.5 ${errors.consent ? 'border-[#D03C3C]' : ''}`} 
@@ -757,6 +757,7 @@ export default function Home() {
                 />
                 I consent to receive a verification code and be entered into the prize giveaway.
               </label>
+            
               {errors.consent && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.consent}</p>}
 
               <button 
@@ -764,9 +765,12 @@ export default function Home() {
                 disabled={loading} 
                 className={`w-full py-3 rounded-md text-white font-regular  mt-4 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
               >
-                {loading ? 'Sending...' : 'Join the Brigade'}
+                {loading ? 'Sending...' : 'Submit'}
               </button>
               {error && <p className="text-red-600 mt-2 text-xs pl-4 ">{error}</p>}
+              <p className="text-[#666] text-[10px] mt-1 pl-6 [font-family:'Poppins-Regular',Helvetica]">
+                Your information will not be shared with any third party, for any reason, ever.
+              </p>
             </div>
             </div>
           </div>
