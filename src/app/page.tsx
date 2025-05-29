@@ -798,25 +798,40 @@ export default function Home() {
                 
                 <div className="w-full space-y-4 mt-2">
                   <div className="relative w-full group">
-                    <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                    <div className={`relative h-12 rounded-[5px] border border-solid ${
+                      error && code.length > 0 ? 'border-[#D03C3C]' : 'border-[#abcae9]'
+                    } ${error && code.length > 0 ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                       <input
                         id="verificationCode"
                         type="text"
-                        className="w-full h-full px-4 py-2 bg-transparent outline-none text-[#00263a] text-base font-regular"
+                        className={`w-full h-full mt-1.5 px-4 py-2 bg-transparent outline-none ${
+                          error && code.length > 0 ? 'text-[#D03C3C]' : 'text-[#00263a]'
+                        } text-base font-regular`}
                         value={code}
-                        onChange={(e) => setCode(e.target.value)}
+                        onChange={(e) => {
+                          setCode(e.target.value);
+                          // Clear error when user starts typing
+                          if (error) setError('');
+                        }}
                         maxLength={6}
                         placeholder=" "
                       />
                       <label 
                         htmlFor="verificationCode"
-                        className={`absolute left-4 text-[#418FDE] transition-all duration-200 pointer-events-none ${
-                          code ? 'text-xs -top-2 bg-white px-1' : 'text-base top-3'
+                        className={`absolute left-4 ${
+                          error && code.length > 0 ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                        } transition-all duration-200 pointer-events-none ${
+                          code ? 'text-xs top-1' : 'text-base top-3'
                         }`}
                       >
                         6-digit code
                       </label>
                     </div>
+                    {error && code.length > 0 && (
+                      <p className="text-[#D03C3C] mt-2 text-xs pl-4">
+                        Code invalid. Please try again.
+                      </p>
+                    )}
                   </div>
 
                   <button
@@ -837,11 +852,11 @@ export default function Home() {
                     </button>
                   </div>
                   
-                  {error && (
+                  {/* {error && (
                     <p className="text-red-500 text-sm text-center mt-2">
                       {error}
                     </p>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>
