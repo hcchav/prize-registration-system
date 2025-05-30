@@ -910,19 +910,20 @@ export default function Home() {
                 ) : prize ? (
                   <div className="text-center">
                     <div className="relative self-stretch  font-bold text-[#00263a] text-2xl text-center tracking-[0] leading-[normal] mb-2">
-                      Mission Complete! 🎉
+                    CONGRATULATIONS!
                     </div>
-                    <div className="mb-6 p-4 bg-[#f0f8ff] rounded-lg border border-[#d0e4ff]">
-                      <p className="[font-family:'Poppins-SemiBold',Helvetica] text-[#1a5a96] text-lg">
-                        You've won:
+                    <div className="mb-6 p-4 b">
+                    <p className=" text-base font-regular text-[#00263a]">
+                    Go to the Biome Brigade Booth to Claim Your
+                    </p>
+                      <p className="text-[#1a5a96] text-base">
+                      
                       </p>
-                      <p className=" text-[#00263a] text-xl mt-2">
+                      <p className=" text-[#00263a] text-xl mt-2 font-bold">
                         {prize.name}
                       </p>
                     </div>
-                    <p className=" text-[#00263a] text-base">
-                      Thank you for participating in our mission!
-                    </p>
+                   
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12">

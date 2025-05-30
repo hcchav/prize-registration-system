@@ -305,13 +305,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
       )}
       
       {spinning && <div className="text-lg font-semibold">Spinning...</div>}
-      
-      {result && !spinning && (
-        <div className="mt-4 p-4 bg-green-100 rounded-lg text-center">
-          <h3 className="text-xl font-bold text-green-800">Congratulations!</h3>
-          <p className="text-green-700">You won: {result.name}</p>
-        </div>
-      )}
+ 
       
       {error && !spinning && (
         <div className="text-red-500 text-center">{error}</div>

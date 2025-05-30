@@ -134,18 +134,3 @@ input[type="checkbox"]:focus {
   box-shadow: 0 0 0 3px rgba(65, 143, 222, 0.3);
 }
 
-/* Debug styles */
-body::before {
-  content: 'Font: Poppins Loaded';
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.8);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  z-index: 10000;
-  font-size: 12px;
-  pointer-events: none;
-  font-family: var(--font-poppins), sans-serif;
-}
