@@ -87,10 +87,11 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.rotate(startAngle + segmentAngle / 2);
-      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle'; // Options: 'top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom'
+      ctx.textAlign = 'left';   // Options: 'left', 'center', 'right', 'start', 'end'
       ctx.fillStyle = prize.textColor || '#fff';
       ctx.font = 'bold 12px Arial';
-      ctx.fillText(prize.displayText, radius - 20, 0);
+      ctx.fillText(prize.displayText, radius - 75, 0);
       ctx.restore();
 
       startAngle = endAngle;

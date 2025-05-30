@@ -8,12 +8,11 @@ export interface Prize {
 }
 
 export const PRIZES: Prize[] = [
-
   {
     id: 1,
     name: 'Biome Brigade T-Shirt',
     displayText: 'T-Shirt',
-    weight: 250,
+    weight: 100,
     color: '#4A90E2', // Blue
     textColor: '#FFFFFF'
   },
@@ -21,7 +20,7 @@ export const PRIZES: Prize[] = [
     id: 6,
     name: 'Biome Brigade Hat',
     displayText: 'Hat',
-    weight: 250,
+    weight: 100,
     color: '#F7D046', // Yellow
     textColor: '#000000'
   },
@@ -37,7 +36,7 @@ export const PRIZES: Prize[] = [
     id: 4,
     name: 'Biome Brigade Gut Health Test',
     displayText: 'Gut Test',
-    weight: 25,
+    weight: 100,
     color: '#6B7A8F', // Gray
     textColor: '#FFFFFF'
   },
@@ -45,7 +44,7 @@ export const PRIZES: Prize[] = [
     id: 2,
     name: 'Eli Cole Dog Toy',
     displayText: 'Eli Toy',
-    weight: 50,
+    weight: 100,
     color: '#9B59B6', // Purple
     textColor: '#FFFFFF'
   },
@@ -53,7 +52,7 @@ export const PRIZES: Prize[] = [
     id: 7,
     name: 'Flaky Jake Dog Toy',
     displayText: 'Flaky Toy',
-    weight: 50,
+    weight: 100,
     color: '#E74C3C', // Red-Orange
     textColor: '#FFFFFF'
   },
@@ -61,7 +60,7 @@ export const PRIZES: Prize[] = [
     id: 8,
     name: 'Claus Stridium Dog Toy',
     displayText: 'Claus Toy',
-    weight: 50,
+    weight: 100,
     color: '#3498DB', // Light Blue
     textColor: '#FFFFFF'
   },
@@ -69,7 +68,7 @@ export const PRIZES: Prize[] = [
     id: 9,
     name: 'Biome Brigade Poster',
     displayText: 'Poster',
-    weight: 350,
+    weight: 100,
     color: '#2C3E50', // Dark Blue
     textColor: '#FFFFFF'
   }
