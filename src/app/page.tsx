@@ -22,6 +22,7 @@ export default function Home() {
     aptSuiteBuilding: '',
     function: '',
     subcategory: '',
+    supplierOther: '',
     manufacturerOptions: [] as string[],
     manufacturerOther: '',
     email: '',
@@ -540,15 +541,37 @@ export default function Home() {
                   <Dropdown
                     label="Supplier Subcategory"
                     value={formData.subcategory}
-                    onChange={(value) => handleChange('subcategory', value)}
+                    onChange={(value) => {
+                      if (value !== 'Other') {
+                        handleChange('subcategory', value);
+                      } else {
+                        handleChange('subcategory', formData.supplierOther || 'Other');
+                      }
+                    }}
                     options={[
                       { value: '', label: 'Supplier Subcategory (Select)' },
                       { value: 'Ingredients', label: 'Ingredients' },
                       { value: 'Toys', label: 'Toys' },
                       { value: 'Packaging', label: 'Packaging' },
+                      { value: formData.supplierOther || 'Other', label: 'Other' },
                     ]}
                   />
-                  {errors.subcategory && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.subcategory}</p>}
+                  {(formData.subcategory === 'Other' || formData.supplierOther) && (
+                    <div className="mt-2">
+                      <input 
+                        className="w-full border border-[#abcae9] p-3 rounded-[5px] text-[#418FDE] text-sm" 
+                        placeholder="Please specify" 
+                        value={formData.supplierOther}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          handleChange('supplierOther', value);
+                          handleChange('subcategory', value || 'Other');
+                        }}
+                        style={{ height: '48px' }}
+                      />
+                    </div>
+                  )}
+                  {errors.subcategory && <p className="text-red-600 mt-2 text-xs pl-4">{errors.subcategory}</p>}
                 </div>
               )}
 
