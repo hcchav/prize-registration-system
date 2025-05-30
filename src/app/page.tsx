@@ -919,7 +919,7 @@ export default function Home() {
                       <p className="text-[#1a5a96] text-base">
                       
                       </p>
-                      <p className=" text-[#00263a] text-xl mt-2 font-bold">
+                      <p className=" text-[#00263a] text-[20px] mt-2 font-bold font-regular text-[var(--brand-lightblue-1000)]">
                         {prize.name}
                       </p>
                     </div>
