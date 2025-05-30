@@ -20,6 +20,10 @@ export interface Database {
           otp: string | null
           prize: string | null
           prize_id: string | null
+          address_line2: string | null
+          city: string | null
+          state: string | null
+          zip_code: string | null
         }
         Insert: {
           id?: string
@@ -31,6 +35,10 @@ export interface Database {
           otp?: string | null
           prize?: string | null
           prize_id?: string | null
+          address_line2?: string | null
+          city?: string | null
+          state?: string | null
+          zip_code?: string | null
         }
         Update: {
           id?: string
@@ -42,6 +50,10 @@ export interface Database {
           otp?: string | null
           prize?: string | null
           prize_id?: string | null
+          address_line2?: string | null
+          city?: string | null
+          state?: string | null
+          zip_code?: string | null
         }
       }
       prizes: {

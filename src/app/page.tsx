@@ -106,6 +106,8 @@ export default function Home() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...formData,
+        addressLine2: formData.aptSuiteBuilding, // Map aptSuiteBuilding to addressLine2 for the API
+        zipCode: formData.zip, // Map zip to zipCode for the API
         subcategory:
           formData.function === 'Manufacturer'
             ? [...formData.manufacturerOptions, formData.manufacturerOther].filter(Boolean).join(', ')
