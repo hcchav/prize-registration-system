@@ -161,9 +161,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .order('created_at', { ascending: false })
     .limit(1);
 
-  if (existingVerified) {
-    console.log('Email already registered and verified:', email);
-    return res.status(400).json({ success: false, error: 'This email address is already registered.' });
+
+    // BYPASS EMAIL HERONCCHAVEZ@gmail.com
+  if (email === 'heroncchavez@gmail.com') {
+      // do nothing
+  } else {
+
+    if (existingVerified) {
+      console.log('Email already registered and verified:', email);
+      return res.status(400).json({ success: false, error: 'This email address is already registered.' });
+    }
+
   }
 
   // Check for existing unverified entries
@@ -189,18 +197,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     verified: false,
   };
 
-  if (existingUnverified && existingUnverified.length > 0) {
-    await supabase.from('attendees').update(payload).eq('id', existingUnverified[0].id);
-    // i want confirmation that the update was successful
-    const { data: updated } = await supabase.from('attendees').select('*').eq('id', existingUnverified[0].id).order('created_at', { ascending: false }).limit(1);
-    console.log('updated attendee', updated);
-  } else {
+  if (email === 'heroncchavez@gmail.com') {
+    // do nothing
     await supabase.from('attendees').insert([payload]);
     // i want confirmation that the insert was successful
     console.log(payload);
     const { data: inserted } = await supabase.from('attendees').select('*').order('created_at', { ascending: false }).limit(1);
     console.log('inserted attendee', inserted);
+  } else {
+    if (existingUnverified && existingUnverified.length > 0) {
+      await supabase.from('attendees').update(payload).eq('id', existingUnverified[0].id);
+      // i want confirmation that the update was successful
+      const { data: updated } = await supabase.from('attendees').select('*').eq('id', existingUnverified[0].id).order('created_at', { ascending: false }).limit(1);
+      console.log('updated attendee', updated);
+    } else {
+      await supabase.from('attendees').insert([payload]);
+      // i want confirmation that the insert was successful
+      console.log(payload);
+      const { data: inserted } = await supabase.from('attendees').select('*').order('created_at', { ascending: false }).limit(1);
+      console.log('inserted attendee', inserted);
+    }
   }
+
 
   if (method === 'email') {
     try {
