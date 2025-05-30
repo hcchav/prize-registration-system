@@ -116,12 +116,15 @@ export default function Home() {
     const data = await res.json();
     setLoading(false);
 
-    if (data.success) {
+    if (res.ok && data.success) {
       setStep(2);
     } else {
       setError(data.error || 'Failed to send code. Please try again.');
     }
 
+    setResendDisabled(false);
+    if (!res.ok) return; // Don't set the timeout if the request failed
+    
     setTimeout(() => setResendDisabled(false), 30000);
   };
 

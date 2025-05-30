@@ -151,8 +151,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log('send-otp start');
   console.log(normalizedPhone);
 
+  // First check if email is already registered and verified
+  // query selecting descending order
+  const { data: existingVerified } = await supabase
+    .from('attendees')
+    .select('id, verified')
+    .eq('email', email)
+    .eq('verified', true)
+    .order('created_at', { ascending: false })
+    .limit(1);
 
-  const { data: existing } = await supabase
+  if (existingVerified) {
+    console.log('Email already registered and verified:', email);
+    return res.status(400).json({ success: false, error: 'This email address is already registered.' });
+  }
+
+  // Check for existing unverified entries
+  const { data: existingUnverified } = await supabase
     .from('attendees')
     .select('*')
     .eq('email', email)
@@ -174,10 +189,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     verified: false,
   };
 
-  if (existing && existing.length > 0) {
-    await supabase.from('attendees').update(payload).eq('id', existing[0].id);
+  if (existingUnverified && existingUnverified.length > 0) {
+    await supabase.from('attendees').update(payload).eq('id', existingUnverified[0].id);
     // i want confirmation that the update was successful
-    const { data: updated } = await supabase.from('attendees').select('*').eq('id', existing[0].id).order('created_at', { ascending: false }).limit(1);
+    const { data: updated } = await supabase.from('attendees').select('*').eq('id', existingUnverified[0].id).order('created_at', { ascending: false }).limit(1);
     console.log('updated attendee', updated);
   } else {
     await supabase.from('attendees').insert([payload]);
