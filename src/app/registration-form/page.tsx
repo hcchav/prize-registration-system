@@ -43,17 +43,21 @@ export default function RegistrationForm() {
           </div>
 
           <div className="flex flex-col w-80 items-center justify-center gap-3 px-3 py-0 absolute top-[182px] left-0">
-            <div className="relative self-stretch mt-[-1.00px] [font-family:'Poppins-Bold',Helvetica] font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
-              Join the Biome Brigade®
-            </div>
-
-            <p className="relative self-stretch [font-family:'Poppins-Regular',Helvetica] font-normal text-[#00263a] text-base text-center tracking-[0] leading-[25.6px]">
+            <h1 className="relative self-stretch text-[#00263a] text-xl text-center font-bold leading-tight tracking-tight font-poppins-bold">
+              Join the{' '}
+              <span className="relative inline-block">
+                Biome <span className="relative">Brigade</span>
+                <span className="absolute left-0 right-0 bottom-0.5 h-0.5 bg-[#00263a] opacity-10"></span>
+              </span>
+              ®
+            </h1>
+            <p className="relative self-stretch text-[#00263a] text-base text-center leading-relaxed font-poppins-regular">
               Register to win exclusive swag!
             </p>
 
             <div className="relative w-[282px] h-12">
               <div className="relative w-[280px] h-12 rounded-[5px]">
-                <div className="absolute w-[266px] top-[13px] left-3.5 [font-family:'Poppins-Regular',Helvetica] font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
+                <div className="absolute w-[266px] top-[13px] left-3.5 font-poppins-regular font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
                   First Name
                 </div>
 
@@ -63,7 +67,7 @@ export default function RegistrationForm() {
 
             <div className="relative w-[282px] h-12">
               <div className="relative w-[280px] h-12 rounded-[5px]">
-                <div className="absolute w-[266px] top-[13px] left-3.5 [font-family:'Poppins-Regular',Helvetica] font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
+                <div className="absolute w-[266px] top-[13px] left-3.5 font-poppins-regular font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
                   Last Name
                 </div>
 
@@ -73,7 +77,7 @@ export default function RegistrationForm() {
 
             <div className="relative w-[282px] h-12">
               <div className="relative w-[280px] h-12 rounded-[5px]">
-                <div className="absolute w-[266px] top-[13px] left-3.5 [font-family:'Poppins-Regular',Helvetica] font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
+                <div className="absolute w-[266px] top-[13px] left-3.5 font-poppins-regular font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
                   Company Name
                 </div>
 
@@ -83,7 +87,7 @@ export default function RegistrationForm() {
 
             <div className="relative w-[282px] h-12">
               <div className="relative w-[280px] h-12 rounded-[5px]">
-                <div className="absolute w-[266px] top-3 left-3.5 [font-family:'Poppins-Regular',Helvetica] font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
+                <div className="absolute w-[266px] top-3 left-3.5 font-poppins-regular font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
                   Company Street Address
                 </div>
 
@@ -93,7 +97,7 @@ export default function RegistrationForm() {
 
             <div className="relative w-[282px] h-12">
               <div className="relative w-[280px] h-12 rounded-[5px]">
-                <div className="absolute w-[266px] top-[13px] left-3.5 [font-family:'Poppins-Regular',Helvetica] font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
+                <div className="absolute w-[266px] top-[13px] left-3.5 font-poppins-regular font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
                   Apt, Suite, Building (Optional)
                 </div>
 
@@ -103,7 +107,7 @@ export default function RegistrationForm() {
 
             <div className="relative w-[282px] h-12">
               <div className="relative w-[280px] h-12 rounded-[5px]">
-                <div className="absolute w-[266px] top-[13px] left-3.5 [font-family:'Poppins-Regular',Helvetica] font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
+                <div className="absolute w-[266px] top-[13px] left-3.5 font-poppins-regular font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
                   City
                 </div>
 
@@ -113,7 +117,7 @@ export default function RegistrationForm() {
             <div className="inline-flex items-start gap-3 relative">
             <div className="w-[150px] relative h-12">
               <div className="w-[148px] relative h-12 rounded-[5px]">
-                <div className="absolute w-[113px] top-[13px] left-[13px] [font-family:'Poppins-Regular',Helvetica] font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
+                <div className="absolute w-[113px] top-[13px] left-[13px] font-poppins-regular font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
                   State
                 </div>
 
@@ -123,7 +127,7 @@ export default function RegistrationForm() {
 
             <div className="w-[122px] mr-[-2.00px] relative h-12">
               <div className="w-[120px] relative h-12 rounded-[5px]">
-                <div className="absolute w-[94px] top-[13px] left-3.5 [font-family:'Poppins-Regular',Helvetica] font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
+                <div className="absolute w-[94px] top-[13px] left-3.5 font-poppins-regular font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
                   Zipcode
                 </div>
 
@@ -134,7 +138,7 @@ export default function RegistrationForm() {
 
          
         <div className="relative w-[280px] h-12 rounded-[5px]">
-          <div className="absolute w-[231px] top-3 left-3.5 [font-family:'Poppins-Regular',Helvetica] font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
+          <div className="absolute w-[231px] top-3 left-3.5 font-poppins-regular font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
             Company Function (Select)
           </div>
 
@@ -148,7 +152,7 @@ export default function RegistrationForm() {
         </div>
 
         <div className="relative w-[280px] h-12 rounded-[5px]">
-          <div className="absolute w-[231px] top-3 left-3.5 [font-family:'Poppins-Regular',Helvetica] font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
+          <div className="absolute w-[231px] top-3 left-3.5 font-poppins-regular font-normal text-[#418fde] text-sm tracking-[0] leading-[22.4px]">
             Supplier Subcategory (Select)
           </div>
 
@@ -163,7 +167,7 @@ export default function RegistrationForm() {
 
 
             <div className="relative w-[281.5px] h-[66px]">
-              <p className="absolute w-[246px] top-0 left-[34px] [font-family:'Poppins-Regular',Helvetica] font-normal text-[#00263a] text-sm tracking-[0] leading-[22.4px]">
+              <p className="absolute w-[246px] top-0 left-[34px] font-poppins-regular font-normal text-[#00263a] text-sm tracking-[0] leading-[22.4px]">
                 I consent to receive a verification code and be entered into a
                 prize giveaway.
               </p>
@@ -173,7 +177,7 @@ export default function RegistrationForm() {
 
             <div className="relative w-[282px] h-12">
               <div className="relative w-[280px] h-12 bg-[#418fde] rounded-[5px]">
-                <div className="absolute w-[280px] top-3 left-0 [font-family:'Poppins-SemiBold',Helvetica] font-semibold text-white text-base text-center tracking-[0] leading-[25.6px] whitespace-nowrap">
+                <div className="absolute w-[280px] top-3 left-0 font-poppins-semi-bold font-semibold text-white text-base text-center tracking-[0] leading-[25.6px] whitespace-nowrap">
                   Join the Brigade
                 </div>
               </div>

@@ -270,15 +270,15 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col w-80 items-center justify-center gap-3 px-3 py-6">
-              <div className="relative self-stretch [font-family:'Poppins-Bold',Helvetica] font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
+              <div className="relative self-stretch  font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
                 Join the Biome Brigade®
               </div>
 
-              <p className="relative self-stretch [font-family:'Poppins-Regular',Helvetica] font-regular  text-[#00263a] text-base text-center tracking-[0] leading-[25.6px]">
+              <p className="relative self-stretch  font-regular  text-[#00263a] text-base text-center tracking-[0] leading-[25.6px]">
               Complete the form to receive the Biome Brigade Comic Collectible, and a FREE GIVEAWAY!
               </p>
 
-              <div className="w-full space-y-3">
+              <div className="w-full space-y-3   ">
                 <div className="relative w-full group">
                   <div className={`relative h-12 rounded-[5px] border border-solid ${
                     errors.firstName ? 'border-[#D03C3C]' : 'border-[#abcae9]'
@@ -286,10 +286,10 @@ export default function Home() {
                     <input
                       id="firstName"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none ${
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none   ${
                         errors.firstName ? 'text-[#D03C3C]' : 'text-[#418FDE]'
                       } text-sm text-[12px] font-regular peer ${
-                        formData.firstName ? 'text-[14px] translate-y-1' : 'top-3'
+                        formData.firstName ? 'text-[14px] translate-y-1 ' : 'top-3'
                       }`}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       value={formData.firstName}
@@ -297,7 +297,7 @@ export default function Home() {
                     />
                     <label 
                       htmlFor="firstName"
-                      className={`absolute left-3.5 ${
+                      className={`absolute left-3.5  ${
                         errors.firstName ? 'text-[#D03C3C]' : 'text-[#418FDE]'
                       } transition-all duration-200 pointer-events-none ${
                         formData.firstName ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
@@ -719,12 +719,12 @@ export default function Home() {
                 </label>
               </div>
               {errors.phone && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.phone}</p>}
-              <div className="text-left w-full font-semibold text-[#00263A] text-sm peer  [font-family:'Poppins-Bold',Helvetica]">Confirm verification method:</div>
+              <div className="text-left w-full font-semibold text-[#00263A] text-sm peer  ">Confirm verification method:</div>
               
 
               
               <div className="flex gap-6 w-full">
-                <label className="flex items-center gap-3 cursor-pointer  [font-family:'Poppins-Bold',Helvetica]">
+                <label className="flex items-center gap-3 cursor-pointer  ">
                   <input 
                     type="radio" 
                     name="method" 
@@ -733,9 +733,9 @@ export default function Home() {
                     onChange={(e) => handleChange('method', e.target.value)} 
                     className="h-4 w-4 text-[#418FDE] "
                   />
-                  <span className="text-[14px] [font-family:'Poppins-Regular',Helvetica]">Email</span>
+                  <span className="text-[14px] ">Email</span>
                 </label>
-                <label className="flex items-center gap-3 cursor-pointer  [font-family:'Poppins-Bold',Helvetica]">
+                <label className="flex items-center gap-3 cursor-pointer  ">
                   <input 
                     type="radio" 
                     name="method" 
@@ -744,11 +744,11 @@ export default function Home() {
                     onChange={(e) => handleChange('method', e.target.value)} 
                     className="h-4 w-4 text-[#418FDE]"
                   />
-                  <span className="text-[14px] [font-family:'Poppins-Regular',Helvetica]">SMS</span>
+                  <span className="text-[14px] ">SMS</span>
                 </label>
               </div>
 
-              <label className="inline-flex items-center mt-1 text-[14px] [font-family:'Poppins-Regular',Helvetica]">
+              <label className="inline-flex items-center mt-1 text-[14px] ">
                 <input 
                   type="checkbox" 
                   className={`mr-2 p-1.5 ${errors.consent ? 'border-[#D03C3C]' : ''}`} 
@@ -768,7 +768,7 @@ export default function Home() {
                 {loading ? 'Sending...' : 'Submit'}
               </button>
               {error && <p className="text-red-600 mt-2 text-xs pl-4 ">{error}</p>}
-              <p className="text-[#666] text-[10px] mt-1 pl-6 [font-family:'Poppins-Regular',Helvetica]">
+              <p className="text-[#666] text-[10px] mt-1 pl-6 ">
                 Your information will not be shared with any third party, for any reason, ever.
               </p>
             </div>
@@ -792,11 +792,11 @@ export default function Home() {
                 />
               </div>
               <div className="flex flex-col w-80 items-center justify-center gap-3 px-6 py-6">
-                <div className="relative self-stretch [font-family:'Poppins-Bold',Helvetica] font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
+                <div className="relative self-stretch  font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
                   Code Deployed!
                 </div>
 
-                <p className="relative self-stretch [font-family:'Poppins-Regular',Helvetica] font-regular text-[#00263a] text-base text-center tracking-[0] leading-[25.6px]">
+                <p className="relative self-stretch  font-regular text-[#00263a] text-base text-center tracking-[0] leading-[25.6px]">
                   Enter the 6-digit code below to continue your mission.
                 </p>
                 
@@ -885,10 +885,10 @@ export default function Home() {
               <div className="flex flex-col w-80 items-center justify-center gap-3 px-6 py-6">
                 {showWheel ? (
                   <>
-                    <div className="relative self-stretch [font-family:'Poppins-Bold',Helvetica] font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
+                    <div className="relative self-stretch  font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
                       Your Mission Awaits!
                     </div>
-                    <p className="relative self-stretch [font-family:'Poppins-Regular',Helvetica] font-regular text-[#00263a] text-base text-center tracking-[0] leading-[25.6px] mb-4">
+                    <p className="relative self-stretch  font-regular text-[#00263a] text-base text-center tracking-[0] leading-[25.6px] mb-4">
                       Spin the wheel to discover your prize. Every spin is a chance to win something amazing!
                     </p>
                     <div className="w-full flex justify-center">
@@ -909,18 +909,18 @@ export default function Home() {
                   </>
                 ) : prize ? (
                   <div className="text-center">
-                    <div className="relative self-stretch [font-family:'Poppins-Bold',Helvetica] font-bold text-[#00263a] text-2xl text-center tracking-[0] leading-[normal] mb-2">
+                    <div className="relative self-stretch  font-bold text-[#00263a] text-2xl text-center tracking-[0] leading-[normal] mb-2">
                       Mission Complete! 🎉
                     </div>
                     <div className="mb-6 p-4 bg-[#f0f8ff] rounded-lg border border-[#d0e4ff]">
                       <p className="[font-family:'Poppins-SemiBold',Helvetica] text-[#1a5a96] text-lg">
                         You've won:
                       </p>
-                      <p className="[font-family:'Poppins-Bold',Helvetica] text-[#00263a] text-xl mt-2">
+                      <p className=" text-[#00263a] text-xl mt-2">
                         {prize.name}
                       </p>
                     </div>
-                    <p className="[font-family:'Poppins-Regular',Helvetica] text-[#00263a] text-base">
+                    <p className=" text-[#00263a] text-base">
                       Thank you for participating in our mission!
                     </p>
                   </div>
@@ -930,7 +930,7 @@ export default function Home() {
                     <p className="[font-family:'Poppins-Medium',Helvetica] text-[#00263a] text-lg">
                       Preparing your mission reward...
                     </p>
-                    <p className="[font-family:'Poppins-Regular',Helvetica] text-[#666] text-sm mt-2">
+                    <p className=" text-[#666] text-sm mt-2">
                       This will just take a moment
                     </p>
                   </div>
