@@ -917,11 +917,11 @@ export default function Home() {
                 {showWheel ? (
                   <>
                     <div className="relative self-stretch  font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
-                      Your Mission Awaits!
+                      CLAIM YOUR PRIZE!
                     </div>
-                    <p className="relative self-stretch  font-regular text-[#00263a] text-base text-center tracking-[0] leading-[25.6px] mb-4">
+                    {/* <p className="relative self-stretch  font-regular text-[#00263a] text-base text-center tracking-[0] leading-[25.6px] mb-4">
                       Spin the wheel to discover your prize. Every spin is a chance to win something amazing!
-                    </p>
+                    </p> */}
                     <div className="w-full flex justify-center">
                       <Wheel 
                         onSpinStart={() => setLoading(true)}
