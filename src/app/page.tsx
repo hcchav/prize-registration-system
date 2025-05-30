@@ -864,6 +864,9 @@ export default function Home() {
                         Code invalid. Please try again.
                       </p>
                     )}
+                    <p className="text-[#666] text-xs mt-2 pl-4">
+                      Tip: Can't find the code? Check your Spam or Promotions folder.
+                    </p>
                   </div>
 
                   <button
