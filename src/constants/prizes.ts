@@ -13,23 +13,23 @@ export const PRIZES: Prize[] = [
     name: 'Biome Brigade T-Shirt',
     displayText: 'T-Shirt',
     weight: 100,
-    color: '#4A90E2', // Blue
-    textColor: '#FFFFFF'
+    color: '#9cf7f7', // Light Teal
+    textColor: '#000000'
   },
   {
     id: 6,
     name: 'Biome Brigade Hat',
     displayText: 'Hat',
     weight: 100,
-    color: '#F7D046', // Yellow
-    textColor: '#000000'
+    color: '#03273b', // Dark Blue
+    textColor: '#FFFFFF'
   },
   {
     id: 3,
     name: 'Biome Brigade ItchGuard Daily Supplements',
     displayText: 'ItchGuard',
     weight: 100,
-    color: '#FF6B6B', // Red
+    color: '#ffe600', // Yellow
     textColor: '#FFFFFF'
   },
   {
@@ -37,7 +37,7 @@ export const PRIZES: Prize[] = [
     name: 'Biome Brigade Gut Health Test',
     displayText: 'Gut Test',
     weight: 100,
-    color: '#6B7A8F', // Gray
+    color: '#0971b9', // Blue (same as 1003)
     textColor: '#FFFFFF'
   },
   {
@@ -45,31 +45,31 @@ export const PRIZES: Prize[] = [
     name: 'Eli Cole Dog Toy',
     displayText: 'Eli Toy',
     weight: 100,
-    color: '#9B59B6', // Purple
-    textColor: '#FFFFFF'
+    color: '#2bca25', // Green
+    textColor: '#000000'
   },
   {
     id: 7,
     name: 'Flaky Jake Dog Toy',
     displayText: 'Flaky Toy',
     weight: 100,
-    color: '#E74C3C', // Red-Orange
-    textColor: '#FFFFFF'
+    color: '#e9f6ff', // Light Blue
+    textColor: '#000000'
   },
   {
     id: 8,
     name: 'Claus Stridium Dog Toy',
     displayText: 'Claus Toy',
     weight: 100,
-    color: '#3498DB', // Light Blue
-    textColor: '#FFFFFF'
+    color: '#f78615', // Orange
+    textColor: '#000000'
   },
   {
     id: 9,
     name: 'Biome Brigade Poster',
     displayText: 'Poster',
     weight: 100,
-    color: '#2C3E50', // Dark Blue
+    color: '#c90e07', // Red
     textColor: '#FFFFFF'
   }
 ];

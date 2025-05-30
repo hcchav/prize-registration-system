@@ -48,7 +48,17 @@
   --brand-lightblue-800: #00455c;
   --brand-lightblue-900: #001f2f;
   --brand-lightblue-1000: #418FDE;
-  
+
+  /* prize wheel colors */
+  --brand-prize-wheel-1001: #9cf7f7;
+  --brand-prize-wheel-1002: #03273b;
+  --brand-prize-wheel-1003: #0971b9;
+  --brand-prize-wheel-1004: #0971b9;
+  --brand-prize-wheel-1005: #2bca25;
+  --brand-prize-wheel-1006: #e9f6ff;
+  --brand-prize-wheel-1007: #f78615;
+  --brand-prize-wheel-1008: #c90e07;
+
   /* Custom Checkbox Styles */
   --checkbox-color: var(--brand-lightblue-1000);
   --checkbox-hover: #6cb3ff;
