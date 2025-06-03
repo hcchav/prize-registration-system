@@ -165,18 +165,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .order('created_at', { ascending: false })
     .limit(1);
 
-
+ console.log('existingVerified', existingVerified);
     // BYPASS EMAIL HERONCCHAVEZ@gmail.com
   if (email === 'heroncchavez@gmail.com') {
       // do nothing
   } else {
 
-    if (existingVerified) {
+    if (existingVerified && existingVerified.length > 0){
       console.log('Email already registered and verified:', email);
       return res.status(400).json({ success: false, error: 'This email address is already registered.' });
     }
+}
 
-  }
+  
 
   // Check for existing unverified entries
   const { data: existingUnverified } = await supabase
