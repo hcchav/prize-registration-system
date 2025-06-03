@@ -9,6 +9,15 @@ import { type Prize } from '@/constants/prizes';
 import Dropdown from '@/components/Dropdown';
 import CheckboxDropdown from '@/components/CheckboxDropdown';
 
+const US_STATES = [
+  'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+  'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+  'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+  'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+  'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
+  'DC', 'AS', 'GU', 'MP', 'PR', 'UM', 'VI'
+];
+
 export default function Home() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -410,16 +419,16 @@ export default function Home() {
                     <input
                       id="aptSuiteBuilding"
                       type="text"
-                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm`}
+                      className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm text-[12px] font-regular peer
+                      ${formData.aptSuiteBuilding ? 'text-[14px] translate-y-1' : 'top-3'}`}
                       onChange={(e) => handleChange('aptSuiteBuilding', e.target.value)}
                       value={formData.aptSuiteBuilding}
-                      placeholder=""
+                      placeholder=" "
                     />
                     <label 
                       htmlFor="aptSuiteBuilding"
-                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none ${
-                        formData.aptSuiteBuilding ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
-                      }`}
+                      className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none
+                        ${formData.aptSuiteBuilding ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'}`}
                     >
                       Apt, Suite, Building (Optional)
                     </label>
@@ -456,30 +465,26 @@ export default function Home() {
                   {errors.city && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.city}</p>}
                 </div>
 
-             
                 <div className="flex gap-2">
-                     {/* state */}
+                  {/* state */}
                   <div className="w-1/2">
-                    <div className={`relative h-12 rounded-[5px] border border-solid ${
-                      errors.state ? 'border-[#D03C3C]' : 'border-[#abcae9]'
-                    } ${errors.state ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
-                      <input
+                    <div className="relative h-12 rounded-[5px] border border-solid border-[#abcae9] bg-white">
+                      <select
                         id="state"
-                        type="text"
-                        className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none ${
-                          errors.state ? 'text-[#D03C3C]' : 'text-[#418FDE]'
-                        } text-sm text-[12px] font-regular peer ${
-                          formData.state ? 'text-[14px] translate-y-1' : 'top-3'
-                        }`}
-                        onChange={(e) => handleChange('state', e.target.value)}
                         value={formData.state}
-                        placeholder=" "
-                      />
+                        onChange={(e) => handleChange('state', e.target.value)}
+                        className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm`}
+                      >
+                        <option value="">Select a state</option>
+                        {US_STATES.map((state) => (
+                          <option key={state} value={state}>
+                            {state}
+                          </option>
+                        ))}
+                      </select>
                       <label 
                         htmlFor="state"
-                        className={`absolute left-3.5 ${
-                          errors.state ? 'text-[#D03C3C]' : 'text-[#418FDE]'
-                        } transition-all duration-200 pointer-events-none ${
+                        className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none ${
                           formData.state ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
                         }`}
                       >
