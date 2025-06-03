@@ -473,23 +473,26 @@ export default function Home() {
                         id="state"
                         value={formData.state}
                         onChange={(e) => handleChange('state', e.target.value)}
-                        className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm`}
+                        className={`w-full h-full px-3.5 pt-1 pb-0 bg-transparent outline-none text-[#418FDE] text-sm appearance-none`}
                       >
-                        <option value="">Select a state</option>
+                        <option value="">State</option>
                         {US_STATES.map((state) => (
                           <option key={state} value={state}>
                             {state}
                           </option>
                         ))}
                       </select>
-                      <label 
-                        htmlFor="state"
-                        className={`absolute left-3.5 text-[#418FDE] transition-all duration-200 pointer-events-none ${
-                          formData.state ? 'text-[10px] translate-y-1' : 'text-[14px] top-3'
-                        }`}
-                      >
-                        State
-                      </label>
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                        <svg 
+                          width="12" 
+                          height="8" 
+                          viewBox="0 0 12 8" 
+                          fill="none" 
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M1 1.5L6 6.5L11 1.5" stroke="#418FDE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
                     </div>
                     {errors.state && <p className="text-red-600 mt-2 text-xs pl-4 ">{errors.state}</p>}
                   </div>
