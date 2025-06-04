@@ -105,5 +105,5 @@ export default async function handler(
     return res.status(500).json({ error: 'Failed to update attendee' });
   }
 
-  return res.status(200).json({ success: true });
+  return res.status(200).json({ success: true, attendeeId: attendee.id });
 }

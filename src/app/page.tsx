@@ -18,6 +18,14 @@ const US_STATES = [
   'DC', 'AS', 'GU', 'MP', 'PR', 'UM', 'VI'
 ];
 
+const formatRegNumber = (id: string) => {
+  if (!id) return 'N/A';
+  // Extract numbers from the ID and take the last 4 digits
+  const numbers = id.replace(/\D/g, '');
+  const lastFour = numbers.slice(-4).padStart(4, '0');
+  return lastFour;
+};
+
 export default function Home() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -169,6 +177,11 @@ export default function Home() {
       if (data.error) {
         setError(data.error);
       } else {
+        // Store the attendee ID in state
+      if (data.attendeeId) {
+        localStorage.setItem('attendeeId', data.attendeeId);
+        console.log('Attendee ID stored:', data.attendeeId);
+      }
         setShowWheel(true);
         setStep(3);
       }
@@ -948,22 +961,23 @@ export default function Home() {
                   </>
                 ) : prize ? (
                   <div className="text-center">
-                    <div className="relative self-stretch  font-bold text-[#00263a] text-2xl text-center tracking-[0] leading-[normal] mb-2">
+                  <div className="relative self-stretch font-bold text-[#00263a] text-2xl text-center tracking-[0] leading-[normal] mb-2">
                     CONGRATULATIONS!
-                    </div>
-                    <div className="mb-6 p-4 b">
-                    <p className=" text-base font-regular text-[#00263a]">
-                    Go to the Biome Brigade Booth to Claim Your
-                    </p>
-                      <p className="text-[#1a5a96] text-base">
-                      
-                      </p>
-                      <p className=" text-[#00263a] text-[20px] mt-2 font-bold font-regular text-[var(--brand-lightblue-1000)]">
-                        {prize.name}
-                      </p>
-                    </div>
-                   
                   </div>
+                  <div className="mb-6 p-4 b">
+                    <p className="text-base font-regular text-[#00263a]">
+                      Go to the Biome Brigade Booth (#8737) to Claim Your
+                    </p>
+                    <p className="text-[#1a5a96] text-base"></p>
+                    <p className="text-[#00263a] text-[20px] mt-2 font-bold font-regular text-[var(--brand-lightblue-1000)]">
+                      {prize.name}
+                    </p>
+                    <p className="text-[#00263a] text-sm mt-2">
+                    Your Claim # is {formatRegNumber(localStorage.getItem('attendeeId') ||  'N/A')}
+
+                    </p>
+                  </div>
+                </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12">
                     <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#418FDE] mb-6"></div>
