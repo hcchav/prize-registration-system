@@ -79,10 +79,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Check if prize is still available
     if (prizeData.stock <= 0) {
+      // Check if there are any other prizes with stock available
+      const { data: availablePrizes, error: availableError } = await supabase
+        .from('prizes')
+        .select('id, name, stock')
+        .gt('stock', 0)
+        .neq('id', prizeIdNumber);
+
+      if (availableError) {
+        console.error('Error checking for available prizes:', availableError);
+        throw availableError;
+      }
+
+      // If there are other prizes available, return a specific code to allow respin
+      if (availablePrizes && availablePrizes.length > 0) {
+        return res.status(400).json({ 
+          error: 'Prize is no longer available',
+          code: 'PRIZE_OUT_OF_STOCK_RETRY',
+          details: 'This prize is out of stock. Please spin again for another prize.'
+        });
+      }
+
+      // If no prizes are available at all
       return res.status(400).json({ 
-        error: 'Prize is no longer available',
-        code: 'PRIZE_OUT_OF_STOCK',
-        details: 'This prize is out of stock. Please try another prize.'
+        error: 'No prizes available',
+        code: 'NO_PRIZES_AVAILABLE',
+        details: 'All prizes have been claimed. Please check back later.'
       });
     }
 

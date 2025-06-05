@@ -144,6 +144,27 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
     return availablePrizes[0];
   }, [availablePrizes]);
 
+  // Handle spin complete with error handling
+  const handleSpinComplete = useCallback(async (winningPrize: Prize) => {
+    try {
+      setResult(winningPrize);
+      
+      // Call the onSpinComplete callback
+      const spinCompleteResult = onSpinComplete(winningPrize);
+      if (spinCompleteResult && typeof spinCompleteResult.catch === 'function') {
+        await spinCompleteResult.catch((error: Error) => {
+          console.error('Error in onSpinComplete:', error);
+          setError(error.message);
+          onError?.(error.message);
+        });
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to process prize';
+      setError(errorMessage);
+      onError?.(errorMessage);
+    }
+  }, [onSpinComplete, onError]);
+
   // Animation function
   const animate = useCallback((timestamp: DOMHighResTimeStamp) => {
     if (!startTimeRef.current) {
@@ -175,16 +196,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
 
       // Determine the winning segment
       const winningPrize = getSegmentAtPointer(wheelAngleRef.current);
-      setResult(winningPrize);
-      
-      // Call the onSpinComplete callback
-      const spinCompleteResult = onSpinComplete(winningPrize);
-      if (spinCompleteResult && typeof spinCompleteResult.catch === 'function') {
-        spinCompleteResult.catch((error: Error) => {
-          console.error('Error in onSpinComplete:', error);
-          onError?.('Failed to process your prize. Please try again.');
-        });
-      }
+      handleSpinComplete(winningPrize);
 
       // Cancel the animation frame
       if (animationRef.current !== null) {
@@ -196,7 +208,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
       const nextFrame = requestAnimationFrame(animate);
       animationRef.current = nextFrame;
     }
-  }, [drawWheel, getSegmentAtPointer, onSpinComplete, onError]);
+  }, [drawWheel, getSegmentAtPointer, handleSpinComplete]);
 
   // Handle spin
   const spinWheel = useCallback(() => {
@@ -295,19 +307,26 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
         />
       </div>
       
-      {!spinning && !result && (
+      {!spinning && (!result || error) && (
         <button
-          onClick={spinWheel}
-          disabled={loading || !!error}
+          onClick={() => {
+            setError(null);
+            setResult(null);
+            spinWheel();
+          }}
+          disabled={loading || (!!error && !error.includes('out of stock'))}
           className="w-full h-12 bg-[#418FDE] hover:bg-[#2e7bc4] rounded-[5px] text-white font-medium text-base transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Loading...' : error ? 'Error Loading Prizes' : 'Spin the Wheel!'}
+          {loading 
+            ? 'Loading...' 
+            : error 
+              ? error.includes('out of stock') ? 'Spin Again' : 'Error Loading Prizes' 
+              : 'Spin the Wheel!'}
         </button>
       )}
       
       {spinning && <div className="text-lg font-semibold">Spinning...</div>}
- 
-      
+
       {error && !spinning && (
         <div className="text-red-500 text-center">{error}</div>
       )}

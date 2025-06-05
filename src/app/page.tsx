@@ -228,7 +228,23 @@ export default function Home() {
       
       if (!claimResponse.ok) {
         console.error('Prize claim failed:', claimData);
-        throw new Error(claimData.error || 'Failed to claim prize. It may be out of stock.');
+        
+        // Handle out of stock with retry
+        if (claimData.code === 'PRIZE_OUT_OF_STOCK_RETRY') {
+          setError(claimData.details);
+          // Don't set loading to false here, let the wheel handle the retry
+          return;
+        }
+        
+        // Handle no prizes available
+        if (claimData.code === 'NO_PRIZES_AVAILABLE') {
+          setError(claimData.details);
+          setShowWheel(false);
+          return;
+        }
+        
+        // Handle other errors
+        throw new Error(claimData.error || 'Failed to claim prize.');
       }
       
       // Update the prize state with the assigned prize
@@ -241,11 +257,9 @@ export default function Home() {
       const errorMessage = err instanceof Error ? err.message : 'Failed to process prize. Please try again.';
       setError(errorMessage);
       console.error('Prize processing error:', err);
-      // Re-enable the wheel for another try
-      setLoading(false);
-      // Don't re-throw here to prevent the wheel from catching it again
     } finally {
       setVerifying(false);
+      setLoading(false);
     }
   };
 
