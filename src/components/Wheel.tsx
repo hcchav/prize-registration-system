@@ -204,26 +204,54 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError }: WheelPro
     handleSpinCompleteRef.current = handleSpinComplete;
   }, [drawWheel, getSegmentAtPointer, handleSpinComplete]);
 
-  // Use prizes from the constants file
+  // Redraw wheel when inStockPrizes changes
   useEffect(() => {
-    try {
-      setLoading(true);
-      // Filter out any prizes with weight <= 0
-      const validPrizes = PRIZES.filter(prize => prize.weight > 0);
-      
-      if (validPrizes.length > 0) {
-        setAvailablePrizes(validPrizes);
-      } else {
-        setError('No valid prizes available');
-        onError?.('No valid prizes available');
-      }
-    } catch (err) {
-      console.error('Error initializing prizes:', err);
-      setError('Failed to initialize prizes');
-      onError?.('Failed to initialize prizes. Please try again later.');
-    } finally {
-      setLoading(false);
+    if (inStockPrizes.length > 0) {
+      drawWheel();
     }
+  }, [inStockPrizes, drawWheel]);
+
+  // Load prizes when component mounts
+  useEffect(() => {
+    const loadInitialPrizes = async () => {
+      try {
+        setLoading(true);
+        // First set available prizes from constants
+        const validPrizes = PRIZES.filter(prize => prize.weight > 0);
+        
+        // Check inventory to get in-stock prizes
+        const { data: prizes, error: prizeError } = await supabase
+          .from('prizes')
+          .select('id, stock')
+          .gt('stock', 0);
+
+        if (prizeError) throw prizeError;
+
+        // Create a set of in-stock prize IDs for quick lookup
+        const inStockPrizeIds = new Set(prizes.map(p => p.id));
+        
+        // Filter availablePrizes to only include those with stock > 0
+        const filteredPrizes = validPrizes.filter(prize => inStockPrizeIds.has(prize.id));
+        
+        // Update both states in sequence
+        setAvailablePrizes(validPrizes);
+        setInStockPrizes(filteredPrizes);
+        
+        if (filteredPrizes.length === 0) {
+          setError('No prizes currently available. Please check back later.');
+          onError?.('No prizes currently available. Please check back later.');
+        }
+      } catch (err) {
+        console.error('Error loading initial prizes:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load prizes';
+        setError(errorMessage);
+        onError?.(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadInitialPrizes();
   }, [onError]);
 
   // Check prize inventory before spinning
