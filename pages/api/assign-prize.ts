@@ -67,6 +67,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .eq('id', prizeIdNumber)
       .single();
 
+    console.log('Found prize:', prizeData);
+
     if (prizeError) throw prizeError;
     if (!prizeData) {
       return res.status(404).json({ 
