@@ -55,6 +55,7 @@ export default function Home() {
   const [resendDisabled, setResendDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [verified, setVerified] = useState(false);
   const [countryCode, setCountryCode] = useState('+1');
 
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -137,6 +138,10 @@ export default function Home() {
 
     if (res.ok && data.success) {
       setStep(2);
+      if (data.attendeeId) {
+        localStorage.setItem('attendeeId', data.attendeeId);
+        localStorage.setItem('attendeeEmail', formData.email);
+      }
     } else {
       setError(data.error || 'Failed to send code. Please try again.');
     }
@@ -176,41 +181,46 @@ export default function Home() {
 
       if (data.error) {
         setError(data.error);
-      } else {
-        // Store the attendee ID in state
+        return;
+      }
+
+      // Store the attendee ID from the verification response
       if (data.attendeeId) {
         localStorage.setItem('attendeeId', data.attendeeId);
-        console.log('Attendee ID stored:', data.attendeeId);
+        localStorage.setItem('attendeeEmail', formData.email);
       }
-        setShowWheel(true);
-        setStep(3);
-      }
+
+      setVerified(true);
+      setStep(3);
     } catch (err) {
       setVerifying(false);
-      setError('Verification failed. Please try again.');
+      setError('An error occurred. Please try again.');
+      console.error('Verification error:', err);
     }
   };
 
-  const handleSpinComplete = async (prize: Prize) => {
+  const handlePrizeSelection = async (winningPrize: Prize) => {
     try {
       setVerifying(true);
       setError('');
       
-      const attendeeId = formData.email || formData.phone;
+      // Get attendee ID from local storage
+      const attendeeId = localStorage.getItem('attendeeId');
       if (!attendeeId) {
-        throw new Error('No attendee identifier found');
+        throw new Error('No attendee ID found. Please try registering again.');
       }
       
-      console.log('Claiming prize for attendee:', { attendeeId, prizeId: prize.id });
+      console.log('Claiming prize for attendee ID:', { attendeeId, prizeId: winningPrize.id });
 
-      // First, try to claim the prize (increment claimed count and check stock)
-      const claimResponse = await fetch('/api/claim-prize', {
+      // Claim the prize using the assign-prize endpoint
+      const claimResponse = await fetch('/api/assign-prize', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          prizeId: prize.id,
+          prizeId: winningPrize.id,
+          attendeeIdentifier: attendeeId
         }),
       });
 
@@ -220,47 +230,31 @@ export default function Home() {
         console.error('Prize claim failed:', claimData);
         throw new Error(claimData.error || 'Failed to claim prize. It may be out of stock.');
       }
-
-      console.log('Prize claimed successfully, now assigning to attendee');
-
-      // If prize was successfully claimed, assign it to the attendee
-      const res = await fetch('/api/assign-prize', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          attendeeId,
-          prizeId: prize.id,
-          prizeName: prize.name,
-          method: formData.method
-        }),
-      });
-
-      const data = await res.json();
-      
-      if (!res.ok) {
-        console.error('Prize assignment failed:', data);
-        // If assignment fails after claiming, we might want to revert the claim
-        // For now, just show the error
-        throw new Error(data.error || 'Failed to assign prize');
-      }
       
       // Update the prize state with the assigned prize
-      setPrize(prize);
+      setPrize(winningPrize);
       setShowWheel(false);
       
-      console.log('Prize assigned successfully:', data);
+      console.log('Prize assigned successfully:', claimData);
       
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to process prize. Please try again.';
-      console.error('Prize processing error:', errorMessage);
-      throw new Error(errorMessage); // Re-throw to be caught by Wheel component
+      setError(errorMessage);
+      console.error('Prize processing error:', err);
+      // Re-enable the wheel for another try
+      setLoading(false);
+      // Don't re-throw here to prevent the wheel from catching it again
     } finally {
       setVerifying(false);
-      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // When the component mounts, show the wheel if we don't have a prize yet
+    if (!prize) {
+      setShowWheel(true);
+    }
+  }, [prize]);
 
   function setSelectedValue(value: string): void {
     throw new Error('Function not implemented.');
@@ -946,7 +940,7 @@ export default function Home() {
                     <div className="w-full flex justify-center">
                       <Wheel 
                         onSpinStart={() => setLoading(true)}
-                        onSpinComplete={handleSpinComplete}
+                        onSpinComplete={handlePrizeSelection}
                         onError={(error) => {
                           setError(error);
                           setLoading(false);

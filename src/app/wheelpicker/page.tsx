@@ -17,6 +17,8 @@ export default function WheelPicker() {
   const [canvasSize] = useState({ width: 400, height: 400 })
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [claiming, setClaiming] = useState(false)
+  const [claimError, setClaimError] = useState<string | null>(null)
 
   // Calculate total weight for angle calculations
   const totalWeight = PRIZES.reduce((sum, segment) => sum + segment.weight, 0)
@@ -37,7 +39,17 @@ export default function WheelPicker() {
     }
   }, [canvasSize])
 
+  // Add a mounted ref to prevent memory leaks
+  const isMounted = useRef(true);
 
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
 
   // Function to determine which segment is at the pointer
   const getSegmentAtPointer = useCallback((wheelAngle: number) => {
@@ -121,50 +133,118 @@ export default function WheelPicker() {
     ctx.stroke()
   }, [ctx, totalWeight])
 
+  // Function to claim the prize
+  const claimPrize = async (prizeId: number) => {
+    try {
+      setClaiming(true);
+      setClaimError(null);
+      
+      // Get attendee ID from local storage
+      const attendeeId = localStorage.getItem('attendeeId');
+      
+      if (!attendeeId) {
+        const errorMsg = 'No attendee ID found. Please return to the registration page and try again.';
+        console.error(errorMsg);
+        throw new Error(errorMsg);
+      }
+      
+      console.log('Claiming prize for attendee ID:', { prizeId, attendeeId });
+      
+      const response = await fetch('/api/assign-prize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prizeId: prizeId.toString(),
+          attendeeIdentifier: attendeeId
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to claim prize');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error claiming prize:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to claim prize';
+      setClaimError(errorMessage);
+      throw error;
+    } finally {
+      setClaiming(false);
+    }
+  };
+
+  // Handle spin completion
+  const handleSpinComplete = useCallback(async (winningPrize: Prize) => {
+    if (!isMounted.current) return null;
+    
+    try {
+      setResult(winningPrize);
+      
+      // Check if we have a valid prize
+      if (!winningPrize?.id) {
+        throw new Error('No valid prize selected');
+      }
+      
+      // Just return the winning prize, don't try to claim it here
+      return winningPrize;
+      
+    } catch (error) {
+      console.error('Error in handleSpinComplete:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to process prize';
+      setClaimError(errorMessage);
+      throw error;
+    }
+  }, []);
+
   // Animation function
-  const animate = useCallback((timestamp: DOMHighResTimeStamp) => {
+  const animate = useCallback(async (timestamp: DOMHighResTimeStamp) => {
     if (!startTimeRef.current) {
-      startTimeRef.current = timestamp
+      startTimeRef.current = timestamp;
     }
 
-    const elapsed = timestamp - startTimeRef.current
-    const progress = Math.min(elapsed / spinDurationRef.current, 1)
+    const elapsed = timestamp - startTimeRef.current;
+    const progress = Math.min(elapsed / spinDurationRef.current, 1);
 
     // Easing function for natural deceleration
-    const easeOutCubic = 1 - Math.pow(1 - progress, 3)
+    const easeOutCubic = 1 - Math.pow(1 - progress, 3);
 
     // Calculate current speed based on progress
-    const initialSpeed = 0.3
-    const currentSpeed = initialSpeed * (1 - easeOutCubic)
+    const initialSpeed = 0.3;
+    const currentSpeed = initialSpeed * (1 - easeOutCubic);
 
     // Update wheel angle
-    const currentAngle = wheelAngleRef.current
-    wheelAngleRef.current = (currentAngle + currentSpeed) % (2 * Math.PI)
+    const currentAngle = wheelAngleRef.current;
+    wheelAngleRef.current = (currentAngle + currentSpeed) % (2 * Math.PI);
 
     // Draw the wheel
-    drawWheel()
+    drawWheel();
 
     // If animation is complete
     if (progress >= 1) {
       // Stop the animation
-      setSpinning(false)
-      startTimeRef.current = null
+      setSpinning(false);
+      startTimeRef.current = null;
 
       // Determine the winning segment
-      const winningPrize = getSegmentAtPointer(wheelAngleRef.current)
-      setResult(winningPrize)
+      const winningPrize = getSegmentAtPointer(wheelAngleRef.current);
+      await handleSpinComplete(winningPrize);
 
       // Cancel the animation frame
       if (animationRef.current !== null) {
-        cancelAnimationFrame(animationRef.current)
-        animationRef.current = null
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
       }
     } else {
       // Continue the animation
-      const nextFrame = requestAnimationFrame(animate)
-      animationRef.current = nextFrame
+      const nextFrame = requestAnimationFrame(animate);
+      animationRef.current = nextFrame;
     }
-  }, [drawWheel, getSegmentAtPointer])
+  }, [drawWheel, getSegmentAtPointer, handleSpinComplete]);
 
   // Draw wheel when context is ready
   useEffect(() => {
@@ -227,6 +307,19 @@ export default function WheelPicker() {
             <h2 className="text-xl font-semibold text-gray-900">
               You won: <span className="text-blue-600">{result.name}!</span>
             </h2>
+            {claiming && (
+              <p className="text-gray-600 mt-2">Claiming your prize...</p>
+            )}
+            {claimError && (
+              <p className="text-red-600 mt-2">
+                {claimError} <button 
+                  onClick={() => handleSpin()} 
+                  className="text-blue-600 underline"
+                >
+                  Try again
+                </button>
+              </p>
+            )}
           </div>
         )}
 
