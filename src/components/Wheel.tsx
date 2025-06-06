@@ -169,27 +169,36 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
 
   // Start spinning when assignedPrize is set
   useEffect(() => {
+    console.log('Start Wheel useEffect');
+    console.log('Assigned prize:', assignedPrize);
     if (!assignedPrize || hasStartedSpinRef.current) return;
 
     console.log('Starting wheel spin to prize:', assignedPrize);
     
+    // Reset animation state
+    hasStartedSpinRef.current = true;
+    setSpinning(true);
+    
     // Calculate segment and prize position
     const segmentAngle = (2 * Math.PI) / availablePrizes.length;
     const prizeIndex = availablePrizes.findIndex(p => p.id === assignedPrize.id);
+    
+    if (prizeIndex === -1) {
+      console.error('Prize not found in available prizes');
+      return;
+    }
     
     // Calculate the center angle of the target prize segment
     const targetPrizeAngle = (prizeIndex * segmentAngle) + (segmentAngle / 2);
     
     // Calculate the angle needed to rotate the prize to the top (12 o'clock)
     // We want to rotate the wheel such that the target prize ends up at -90° (12 o'clock)
-    // Since 0° is at 3 o'clock, we need to rotate by (2π - targetAngle - π/2)
-    // to bring the prize to the top
     const rotationToTop = (2 * Math.PI) - targetPrizeAngle - (Math.PI / 2);
     
     // Add full rotations for a nice spin effect
     const fullRotations = 5;
-    const startAngle = 0;
-    const endAngle = (2 * Math.PI * fullRotations) + rotationToTop;
+    const startAngle = wheelAngleRef.current?.currentAngle || 0;
+    const endAngle = startAngle + (2 * Math.PI * fullRotations) + rotationToTop;
     
     // Debug information
     const debugMsg = `Spinning to prize: ${assignedPrize.name}\n` +
@@ -224,7 +233,7 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
       const easeOutCubic = 1 - Math.pow(1 - progress, 3);
       
       // Calculate current angle with easing
-      const currentAngle = startAngle + (endAngle * easeOutCubic);
+      const currentAngle = startAngle + ((endAngle - startAngle) * easeOutCubic);
       
       // Update the wheel angle
       if (wheelAngleRef.current) {
@@ -251,6 +260,9 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
             wheelAngleRef.current.targetPrize = undefined;
           }
           hasStartedSpinRef.current = false;
+          
+          // Force a redraw to ensure final position is correct
+          drawWheel();
         }, 1000);
       }
     };
@@ -272,20 +284,22 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
   // Handle spin button click
   const handleSpin = useCallback(async () => {
     if (spinning || loading || !availablePrizes.length) return;
-    
+
     try {
       onSpinStart?.();
       setLoading(true);
+      setError(null);
       
-      // Get attendee data from localStorage
+      // Reset animation state
+      hasStartedSpinRef.current = false;
+      
+      // Get attendee ID from localStorage
       const attendeeData = localStorage.getItem('attendeeId');
       if (!attendeeData) {
-        throw new Error('No attendee data found. Please register first.');
+        throw new Error('No attendee data found');
       }
       
       const attendeeId = JSON.parse(attendeeData);
-      console.log('Attendee ID:', attendeeId);
-      
       if (!attendeeId) {
         throw new Error('Invalid attendee data');
       }
@@ -308,20 +322,40 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
       }
       
       const data = await response.json();
-      console.log('Assigned prize:', data);
-      setAssignedPrize(data.prize);
+    
+      console.log('API Response:', data);
+      
+      // Find the matching prize from availablePrizes to ensure we have all properties
+      const prize = availablePrizes.find(p => p.id === data?.id);
+
+      if (!prize) {
+        throw new Error('Prize not found in available prizes');
+      }
+      
+      console.log('Setting prize:', prize);
+      
+      // Reset the wheel angle to ensure clean spin
+      if (wheelAngleRef.current) {
+        wheelAngleRef.current.currentAngle = 0;
+      }
+      
+      // Set the assigned prize to trigger the animation
+      setAssignedPrize(prize);
     } catch (err) {
       console.error('Error spinning wheel:', err);
-      onError?.('Failed to spin wheel. Please try again.');
+      onError?.(err instanceof Error ? err.message : 'Failed to spin wheel. Please try again.');
     } finally {
       setLoading(false);
     }
-  }, [spinning, loading, availablePrizes.length, onSpinStart, onError]);
+  }, [spinning, loading, availablePrizes, onSpinStart, onError]);
 
   // Test spin function
   const handleTestSpin = () => {
     if (availablePrizes.length > 0) {
       const randomIndex = Math.floor(Math.random() * availablePrizes.length);
+      console.log('Random index:', randomIndex);
+      console.log('Available prizes:', availablePrizes);
+      console.log('Selected prize:', availablePrizes[randomIndex]);
       setAssignedPrize(availablePrizes[randomIndex]);
     }
   };
