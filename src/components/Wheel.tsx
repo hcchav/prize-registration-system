@@ -56,7 +56,13 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
         
         // Use all prizes for the wheel display
         const prizesWithPosition = allPrizes.map((prize, index) => ({
-          ...prize,
+          id: prize.id,
+          name: prize.name,
+          displayText: prize.display_text || prize.name, // Use display_text from DB or fallback to name
+          color: prize.color || '#9cf7f7', // Default color if not specified
+          textColor: '#000000', // Default text color
+          weight: 100, // Default weight
+          stock: prize.stock,
           wheelPosition: (index * (2 * Math.PI)) / allPrizes.length,
           // Mark if the prize is out of stock
           isOutOfStock: !availablePrizes.some(p => p.id === prize.id)
@@ -101,12 +107,14 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
       
       // Style segment - use gray for out-of-stock prizes
       const isOutOfStock = prize.isOutOfStock || (prize.stock !== undefined && prize.stock <= 0);
+      
+      // Use the color from the prize or a default
       let segmentColor = prize.color || (index % 2 === 0 ? '#FF6B6B' : '#4ECDC4');
       
-      if (isOutOfStock) {
-        // Desaturate and lighten the color for out-of-stock items
-        segmentColor = '#CCCCCC';
-      }
+      // if (isOutOfStock) {
+      //   // Desaturate and lighten the color for out-of-stock items
+      //   segmentColor = '#CCCCCC';
+      // }
       
       ctx.fillStyle = segmentColor;
       ctx.fill();
@@ -128,12 +136,20 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
       
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = isOutOfStock ? '#888888' : '#FFFFFF';
+      
+      // Use textColor from prize or default to white/black based on background
+      const textColor = isOutOfStock ? '#888888' : 
+                        (prize.textColor || (index % 2 === 0 ? '#FFFFFF' : '#000000'));
+      
+      ctx.fillStyle = textColor;
       ctx.font = 'bold 14px Arial';
+      
+      // Use displayText instead of name for the wheel
+      const displayText = prize.displayText || prize.name;
       
       // Split text into multiple lines if needed
       const maxWidth = radius * 0.8;
-      const words = prize.name.split(' ');
+      const words = displayText.split(' ');
       let line = '';
       let y = -10;
       
@@ -150,6 +166,7 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
         }
       }
       
+      // Draw the last line
       if (line) {
         ctx.fillText(line, 0, y);
       }
