@@ -954,7 +954,7 @@ export default function Home() {
                     <div className="w-full flex justify-center">
                       <Wheel 
                         onSpinStart={() => setLoading(true)}
-                        onSpinComplete={handlePrizeSelection}
+                        // onSpinComplete={handlePrizeSelection}
                         onError={(error) => {
                           setError(error);
                           setLoading(false);

@@ -113,7 +113,7 @@ function htmlTemplateWithOTP(otp: string) {
                   </p>
                   <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; margin: 0 0 10px 0;">Your OTP Code:</p>
                   <div class="otp-code">
-                    ${otp.match(/\d/g)?.join(' ')}
+                    ${otp.match(/\d/g)?.join('')}
                   </div>
                 </div>
               </div>
