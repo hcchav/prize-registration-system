@@ -125,51 +125,28 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
       ctx.stroke();
       
       // Add text
-      const textRadius = radius * 0.7;
+      const textRadius = radius * 0.6;
       const textAngle = startAngle + (segmentAngle / 2);
       const textX = centerX + Math.cos(textAngle) * textRadius;
       const textY = centerY + Math.sin(textAngle) * textRadius;
       
       ctx.save();
       ctx.translate(textX, textY);
-      ctx.rotate(textAngle + Math.PI/2);
+      ctx.rotate(textAngle + Math.PI);
       
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       
       // Use textColor from prize or default to white/black based on background
-      const textColor = isOutOfStock ? '#888888' : 
-                        (prize.textColor || (index % 2 === 0 ? '#FFFFFF' : '#000000'));
+      const textColor = '#FFFFFF'
+      // (prize.textColor || (index % 2 === 0 ? '#FFFFFF' : '#FFFFFF'));
       
       ctx.fillStyle = textColor;
       ctx.font = 'bold 14px Arial';
       
       // Use displayText instead of name for the wheel
       const displayText = prize.displayText || prize.name;
-      
-      // Split text into multiple lines if needed
-      const maxWidth = radius * 0.8;
-      const words = displayText.split(' ');
-      let line = '';
-      let y = -10;
-      
-      for (const word of words) {
-        const testLine = line ? `${line} ${word}` : word;
-        const metrics = ctx.measureText(testLine);
-        
-        if (metrics.width > maxWidth && line) {
-          ctx.fillText(line, 0, y);
-          line = word;
-          y += 20;
-        } else {
-          line = testLine;
-        }
-      }
-      
-      // Draw the last line
-      if (line) {
-        ctx.fillText(line, 0, y);
-      }
+      ctx.fillText(displayText, 0, 0);
       
       ctx.restore();
     });
