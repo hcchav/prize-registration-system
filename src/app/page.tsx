@@ -959,6 +959,7 @@ export default function Home() {
                           setError(error);
                           setLoading(false);
                         }}
+                        testMode={true}
                       />
                     </div>
                     {error && (

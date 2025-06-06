@@ -83,34 +83,38 @@ export default async function handler(
 
     console.log('Selected prize (weighted random):', selectedPrize);
 
-    // 2. Decrement prize stock
+    // 2. Decrement prize stock using the database function
     try {
-      // Try using the decrement_prize_stock function
+      // First try using the decrement_prize_stock function
       const { error: stockError } = await supabase.rpc('decrement_prize_stock', {
-        prize_id: selectedPrize.id
+        prize_id: selectedPrize.id,
+        amount: 1
       });
-
+      
+      // If the function fails, fall back to direct update
       if (stockError) {
-        console.warn('decrement_prize_stock function failed, updating stock directly', stockError);
-        // Fallback to direct update if function fails
+        console.warn('decrement_prize_stock function failed, falling back to direct update', stockError);
+        
+        // Get current values first
         const { data: currentPrize, error: fetchError } = await supabase
           .from('prizes')
-          .select('stock')
+          .select('stock, claimed')
           .eq('id', selectedPrize.id)
           .single();
           
-        if (!fetchError && currentPrize) {
-          const newStock = Math.max(0, currentPrize.stock - 1);
-          const { error: updateError } = await supabase
-            .from('prizes')
-            .update({ stock: newStock })
-            .eq('id', selectedPrize.id);
-            
-          if (updateError) {
-            console.error('Error updating prize stock:', updateError);
-            // Continue anyway since we'll handle the stock check in the next step
-          }
-        }
+        if (fetchError) throw fetchError;
+        
+        // Then update with direct query
+        const { error: updateError } = await supabase
+          .from('prizes')
+          .update({ 
+            stock: Math.max(0, (currentPrize?.stock || 0) - 1),
+            claimed: (currentPrize?.claimed || 0) + 1,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', selectedPrize.id);
+          
+        if (updateError) throw updateError;
       }
     } catch (stockUpdateError) {
       console.error('Error in stock update:', stockUpdateError);
