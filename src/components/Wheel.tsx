@@ -364,18 +364,19 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
   return (
     <div className="flex flex-col items-center w-full max-w-md mx-auto">
       <div className="relative w-full max-w-xs mx-auto">
-        {/* HTML Pointer that stays fixed at the top */}
-        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-10">
-          <div className="w-0 h-0 border-l-[20px] border-r-[20px] border-b-[40px] border-l-transparent border-r-transparent border-b-yellow-400 drop-shadow-lg" />
-          <div className="w-16 h-4 bg-yellow-400 mx-auto -mt-1 rounded-sm shadow-inner" />
-        </div>
-        
         <canvas 
           ref={canvasRef}
           width={300}
           height={300}
           className="w-full aspect-square rounded-full shadow-lg relative z-0"
         />
+        {/* Center pointer */}
+        <div className="absolute top-7 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-16 h-16 flex justify-center items-start">
+          <div className="relative">
+            <div className="absolute -top-px -left-px w-0 h-0 border-l-[18px] border-r-[18px] border-t-[28px] border-l-transparent border-r-transparent border-t-blue-900" />
+            <div className="w-0 h-0 border-l-[16px] border-r-[16px] border-t-[26px] border-l-transparent border-r-transparent border-t-blue-900" />
+          </div>
+        </div>
       </div>
       
       <Button
