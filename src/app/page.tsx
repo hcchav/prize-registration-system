@@ -56,6 +56,7 @@ export default function Home() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [code, setCode] = useState('');
   const [prize, setPrize] = useState<Prize | null>(null);
+  const [noPrizeAvailable, setNoPrizeAvailable] = useState(false);
   const [showWheel, setShowWheel] = useState(true);
   const [showCongratsModal, setShowCongratsModal] = useState(false);
   const [error, setError] = useState('');
@@ -303,8 +304,14 @@ export default function Home() {
     }
   };
 
-  const handleSpinComplete = (prize: Prize) => {
-    setPrize(prize);
+  const handleSpinComplete = (prize: Prize | null) => {
+    if (!prize) {
+      setNoPrizeAvailable(true);
+      setPrize(null);
+    } else {
+      setNoPrizeAvailable(false);
+      setPrize(prize);
+    }
     setLoading(false);
     setShowCongratsModal(true);
   };
@@ -1004,7 +1011,6 @@ export default function Home() {
                       setError(error);
                       setLoading(false);
                     }}
-                    testMode={true}
                   />
                   {error && (
                     <p className="text-red-500 text-sm text-center mt-2">
@@ -1012,9 +1018,8 @@ export default function Home() {
                     </p>
                   )}
                 </div>
-
                 {/* Confetti Effect */}
-                {showConfetti && (
+                {showConfetti && !noPrizeAvailable && (
                   <div className="fixed inset-0 z-[100] pointer-events-none">
                     <ReactConfetti
                       width={windowSize.width}
@@ -1033,20 +1038,38 @@ export default function Home() {
                     <div className="fixed inset-0 bg-black opacity-50"></div>
                     <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 z-10">
                       <div className="text-center">
-                        <div className="font-bold text-2xl text-[#00263a] mb-4">
-                          CONGRATULATIONS!
-                        </div>
-                        <div className="mb-4">
-                          <p className="text-base text-[#00263a]">
-                            Go to the Biome Brigade Booth (#8737) to Claim Your
-                          </p>
-                          <p className="text-[var(--brand-lightblue-1000)] text-xl font-bold mt-2">
-                            {prize?.name || 'Your Prize'}
-                          </p>
-                          <p className="text-[#00263a] text-sm mt-3">
-                            Your Claim # is {formatRegNumber(localStorage.getItem('attendeeId') || 'N/A')}
-                          </p>
-                        </div>
+                        {noPrizeAvailable ? (
+                          <>
+                            <div className="font-bold text-2xl text-[#00263a] mb-4">
+                            All Prizes Claimed. Thank you for participating!
+                            </div>
+                            <div className="mb-4">
+                              <p className="text-base text-[#00263a]">
+                                Go to the Biome Brigade Booth (#8737) to Claim Your
+                              </p>
+                              <p className="text-[var(--brand-lightblue-1000)] text-xl font-bold mt-2">
+                                Biome Brigade Comic Collectible
+                              </p>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="font-bold text-2xl text-[#00263a] mb-4">
+                              CONGRATULATIONS!
+                            </div>
+                            <div className="mb-4">
+                              <p className="text-base text-[#00263a]">
+                                Go to the Biome Brigade Booth (#8737) to Claim Your
+                              </p>
+                              <p className="text-[var(--brand-lightblue-1000)] text-xl font-bold mt-2">
+                                {prize?.name || 'Your Prize'}
+                              </p>
+                              <p className="text-[#00263a] text-sm mt-3">
+                                Your Claim # is {formatRegNumber(localStorage.getItem('attendeeId') || 'N/A')}
+                              </p>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

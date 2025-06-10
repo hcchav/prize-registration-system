@@ -327,6 +327,13 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        // Special handling for no prizes available
+        if (response.status === 404 && errorData.code === 'NO_PRIZES_AVAILABLE') {
+          // Trigger fallback modal
+          onSpinComplete?.(null);
+          setLoading(false);
+          return;
+        }
         throw new Error(errorData.error || 'Failed to assign prize');
       }
       
