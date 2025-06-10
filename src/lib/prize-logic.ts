@@ -58,7 +58,7 @@ export async function getAvailablePrize(): Promise<Prize | null> {
       }
       // When calculating weight, use a default value if weight is not set
       const weight = 'weight' in prize ? prize.weight : 1;
-      random -= weight;
+      // random -= weight;
       if (random <= 0) {
         selectedPrize = prize;
         break;
