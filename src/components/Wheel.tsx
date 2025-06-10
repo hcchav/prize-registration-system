@@ -120,9 +120,9 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
       ctx.fill();
       
       // Add stroke between segments
-      ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      // ctx.strokeStyle = '#FFFFFF';
+      // ctx.lineWidth = 2;
+      // ctx.stroke();
       
       // Add text
       const textRadius = radius * 0.6;
@@ -142,7 +142,7 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
       // (prize.textColor || (index % 2 === 0 ? '#FFFFFF' : '#FFFFFF'));
       
       ctx.fillStyle = textColor;
-      ctx.font = 'bold 14px Arial';
+      ctx.font = 'bold 15px Arial';
       
       // Use displayText instead of name for the wheel
       const displayText = prize.displayText || prize.name;
@@ -154,10 +154,14 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
     // Draw center circle
     ctx.beginPath();
     ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
-    ctx.fillStyle = '#FFFFFF';
+    ctx.fillStyle = '#022635';
+    
+    ctx.lineWidth = 2;  
+    ctx.strokeStyle = '#222222';
+
+    
+
     ctx.fill();
-    ctx.strokeStyle = '#000000';
-    ctx.lineWidth = 2;
     ctx.stroke();
   }, [availablePrizes]);
 
@@ -368,13 +372,13 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
           ref={canvasRef}
           width={300}
           height={300}
-          className="w-full aspect-square rounded-full shadow-lg relative z-0"
+          className="w-full aspect-square rounded-full shadow-[0_0_10px_0_rgba(0,0,0,0.5)] relative z-0"
         />
         {/* Center pointer */}
-        <div className="absolute top-7 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-16 h-16 flex justify-center items-start">
-          <div className="relative">
-            <div className="absolute -top-px -left-px w-0 h-0 border-l-[18px] border-r-[18px] border-t-[28px] border-l-transparent border-r-transparent border-t-blue-900" />
-            <div className="w-0 h-0 border-l-[16px] border-r-[16px] border-t-[26px] border-l-transparent border-r-transparent border-t-blue-900" />
+        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-16 h-16 flex justify-center items-start">
+          <div className="relative drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]">
+            <div className="absolute -top-px -left-px w-0 h-0 border-l-[18px] border-r-[18px] border-t-[28px] border-l-transparent border-r-transparent border-t-[#022635]" />
+            <div className="w-0 h-0 border-l-[16px] border-r-[16px] border-t-[26px] border-l-transparent border-r-transparent border-t-[#022635]" />
           </div>
         </div>
       </div>
