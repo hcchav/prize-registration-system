@@ -62,6 +62,8 @@ export interface Database {
           name: string
           stock: number
           claimed: number
+          display_text: string
+          color: string
           created_at?: string
         }
         Insert: {

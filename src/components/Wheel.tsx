@@ -7,11 +7,12 @@ import { supabase } from '@/lib/supabase';
 
 interface WheelProps {
   onSpinStart?: () => void;
+  onSpinComplete?: (prize: Prize) => void;
   onError?: (message: string) => void;
   testMode?: boolean;
 }
 
-export default function Wheel({ onSpinStart, onError, testMode = false }: WheelProps) {
+export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode = false }: WheelProps) {
   const [availablePrizes, setAvailablePrizes] = useState<Prize[]>([]);
   const [spinning, setSpinning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -241,27 +242,37 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
       }
       
       // Redraw the wheel
+      console.log('Redrawing wheel...');
       drawWheel();
+      console.log('Wheel redrawn');
       
       // Continue animation if not complete
       if (progress < 1) {
+        console.log('Animation not complete, progress:', progress);
         const frame = requestAnimationFrame(animate);
         animationRef.current = frame;
       } else {
         // Animation complete
+        console.log('Animation complete');
         setSpinning(false);
         
+        // Call the onSpinComplete callback with the assigned prize
+        if (assignedPrize) {
+          console.log('Calling onSpinComplete with prize:', assignedPrize);
+          onSpinComplete?.(assignedPrize);
+        }
+        
         // Reset for next spin after a delay
-        setTimeout(() => {
-          if (wheelAngleRef.current) {
-            wheelAngleRef.current.finalAngle = undefined;
-            wheelAngleRef.current.targetPrize = undefined;
-          }
-          hasStartedSpinRef.current = false;
+        // setTimeout(() => {
+        //   if (wheelAngleRef.current) {
+        //     wheelAngleRef.current.finalAngle = undefined;
+        //     wheelAngleRef.current.targetPrize = undefined;
+        //   }
+        //   hasStartedSpinRef.current = false;
           
-          // Force a redraw to ensure final position is correct
-          drawWheel();
-        }, 1000);
+        //   // Force a redraw to ensure final position is correct
+        //   drawWheel();
+        // }, 1000);
       }
     };
     
@@ -277,7 +288,7 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
       }
       startTimeRef.current = null;
     };
-  }, [assignedPrize, availablePrizes, drawWheel]);
+  }, [assignedPrize, availablePrizes, drawWheel, onSpinComplete]);
 
   // Handle spin button click
   const handleSpin = useCallback(async () => {
@@ -402,7 +413,7 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
       </Button>
       
       {/* Debug Info */}
-      <div className="mt-6 p-4 bg-gray-100 rounded-lg w-full max-w-xs">
+      {/* <div className="mt-6 p-4 bg-gray-100 rounded-lg w-full max-w-xs">
         <h3 className="font-bold mb-2 text-gray-800">Debug Info:</h3>
         <pre className="text-xs whitespace-pre-wrap bg-white p-2 rounded">
           {debugInfo || 'No debug information available'}
@@ -423,7 +434,7 @@ export default function Wheel({ onSpinStart, onError, testMode = false }: WheelP
             Test Spin (Random Prize)
           </button>
         )}
-      </div>
+      </div> */}
       
       {error && (
         <div className="mt-4 p-2 bg-red-100 text-red-700 rounded text-center">

@@ -50,7 +50,7 @@ export default function Home() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [code, setCode] = useState('');
   const [prize, setPrize] = useState<Prize | null>(null);
-  const [showWheel, setShowWheel] = useState(false);
+  const [showWheel, setShowWheel] = useState(true);
   const [error, setError] = useState('');
   const [resendDisabled, setResendDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -261,6 +261,12 @@ export default function Home() {
       setVerifying(false);
       setLoading(false);
     }
+  };
+
+  const handleSpinComplete = (prize: Prize) => {
+    setPrize(prize);
+    setShowWheel(false);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -944,58 +950,43 @@ export default function Home() {
               </div> */}
               <div className="flex flex-col w-80 items-center justify-center gap-3 px-6 py-6">
                 {showWheel ? (
-                  <>
-                    <div className="relative self-stretch  font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal]">
+                  <div className="w-full flex flex-col items-center">
+                    <div className="relative self-stretch font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal] mb-4">
                       CLAIM YOUR PRIZE!
                     </div>
-                    {/* <p className="relative self-stretch  font-regular text-[#00263a] text-base text-center tracking-[0] leading-[25.6px] mb-4">
-                      Spin the wheel to discover your prize. Every spin is a chance to win something amazing!
-                    </p> */}
-                    <div className="w-full flex justify-center">
-                      <Wheel 
-                        onSpinStart={() => setLoading(true)}
-                        // onSpinComplete={handlePrizeSelection}
-                        onError={(error) => {
-                          setError(error);
-                          setLoading(false);
-                        }}
-                        testMode={true}
-                      />
-                    </div>
+                    <Wheel 
+                      onSpinStart={() => setLoading(true)}
+                      onSpinComplete={handleSpinComplete}
+                      onError={(error) => {
+                        setError(error);
+                        setLoading(false);
+                      }}
+                      testMode={true}
+                    />
                     {error && (
                       <p className="text-red-500 text-sm text-center mt-2">
                         {error}
                       </p>
                     )}
-                  </>
-                ) : prize ? (
-                  <div className="text-center">
-                  <div className="relative self-stretch font-bold text-[#00263a] text-2xl text-center tracking-[0] leading-[normal] mb-2">
-                    CONGRATULATIONS!
                   </div>
-                  <div className="mb-6 p-4 b">
-                    <p className="text-base font-regular text-[#00263a]">
-                      Go to the Biome Brigade Booth (#8737) to Claim Your
-                    </p>
-                    <p className="text-[#1a5a96] text-base"></p>
-                    <p className="text-[#00263a] text-[20px] mt-2 font-bold font-regular text-[var(--brand-lightblue-1000)]">
-                      {prize.name}
-                    </p>
-                    <p className="text-[#00263a] text-sm mt-2">
-                    Your Claim # is {formatRegNumber(localStorage.getItem('attendeeId') ||  'N/A')}
-
-                    </p>
-                  </div>
-                </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#418FDE] mb-6"></div>
-                    <p className="[font-family:'Poppins-Medium',Helvetica] text-[#00263a] text-lg">
-                      Preparing your mission reward...
-                    </p>
-                    <p className=" text-[#666] text-sm mt-2">
-                      This will just take a moment
-                    </p>
+                  <div className="text-center w-full">
+                    <div className="relative self-stretch font-bold text-[#00263a] text-2xl text-center tracking-[0] leading-[normal] mb-2">
+                      CONGRATULATIONS!
+                    </div>
+                    <div className="mb-6 p-4">
+                      <p className="text-base font-regular text-[#00263a]">
+                        Go to the Biome Brigade Booth (#8737) to Claim Your
+                      </p>
+                      <p className="text-[#1a5a96] text-base"></p>
+                      <p className="text-[#00263a] text-[20px] mt-2 font-bold font-regular text-[var(--brand-lightblue-1000)]">
+                        {prize?.name || 'Your Prize'}
+                      </p>
+                      <p className="text-[#00263a] text-sm mt-2">
+                        Your Claim # is {formatRegNumber(localStorage.getItem('attendeeId') || 'N/A')}
+
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
