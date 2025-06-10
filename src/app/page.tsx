@@ -1,6 +1,12 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import ReactConfetti to ensure it only loads on the client side
+const ReactConfetti = dynamic(() => import('react-confetti'), {
+  ssr: false
+});
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput, { CountryData } from 'react-phone-input-2';
 import Image from 'next/image';
@@ -58,6 +64,39 @@ export default function Home() {
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
   const [countryCode, setCountryCode] = useState('+1');
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const [showConfetti, setShowConfetti] = useState(false);
+  const confettiRef = useRef<HTMLDivElement>(null);
+
+  // Set up window size tracking for confetti
+  useEffect(() => {
+    const updateWindowSize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    // Set initial size
+    updateWindowSize();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', updateWindowSize);
+
+    // Clean up
+    return () => window.removeEventListener('resize', updateWindowSize);
+  }, []);
+
+  // Show confetti when congrats modal is shown
+  useEffect(() => {
+    if (showCongratsModal) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => {
+        setShowConfetti(false);
+      }, 5000); // Stop confetti after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [showCongratsModal]);
 
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -974,6 +1013,20 @@ export default function Home() {
                   )}
                 </div>
 
+                {/* Confetti Effect */}
+                {showConfetti && (
+                  <div className="fixed inset-0 z-[100] pointer-events-none">
+                    <ReactConfetti
+                      width={windowSize.width}
+                      height={windowSize.height}
+                      recycle={true}
+                      numberOfPieces={200}
+                      gravity={0.2}
+                      colors={['#418FDE', '#2e7bc4', '#1a67aa', '#0c4b8c', '#00263a']}
+                    />
+                  </div>
+                )}
+
                 {/* Congrats Modal */}
                 {showCongratsModal && (
                   <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -987,7 +1040,7 @@ export default function Home() {
                           <p className="text-base text-[#00263a]">
                             Go to the Biome Brigade Booth (#8737) to Claim Your
                           </p>
-                          <p className="text-[#00263a] text-xl font-bold mt-2">
+                          <p className="text-[var(--brand-lightblue-1000)] text-xl font-bold mt-2">
                             {prize?.name || 'Your Prize'}
                           </p>
                           <p className="text-[#00263a] text-sm mt-3">
