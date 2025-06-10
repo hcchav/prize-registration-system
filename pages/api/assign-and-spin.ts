@@ -124,7 +124,7 @@ export default async function handler(
     // 3. Update attendee with the prize
     const { error: updateError } = await supabase
       .from('attendees')
-      .update({ prize_id: selectedPrize.id })
+      .update({ prize_id: selectedPrize.id, prize: selectedPrize.name })
       .eq('id', attendeeId);
 
     if (updateError) throw updateError;
