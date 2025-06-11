@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase';
 
 interface WheelProps {
   onSpinStart?: () => void;
-  onSpinComplete?: (prize: Prize) => void;
+  onSpinComplete?: (prize: Prize | null) => void;
   onError?: (message: string) => void;
   testMode?: boolean;
 }
