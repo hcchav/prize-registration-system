@@ -1043,14 +1043,14 @@ export default function Home() {
                             <div className="font-bold text-2xl text-[#00263a] mb-4">
                             All Prizes Claimed. Thank you for participating!
                             </div>
-                            <div className="mb-4">
+                            {/* <div className="mb-4">
                               <p className="text-base text-[#00263a]">
                                 Go to the Biome Brigade Booth (#8737) to Claim Your
                               </p>
                               <p className="text-[var(--brand-lightblue-1000)] text-xl font-bold mt-2">
                                 Biome Brigade Comic Collectible
                               </p>
-                            </div>
+                            </div> */}
                           </>
                         ) : (
                           <>
