@@ -154,11 +154,14 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
 
     // Draw center circle
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
-    ctx.fillStyle = '#022635';
+    ctx.arc(centerX, centerY, 15, 0, 2 * Math.PI);
+    ctx.fillStyle = '#ffffff';
     
-    ctx.lineWidth = 2;  
-    ctx.strokeStyle = '#222222';
+    ctx.lineWidth = 1.1;  
+    ctx.strokeStyle = '#EFEFEF';
+    ctx.shadowColor = '#EFEFEF';
+    
+
 
     
 
@@ -390,13 +393,16 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
           ref={canvasRef}
           width={300}
           height={300}
-          className="w-full aspect-square rounded-full shadow-[0_0_10px_0_rgba(0,0,0,0.5)] relative z-0"
+          className="w-full aspect-square rounded-full shadow-[0_0_2px_0_rgba(0,0,0,1)] relative z-0"
         />
         {/* Center pointer */}
         <div className="absolute top-6 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-16 h-16 flex justify-center items-start">
           <div className="relative drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]">
-            <div className="absolute -top-px -left-px w-0 h-0 border-l-[18px] border-r-[18px] border-t-[28px] border-l-transparent border-r-transparent border-t-[#022635]" />
-            <div className="w-0 h-0 border-l-[16px] border-r-[16px] border-t-[26px] border-l-transparent border-r-transparent border-t-[#022635]" />
+            {/* Outer (border) triangle */}
+            <div className="absolute -top-[2px] -left-[2px] w-0 h-0 border-l-[19px] border-r-[19px] border-t-[32px] border-l-transparent border-r-transparent border-t-[#042841]" />
+            {/* Inner (main) triangle */}
+            <div className="absolute top-0 left-0 w-0 h-0 border-l-[18px] border-r-[18px] border-t-[28px] border-l-transparent border-r-transparent border-t-[#002137]" />
+            <div className="w-0 h-0 border-l-[16px] border-r-[16px] border-t-[26px] border-l-transparent border-r-transparent border-t-[#002137]" />
           </div>
         </div>
       </div>
@@ -406,7 +412,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
         disabled={spinning || loading}
         className={`w-full py-3 rounded-md text-white font-regular mt-4 ${spinning || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
       >
-        {spinning || loading ? 'Spinning...' : 'Spin the Wheel'}
+        {spinning || loading ? 'Spinning...' : 'Spin the Wheel!'}
       </Button>
       
       {/* Debug Info */}
