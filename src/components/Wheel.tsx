@@ -401,7 +401,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
             {/* Outer (border) triangle */}
             <div className="absolute -top-[2px] -left-[2px] w-0 h-0 border-l-[19px] border-r-[19px] border-t-[32px] border-l-transparent border-r-transparent border-t-[#042841]" />
             {/* Inner (main) triangle */}
-            <div className="absolute top-0 left-0 w-0 h-0 border-l-[18px] border-r-[18px] border-t-[28px] border-l-transparent border-r-transparent border-t-[#002137]" />
+            <div className="absolute -top-[2px] -left-[2px] w-0 h-0 border-l-[19px] border-r-[19px] border-t-[32px] border-l-transparent border-r-transparent border-t-[#042841]" />
             <div className="w-0 h-0 border-l-[16px] border-r-[16px] border-t-[26px] border-l-transparent border-r-transparent border-t-[#002137]" />
           </div>
         </div>
