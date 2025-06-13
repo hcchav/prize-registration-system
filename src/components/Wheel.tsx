@@ -171,9 +171,14 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
 
   // Start spinning when assignedPrize is set
   useEffect(() => {
+    // Skip the effect entirely if there's no prize assigned
+    if (!assignedPrize) return;
+    
     console.log('Start Wheel useEffect');
     console.log('Assigned prize:', assignedPrize);
-    if (!assignedPrize || hasStartedSpinRef.current) return;
+    
+    // Prevent re-execution if spin has already started for this prize
+    if (hasStartedSpinRef.current) return;
 
     console.log('Starting wheel spin to prize:', assignedPrize);
     
@@ -263,6 +268,9 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
         if (assignedPrize) {
           console.log('Calling onSpinComplete with prize:', assignedPrize);
           onSpinComplete?.(assignedPrize);
+          
+          // Set assignedPrize to null after completion to prevent re-triggering this effect
+          setAssignedPrize(null);
         }
         
         // Reset for next spin after a delay
