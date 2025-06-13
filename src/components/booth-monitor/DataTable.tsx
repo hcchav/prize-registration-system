@@ -1,3 +1,5 @@
+import { PRIZES } from '../../constants/prizes';
+
 export interface Attendee {
   id: string;
   firstName: string;
@@ -114,16 +116,28 @@ export function DataTable({ data, loading }: DataTableProps) {
               <td style={{ padding: '1rem 1.5rem' }}>
                 <span
                   style={{
-                    backgroundColor:
-                      attendee.prize === 'Gut Health Tests' ? 'var(--brand-green-500)' :
-                      attendee.prize === 'T-Shirt' ? 'var(--brand-lightblue-500)' :
-                      attendee.prize === 'GutShield Products' ? 'var(--brand-red-500)' :
-                      attendee.prize === 'Dog Bowl' ? 'var(--brand-orange-500)' :
-                      attendee.prize === 'ItchGuard Products' ? 'var(--brand-yellow-500)' :
-                      '#e5e7eb', // fallback gray
-                    color:
-                      attendee.prize === 'ItchGuard Products' ? 'var(--brand-navy-500)' :
-                      '#fff',
+                    backgroundColor: (() => {
+                      if (!attendee.prize) return '#e5e7eb'; // fallback gray for not claimed
+                      
+                      // Find the prize in the PRIZES array
+                      const prize = PRIZES.find(p => 
+                        attendee.prize?.includes(p.displayText) || 
+                        attendee.prize?.includes(p.name)
+                      );
+                      
+                      return prize ? prize.color : '#e5e7eb';
+                    })(),
+                    color: (() => {
+                      if (!attendee.prize) return '#666'; // dark gray for not claimed
+                      
+                      // Find the prize in the PRIZES array
+                      const prize = PRIZES.find(p => 
+                        attendee.prize?.includes(p.displayText) || 
+                        attendee.prize?.includes(p.name)
+                      );
+                      
+                      return prize ? prize.textColor : '#fff';
+                    })(),
                     fontWeight: 700,
                     borderRadius: '1rem',
                     padding: '0.4rem 1rem',
