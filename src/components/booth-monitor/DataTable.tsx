@@ -47,7 +47,7 @@ export function DataTable({ data, loading }: DataTableProps) {
       overflow: 'hidden' 
     }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white' }}>
-        <thead>
+        <thead style={{ backgroundColor: 'aliceblue' }}>
           <tr>
             <th
               style={{
@@ -59,7 +59,8 @@ export function DataTable({ data, loading }: DataTableProps) {
                 padding: '1rem 1.5rem',
                 fontSize: '0.95rem',
                 textAlign: 'left',
-                borderBottom: '1px solid #abcae9'
+                borderBottom: '1px solid #abcae9',
+                width: '12%'
               }}
             >
               Reg #
@@ -90,7 +91,7 @@ export function DataTable({ data, loading }: DataTableProps) {
                 fontSize: '0.95rem',
                 textAlign: 'left',
                 borderBottom: '1px solid #abcae9',
-                width: '25%'
+                width: '30%'
               }}
             >
               Company
