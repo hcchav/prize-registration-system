@@ -37,7 +37,15 @@ export function DataTable({ data, loading }: DataTableProps) {
   }
 
   return (
-    <div style={{ background: 'white', borderRadius: '1rem', boxShadow: '0 2px 8px 0 rgba(0,39,57,0.06)', padding: '0', width: '100%' }}>
+    <div style={{ 
+      background: 'white', 
+      borderRadius: '5px', 
+      border: '1px solid #abcae9',
+      boxShadow: '0 2px 8px 0 rgba(0,39,57,0.06)', 
+      padding: '0', 
+      width: '100%',
+      overflow: 'hidden' 
+    }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white' }}>
         <thead>
           <tr>
@@ -51,7 +59,7 @@ export function DataTable({ data, loading }: DataTableProps) {
                 padding: '1rem 1.5rem',
                 fontSize: '0.95rem',
                 textAlign: 'left',
-                borderBottom: '2px solid var(--brand-navy-100)'
+                borderBottom: '1px solid #abcae9'
               }}
             >
               Reg #
@@ -66,7 +74,7 @@ export function DataTable({ data, loading }: DataTableProps) {
                 padding: '1rem 1.5rem',
                 fontSize: '0.95rem',
                 textAlign: 'left',
-                borderBottom: '2px solid var(--brand-navy-100)'
+                borderBottom: '1px solid #abcae9'
               }}
             >
               Name
@@ -81,7 +89,8 @@ export function DataTable({ data, loading }: DataTableProps) {
                 padding: '1rem 1.5rem',
                 fontSize: '0.95rem',
                 textAlign: 'left',
-                borderBottom: '2px solid var(--brand-navy-100)'
+                borderBottom: '1px solid #abcae9',
+                width: '25%'
               }}
             >
               Company
@@ -96,7 +105,8 @@ export function DataTable({ data, loading }: DataTableProps) {
                 padding: '1rem 1.5rem',
                 fontSize: '0.95rem',
                 textAlign: 'left',
-                borderBottom: '2px solid var(--brand-navy-100)'
+                borderBottom: '1px solid #abcae9',
+                width: '100%'
               }}
             >
               Prize
@@ -105,7 +115,7 @@ export function DataTable({ data, loading }: DataTableProps) {
         </thead>
         <tbody>
           {data.map((attendee, idx) => (
-            <tr key={attendee.id} style={{ borderBottom: '1px solid var(--brand-navy-100)' }}>
+            <tr key={attendee.id} style={{ borderBottom: '1px solid #abcae9' }}>
               <td style={{ padding: '1rem 1.5rem', fontWeight: 800, color: 'var(--brand-navy-500)', fontSize: '1.1rem', fontFamily: 'inherit' }}>
                 {formatRegNumber(attendee.id)}
               </td>
@@ -119,7 +129,7 @@ export function DataTable({ data, loading }: DataTableProps) {
                 <span
                   style={{
                     backgroundColor: attendee.prizeColor || '#e5e7eb', // Use color from database or fallback to gray
-                    color: attendee.prizeColor ? '#000000' : '#666', // Use black text for colored backgrounds, gray for unclaimed
+                    color: attendee.prizeColor ? '#FFFFFF' : '#666', // Use white text for colored backgrounds, gray for unclaimed
                     fontWeight: 700,
                     borderRadius: '1rem',
                     padding: '0.4rem 1rem',
