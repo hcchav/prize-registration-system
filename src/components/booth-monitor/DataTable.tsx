@@ -1,4 +1,4 @@
-import { PRIZES } from '../../constants/prizes';
+// No longer need to import PRIZES as we'll use colors from the database
 
 export interface Attendee {
   id: string;
@@ -6,6 +6,8 @@ export interface Attendee {
   lastName: string;
   company: string;
   prize?: string;
+  prizeColor?: string | null;
+  prizeDisplayText?: string | null;
 }
 
 interface DataTableProps {
@@ -116,28 +118,8 @@ export function DataTable({ data, loading }: DataTableProps) {
               <td style={{ padding: '1rem 1.5rem' }}>
                 <span
                   style={{
-                    backgroundColor: (() => {
-                      if (!attendee.prize) return '#e5e7eb'; // fallback gray for not claimed
-                      
-                      // Find the prize in the PRIZES array
-                      const prize = PRIZES.find(p => 
-                        attendee.prize?.includes(p.displayText) || 
-                        attendee.prize?.includes(p.name)
-                      );
-                      
-                      return prize ? prize.color : '#e5e7eb';
-                    })(),
-                    color: (() => {
-                      if (!attendee.prize) return '#666'; // dark gray for not claimed
-                      
-                      // Find the prize in the PRIZES array
-                      const prize = PRIZES.find(p => 
-                        attendee.prize?.includes(p.displayText) || 
-                        attendee.prize?.includes(p.name)
-                      );
-                      
-                      return prize ? prize.textColor : '#fff';
-                    })(),
+                    backgroundColor: attendee.prizeColor || '#e5e7eb', // Use color from database or fallback to gray
+                    color: attendee.prizeColor ? '#000000' : '#666', // Use black text for colored backgrounds, gray for unclaimed
                     fontWeight: 700,
                     borderRadius: '1rem',
                     padding: '0.4rem 1rem',
@@ -146,7 +128,7 @@ export function DataTable({ data, loading }: DataTableProps) {
                     boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
                   }}
                 >
-                  {attendee.prize || 'Not Claimed'}
+                  {attendee.prize || 'Prize Not Assigned'}
                 </span>
               </td>
             </tr>

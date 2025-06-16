@@ -9,6 +9,12 @@ interface DbAttendee {
   prize: string | null;
 }
 
+interface DbPrize {
+  name: string;
+  color: string;
+  display_text: string;
+}
+
 export async function GET() {
   try {
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -19,6 +25,7 @@ export async function GET() {
       );
     }
 
+    // Get all attendees
     const { data: attendees, error } = await supabase
       .from('attendees')
       .select('id, first_name, last_name, company, prize')
@@ -40,15 +47,56 @@ export async function GET() {
       );
     }
 
+    // Get all prizes with their colors
+    const { data: prizes, error: prizesError } = await supabase
+      .from('prizes')
+      .select('name, color, display_text');
+
+    if (prizesError) {
+      console.error('Supabase error fetching prizes:', prizesError.message, prizesError.details);
+      return NextResponse.json(
+        { success: false, error: `Database error: ${prizesError.message}` },
+        { status: 500 }
+      );
+    }
+
+    // Create a map of prize names to their colors
+    const prizeColorMap = new Map();
+    prizes?.forEach((prize: DbPrize) => {
+      prizeColorMap.set(prize.name, {
+        color: prize.color,
+        displayText: prize.display_text
+      });
+    });
+
     return NextResponse.json({
       success: true,
-      attendees: (attendees as DbAttendee[]).map(a => ({
-        id: a.id,
-        firstName: a.first_name,
-        lastName: a.last_name,
-        company: a.company,
-        prize: a.prize
-      }))
+      attendees: (attendees as DbAttendee[]).map(a => {
+        // Find matching prize info
+        let prizeColor = null;
+        let prizeDisplayText = null;
+        
+        if (a.prize) {
+          // Try to find the prize in our map
+          for (const [prizeName, prizeInfo] of prizeColorMap.entries()) {
+            if (a.prize.includes(prizeName)) {
+              prizeColor = prizeInfo.color;
+              prizeDisplayText = prizeInfo.displayText;
+              break;
+            }
+          }
+        }
+
+        return {
+          id: a.id,
+          firstName: a.first_name,
+          lastName: a.last_name,
+          company: a.company,
+          prize: a.prize,
+          prizeColor: prizeColor,
+          prizeDisplayText: prizeDisplayText
+        };
+      })
     });
   } catch (error) {
     console.error('Unexpected error:', error);
@@ -57,4 +105,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-} 
+}

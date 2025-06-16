@@ -250,13 +250,13 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
       }
       
       // Redraw the wheel
-      console.log('Redrawing wheel...');
+      // console.log('Redrawing wheel...');
       drawWheel();
-      console.log('Wheel redrawn');
+      // console.log('Wheel redrawn');
       
       // Continue animation if not complete
       if (progress < 1) {
-        console.log('Animation not complete, progress:', progress);
+        // console.log('Animation not complete, progress:', progress);
         const frame = requestAnimationFrame(animate);
         animationRef.current = frame;
       } else {

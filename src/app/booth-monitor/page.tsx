@@ -62,8 +62,9 @@ export default function BoothMonitor() {
             style={{
               width: '100%',
               maxWidth: '900px',
-              background: 'var(--brand-lightblue-400)',
-              borderRadius: '2rem',
+            
+              border: '2px solid var(--brand-lightblue-400)',
+              borderRadius: '1rem',
               boxShadow: '0 8px 32px 0 rgba(0,39,57,0.10)',
               padding: '3rem 2rem',
               display: 'flex',

@@ -33,7 +33,7 @@ export const PRIZES: Prize[] = [
     displayText: 'ItchGuard',
     weight: 100,
     color: '#ffe600', // Yellow
-    textColor: '#FFFFFF'
+    textColor: '#000000'
   },
   {
     id: 4,
