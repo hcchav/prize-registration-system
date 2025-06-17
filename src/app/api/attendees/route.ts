@@ -69,35 +69,41 @@ export async function GET() {
       });
     });
 
-    return NextResponse.json({
-      success: true,
-      attendees: (attendees as DbAttendee[]).map(a => {
-        // Find matching prize info
-        let prizeColor = null;
-        let prizeDisplayText = null;
-        
-        if (a.prize) {
-          // Try to find the prize in our map
-          for (const [prizeName, prizeInfo] of prizeColorMap.entries()) {
-            if (a.prize.includes(prizeName)) {
-              prizeColor = prizeInfo.color;
-              prizeDisplayText = prizeInfo.displayText;
-              break;
+    return NextResponse.json(
+      {
+        success: true,
+        attendees: (attendees as DbAttendee[]).map(a => {
+          let prizeColor = null;
+          let prizeDisplayText = null;
+    
+          if (a.prize) {
+            for (const [prizeName, prizeInfo] of prizeColorMap.entries()) {
+              if (a.prize.includes(prizeName)) {
+                prizeColor = prizeInfo.color;
+                prizeDisplayText = prizeInfo.displayText;
+                break;
+              }
             }
           }
+    
+          return {
+            id: a.id,
+            firstName: a.first_name,
+            lastName: a.last_name,
+            company: a.company,
+            prize: a.prize,
+            prizeColor: prizeColor,
+            prizeDisplayText: prizeDisplayText
+          };
+        })
+      },
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-store'
         }
-
-        return {
-          id: a.id,
-          firstName: a.first_name,
-          lastName: a.last_name,
-          company: a.company,
-          prize: a.prize,
-          prizeColor: prizeColor,
-          prizeDisplayText: prizeDisplayText
-        };
-      })
-    });
+      }
+    );
   } catch (error) {
     console.error('Unexpected error:', error);
     return NextResponse.json(
