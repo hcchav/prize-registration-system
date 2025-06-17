@@ -13,7 +13,14 @@ export default function BoothMonitor() {
   const fetchAttendees = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/attendees');
+      // Add cache-busting timestamp parameter to prevent cached responses
+      const timestamp = new Date().getTime();
+      const response = await fetch(`/api/attendees?_=${timestamp}`, {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
       const data = await response.json();
       
       if (data.success) {
@@ -72,20 +79,47 @@ export default function BoothMonitor() {
               alignItems: 'center'
             }}
           >
-            <h1
-              style={{
-                color: 'var(--brand-navy-500)',
-                fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-                fontWeight: 800,
-                letterSpacing: '0.05em',
-                textTransform: 'none',
-                textAlign: 'center',
-                fontSize: '2.5rem',
-                marginBottom: '2rem'
-              }}
-            >
-              Prize Dashboard
-            </h1>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%',
+              marginBottom: '2rem'
+            }}>
+              <h1
+                style={{
+                  color: 'var(--brand-navy-500)',
+                  fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+                  fontWeight: 800,
+                  letterSpacing: '0.05em',
+                  textTransform: 'none',
+                  fontSize: '2.5rem',
+                  margin: 0
+                }}
+              >
+                Prize Dashboard
+              </h1>
+              <button
+                onClick={() => fetchAttendees()}
+                style={{
+                  backgroundColor: 'var(--brand-lightblue-400)',
+                  color: 'var(--brand-navy-500)',
+                  fontWeight: 600,
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '0.5rem',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/>
+                </svg>
+                {loading ? 'Refreshing...' : 'Refresh Data'}
+              </button>
+            </div>
             {error ? (
               <div
                 style={{
