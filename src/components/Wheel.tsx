@@ -258,41 +258,72 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
     
     // Animation loop with simplified timing that's resilient to Fast Refresh
     function animate(timestamp: number) {
-      // If component was hot-reloaded, animation data will persist in the ref
-      const animData = animationDataRef.current;
-      
-      if (!animData.isAnimating) return;
-      
-      // Initialize start time on first frame
-      if (animData.startTime === 0) {
-        animData.startTime = timestamp;
-      }
-      
-      const elapsed = timestamp - animData.startTime;
-      const progress = Math.min(elapsed / animData.duration, 1);
-      
-      // Easing function for smooth deceleration
-      const easeOutCubic = 1 - Math.pow(1 - progress, 3);
-      
-      // Calculate current angle with easing
-      const currentAngle = animData.startAngle + 
-                         ((animData.endAngle - animData.startAngle) * easeOutCubic);
-      
-      // Update the wheel angle
-      if (wheelAngleRef.current) {
-        wheelAngleRef.current.currentAngle = currentAngle % (2 * Math.PI);
-      }
-      
-      // Redraw the wheel
-      drawWheel();
-      
-      // Continue animation if not complete
-      if (progress < 1) {
-        animationRef.current = window.requestAnimationFrame(animate);
-      } else {
-        // Animation complete
-        console.log('Animation complete');
+      try {
+        // If component was hot-reloaded, animation data will persist in the ref
+        const animData = animationDataRef.current;
         
+        // Safety check - if animation is not active, exit early
+        if (!animData || !animData.isAnimating) {
+          console.log('Animation not active, exiting animation loop');
+          return;
+        }
+        
+        // Initialize start time on first frame
+        if (animData.startTime === 0) {
+          animData.startTime = timestamp;
+          console.log('Animation started at timestamp:', timestamp);
+        }
+        
+        // Safety check for extremely long animations (over 10 seconds)
+        const elapsed = timestamp - animData.startTime;
+        if (elapsed > 10000) {
+          console.warn('Animation taking too long (>10s), forcing completion');
+          completeAnimation(animData);
+          return;
+        }
+        
+        const progress = Math.min(elapsed / animData.duration, 1);
+        
+        // Easing function for smooth deceleration
+        const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+        
+        // Calculate current angle with easing
+        const currentAngle = animData.startAngle + 
+                           ((animData.endAngle - animData.startAngle) * easeOutCubic);
+        
+        // Update the wheel angle
+        if (wheelAngleRef.current) {
+          wheelAngleRef.current.currentAngle = currentAngle % (2 * Math.PI);
+        }
+        
+        // Redraw the wheel
+        drawWheel();
+        
+        // Continue animation if not complete
+        if (progress < 1) {
+          // Safety check - ensure we're not creating multiple animation frames
+          if (animationRef.current) {
+            window.cancelAnimationFrame(animationRef.current);
+          }
+          animationRef.current = window.requestAnimationFrame(animate);
+        } else {
+          // Animation complete
+          console.log('Animation complete normally');
+          completeAnimation(animData);
+        }
+      } catch (err) {
+        // Error recovery
+        console.error('Error in animation loop:', err);
+        const animData = animationDataRef.current;
+        if (animData) {
+          completeAnimation(animData);
+        }
+      }
+    }
+    
+    // Helper function to complete animation and clean up
+    function completeAnimation(animData: typeof animationDataRef.current) {
+      try {
         // Ensure we're at the exact final position
         if (wheelAngleRef.current) {
           wheelAngleRef.current.currentAngle = animData.endAngle % (2 * Math.PI);
@@ -309,11 +340,23 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
           onSpinComplete?.(animData.targetPrize);
         }
         
+        // Reset animation frame reference
+        if (animationRef.current) {
+          window.cancelAnimationFrame(animationRef.current);
+          animationRef.current = null;
+        }
+        
         // Reset for next spin with a short delay
         setTimeout(() => {
           hasStartedSpinRef.current = false;
           setAssignedPrize(null);
         }, 100);
+      } catch (err) {
+        console.error('Error completing animation:', err);
+        // Last resort cleanup
+        hasStartedSpinRef.current = false;
+        animData.isAnimating = false;
+        setSpinning(false);
       }
     }
     
@@ -338,74 +381,122 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
 
   // Handle spin button click
   const handleSpin = useCallback(async () => {
+    // Prevent multiple spins or spinning when no prizes available
     if (spinning || loading || !availablePrizes.length) return;
 
     try {
+      console.log('Starting spin process');
       onSpinStart?.();
       setLoading(true);
       setError(null);
       
       // Cancel any existing animation
       if (animationRef.current) {
+        console.log('Cancelling existing animation');
         window.cancelAnimationFrame(animationRef.current);
         animationRef.current = null;
       }
       
-      // Reset animation state
+      // Reset animation state completely
       hasStartedSpinRef.current = false;
       startTimeRef.current = null;
       
       // Reset animation data
-      animationDataRef.current.isAnimating = false;
+      animationDataRef.current = {
+        isAnimating: false,
+        startTime: 0,
+        startAngle: 0,
+        endAngle: 0,
+        targetPrize: null,
+        prizeId: -1,
+        duration: 4000
+      };
       
-      // Get attendee ID from localStorage
-      const attendeeData = localStorage.getItem('attendeeId');
-      if (!attendeeData) {
-        throw new Error('No attendee data found');
-      }
-      
-      const attendeeId = JSON.parse(attendeeData);
-      if (!attendeeId) {
-        throw new Error('Invalid attendee data');
+      // Get attendee ID from localStorage with error handling
+      let attendeeId;
+      try {
+        const attendeeData = localStorage.getItem('attendeeId');
+        if (!attendeeData) {
+          throw new Error('No attendee data found');
+        }
+        
+        attendeeId = JSON.parse(attendeeData);
+        if (!attendeeId) {
+          throw new Error('Invalid attendee data');
+        }
+      } catch (storageErr) {
+        console.error('Error retrieving attendee data:', storageErr);
+        throw new Error('Unable to retrieve your information. Please refresh the page and try again.');
       }
       
       // Add cache-busting parameter to prevent 304 responses
       const timestamp = new Date().getTime();
+      console.log('Calling API with timestamp:', timestamp);
       
-      // Call API to assign a prize
-      const response = await fetch(`/api/assign-and-spin?t=${timestamp}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
-        },
-        body: JSON.stringify({
-          attendeeId,
-          eventId: 1
-        }),
-      });
+      // Call API to assign a prize with timeout and error handling
+      let response;
+      try {
+        // Create an AbortController to handle timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
+        response = await fetch(`/api/assign-and-spin?t=${timestamp}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          },
+          body: JSON.stringify({
+            attendeeId,
+            eventId: 1
+          }),
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+      } catch (error) {
+        console.error('Fetch error:', error);
+        const fetchErr = error as Error;
+        if (fetchErr.name === 'AbortError') {
+          throw new Error('Request timed out. Please try again.');
+        }
+        throw new Error('Network error. Please check your connection and try again.');
+      }
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        let errorData: { code?: string; error?: string } = {};
+        try {
+          errorData = await response.json() as { code?: string; error?: string };
+        } catch (jsonErr) {
+          console.error('Error parsing error response:', jsonErr);
+        }
+        
         // Special handling for no prizes available
         if (response.status === 404 && errorData.code === 'NO_PRIZES_AVAILABLE') {
+          console.log('No prizes available, triggering fallback');
           // Trigger fallback modal
           onSpinComplete?.(null);
           setLoading(false);
           return;
         }
-        throw new Error(errorData.error || 'Failed to assign prize');
+        throw new Error(errorData.error || `Server error (${response.status}). Please try again.`);
       }
       
-      const data = await response.json();
-    
-      console.log('API Response:', data);
+      let data;
+      try {
+        data = await response.json();
+        console.log('API Response:', data);
+      } catch (jsonErr) {
+        console.error('Error parsing response:', jsonErr);
+        throw new Error('Invalid response from server. Please try again.');
+      }
       
       // Find the matching prize from availablePrizes to ensure we have all properties
       const prize = availablePrizes.find(p => p.id === data?.id);
 
       if (!prize) {
+        console.error('Prize not found in available prizes. API returned:', data);
         throw new Error('Prize not found in available prizes');
       }
       
@@ -424,11 +515,20 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
       
       // Reset animation state on error
       hasStartedSpinRef.current = false;
-      animationDataRef.current.isAnimating = false;
+      if (animationDataRef.current) {
+        animationDataRef.current.isAnimating = false;
+      }
+      
+      // Cancel any animation frames that might be running
+      if (animationRef.current) {
+        window.cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
     } finally {
       setLoading(false);
     }
   }, [spinning, loading, availablePrizes, onSpinStart, onSpinComplete, onError]);
+
 
 
 
@@ -446,6 +546,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
       // Reset animation state
       hasStartedSpinRef.current = false;
       startTimeRef.current = null;
+      animationDataRef.current.isAnimating = false;
       
       const randomIndex = Math.floor(Math.random() * availablePrizes.length);
       console.log('Random index:', randomIndex);
@@ -455,16 +556,17 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
       // Reset the wheel angle to ensure clean spin
       if (wheelAngleRef.current) {
         wheelAngleRef.current.currentAngle = 0;
-        wheelAngleRef.current.finalAngle = undefined;
-        wheelAngleRef.current.targetPrize = undefined;
       }
       
       // Set the assigned prize to trigger the animation
       setAssignedPrize(availablePrizes[randomIndex]);
     } catch (err) {
       console.error('Error in test spin:', err);
+      hasStartedSpinRef.current = false;
+      animationDataRef.current.isAnimating = false;
     }
   };
+
 
   // Redraw wheel when needed
   useEffect(() => {
