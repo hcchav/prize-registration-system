@@ -11,12 +11,14 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== 'POST') {
+    res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { attendeeId, eventId } = req.body;
 
   if (!attendeeId || !eventId) {
+    res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
@@ -30,6 +32,7 @@ export default async function handler(
 
     if (attendeeError) throw attendeeError;
     if (attendee.prize_id) {
+      res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
       return res.status(400).json({
         error: 'Prize already claimed',
         code: 'PRIZE_ALREADY_CLAIMED'
@@ -53,6 +56,7 @@ export default async function handler(
     if (!availablePrizes || availablePrizes.length === 0) {
       const errorMessage = 'No prizes available in stock';
       console.error(errorMessage);
+      res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
       return res.status(404).json({ 
         error: 'No prizes available',
         code: 'NO_PRIZES_AVAILABLE',
@@ -135,6 +139,7 @@ export default async function handler(
     const wheelPosition = (prizeIndex * (2 * Math.PI / totalPrizes)) + (Math.PI / totalPrizes);
 
     // 6. Return the prize details with wheel position
+    res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
     return res.status(200).json({
       id: selectedPrize.id,
       name: selectedPrize.name,
@@ -146,6 +151,7 @@ export default async function handler(
     });
   } catch (error: any) {
     console.error('Error in assign-and-spin:', error);
+    res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
     return res.status(500).json({ 
       error: 'Failed to assign prize',
       details: error?.message || 'Unknown error',

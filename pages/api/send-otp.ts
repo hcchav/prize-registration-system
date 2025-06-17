@@ -173,6 +173,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (existingVerified && existingVerified.length > 0){
       console.log('Email already registered and verified:', email);
+      res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
       return res.status(400).json({ success: false, error: 'This email address is already registered.' });
     }
 }
@@ -241,12 +242,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       
       if (error) {
         console.error('Email sending error:', error);
+        res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
         return res.status(500).json({ success: false, error: 'Failed to send email' });
       }
       
       console.log('Email sent successfully:', data);
     } catch (error) {
       console.error('Error in email sending:', error);
+      res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
       return res.status(500).json({ success: false, error: 'Error sending email' });
     }
   } else if (method === 'sms') {
@@ -260,9 +263,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('SMS verification response:', verification);
     } catch (error) {
       console.error('SMS sending error:', error);
+      res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
       return res.status(500).json({ success: false, error: 'Failed to send SMS' });
     }
   }
 
+  res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
   res.status(200).json({ success: true });
 }
