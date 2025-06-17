@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
+// This forces the route to be dynamically rendered for every request
+// Prevents Vercel from caching the response
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface DbAttendee {
   id: string;
   first_name: string;

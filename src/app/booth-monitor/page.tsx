@@ -15,11 +15,15 @@ export default function BoothMonitor() {
       setLoading(true);
       // Add cache-busting timestamp parameter to prevent cached responses
       const timestamp = new Date().getTime();
-      const response = await fetch(`/api/attendees?_=${timestamp}`, {
+      const response = await fetch(`/api/attendees?_=${timestamp}&nocache=true`, {
         headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
-        }
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        },
+        // Force a network request, bypassing the HTTP cache
+        cache: 'no-store',
+        next: { revalidate: 0 }
       });
       const data = await response.json();
       
@@ -37,6 +41,14 @@ export default function BoothMonitor() {
 
   useEffect(() => {
     fetchAttendees();
+    
+    // Set up an interval to refresh data every 30 seconds
+    const intervalId = setInterval(() => {
+      fetchAttendees();
+    }, 30000);
+    
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
