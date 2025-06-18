@@ -305,16 +305,14 @@ export default function Home() {
   };
 
   const handleSpinComplete = (prize: Prize | null) => {
-    // if (!prize) {
-    //   setNoPrizeAvailable(true);
-    //   setPrize(null);
-    // } else {
-    //   setNoPrizeAvailable(false);
-    //   setPrize(prize);
-    // }
-    // setLoading(false);
+    if (!prize) {
+      setNoPrizeAvailable(true);
+      setPrize(null);
+    } else {
+      setNoPrizeAvailable(false);
+      setPrize(prize);
+    }
     setLoading(false);
-    setPrize(prize);
     setShowCongratsModal(true);
   };
 
