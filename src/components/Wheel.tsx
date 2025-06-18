@@ -47,14 +47,8 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
 
         if (allPrizesError) throw allPrizesError;
         
-        // Then load available prizes (with stock > 0) for the actual spinning
-        const { data: availablePrizes, error: availableError } = await supabase
-          .from('prizes')
-          .select('*')
-          .gt('stock', 0)
-          .order('id', { ascending: true });
 
-        if (availableError) throw availableError;
+
         
         // Use all prizes for the wheel display
         const prizesWithPosition = allPrizes.map((prize, index) => ({
@@ -584,40 +578,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
 
 
 
-  // Test spin function
-  const handleTestSpin = () => {
-    if (spinning || loading || !availablePrizes.length) return;
-    
-    try {
-      // Cancel any existing animation
-      if (animationRef.current) {
-        window.cancelAnimationFrame(animationRef.current);
-        animationRef.current = null;
-      }
-      
-      // Reset animation state
-      hasStartedSpinRef.current = false;
-      startTimeRef.current = null;
-      animationDataRef.current.isAnimating = false;
-      
-      const randomIndex = Math.floor(Math.random() * availablePrizes.length);
-      console.log('Random index:', randomIndex);
-      console.log('Available prizes:', availablePrizes);
-      console.log('Selected prize:', availablePrizes[randomIndex]);
-      
-      // Reset the wheel angle to ensure clean spin
-      if (wheelAngleRef.current) {
-        wheelAngleRef.current.currentAngle = 0;
-      }
-      
-      // Set the assigned prize to trigger the animation
-      setAssignedPrize(availablePrizes[randomIndex]);
-    } catch (err) {
-      console.error('Error in test spin:', err);
-      hasStartedSpinRef.current = false;
-      animationDataRef.current.isAnimating = false;
-    }
-  };
+  
 
 
   // Redraw wheel when needed
