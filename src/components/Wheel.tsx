@@ -33,6 +33,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
   }
   
   const wheelAngleRef = useRef<WheelAngleRef>({ currentAngle: 0 });
+  const loggedSkipMessageRef = useRef<number | null>(null);
 
   // Load all prizes for the wheel
   useEffect(() => {
@@ -176,26 +177,45 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
     startAngle: 0,
     endAngle: 0,
     targetPrize: null as Prize | null,
-    prizeId: -1,
+    prizeId: "", // Changed from number to string to match our other refs
     duration: 4000
   });
 
+  // Use a ref to track which prizes have been animated
+  // This persists across renders and React's StrictMode double-invocations
+  const processedPrizesRef = useRef<Set<string>>(new Set());
+  
   // Start spinning when assignedPrize is set
   useEffect(() => {
     // Skip the effect entirely if there's no prize assigned
     if (!assignedPrize) return;
     
-    console.log('Start Wheel useEffect');
-    console.log('Assigned prize:', assignedPrize);
-    
     // Store the prize ID to detect duplicate triggers
-    const currentPrizeId = assignedPrize.id;
+    const currentPrizeId = String(assignedPrize.id);
     
-    // Prevent re-execution if spin has already started for this prize
-    if (hasStartedSpinRef.current && animationDataRef.current.prizeId === currentPrizeId) {
+    // Create a unique identifier for this specific animation instance
+    // This helps distinguish between different animations for the same prize
+    // (e.g., if the same prize is assigned again after an error)
+    const animationInstanceId = `${currentPrizeId}-${Date.now()}`;
+    
+    // Check if we've already processed this exact prize assignment
+    // This is the key check that prevents duplicate animations
+    if (processedPrizesRef.current.has(animationInstanceId)) {
+      console.log('This exact animation instance has already been processed, skipping');
+      return;
+    }
+    
+    // Check if any animation is currently in progress for this prize
+    if (animationDataRef.current.isAnimating && animationDataRef.current.prizeId === currentPrizeId) {
       console.log('Animation already in progress for this prize, skipping');
       return;
     }
+    
+    // Add this animation instance to our processed set
+    // We'll remove it once the animation completes or if there's an error
+    processedPrizesRef.current.add(animationInstanceId);
+    
+    console.log('Starting new animation for prize:', assignedPrize.name, '(ID:', currentPrizeId, ')');
 
     console.log('Starting wheel spin to prize:', assignedPrize);
     
@@ -250,7 +270,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
       startAngle,
       endAngle,
       targetPrize: assignedPrize,
-      prizeId: currentPrizeId,
+      prizeId: currentPrizeId, // currentPrizeId is already a string now
       duration: 4000 // 4 seconds
     };
     
@@ -349,6 +369,25 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
         // Reset for next spin with a short delay
         setTimeout(() => {
           hasStartedSpinRef.current = false;
+          
+          // Clear all processed animations for this prize to allow future animations
+          if (animData.targetPrize) {
+            const prizeId = String(animData.targetPrize.id);
+            
+            // Remove all processed animations for this prize
+            // This allows the prize to be animated again if needed
+            const keysToRemove: string[] = [];
+            processedPrizesRef.current.forEach(key => {
+              if (key.startsWith(`${prizeId}-`)) {
+                keysToRemove.push(key);
+              }
+            });
+            
+            keysToRemove.forEach(key => {
+              processedPrizesRef.current.delete(key);
+            });
+          }
+          
           setAssignedPrize(null);
         }, 100);
       } catch (err) {
@@ -363,19 +402,32 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
     // Start the animation with explicit window reference
     animationRef.current = window.requestAnimationFrame(animate);
     
+    // Add a fallback timer to ensure animation completes even if requestAnimationFrame silently fails
+    const fallbackTimer = setTimeout(() => {
+      if (animationDataRef.current.isAnimating) {
+        console.warn('[WHEEL-DEBUG] Fallback timeout hit, forcing completion');
+        completeAnimation(animationDataRef.current);
+      }
+    }, 10000); // 10 seconds fallback
+    
     // Clean up on unmount or when assignedPrize changes
     return () => {
       if (animationRef.current) {
         window.cancelAnimationFrame(animationRef.current);
         animationRef.current = null;
       }
+      // Clear the fallback timer
+      clearTimeout(fallbackTimer);
+      
       // Don't reset animation data on cleanup to make it resilient to Fast Refresh
       // Only reset if we're not in the middle of an animation
       if (!animationDataRef.current.isAnimating) {
         startTimeRef.current = null;
       }
     };
-  }, [assignedPrize, availablePrizes, drawWheel, onSpinComplete]);
+  // Using a stable reference to assignedPrize.id instead of the entire object
+  // to prevent unnecessary effect reruns
+  }, [assignedPrize?.id, availablePrizes, drawWheel, onSpinComplete]);
 
 
 
@@ -408,7 +460,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
         startAngle: 0,
         endAngle: 0,
         targetPrize: null,
-        prizeId: -1,
+        prizeId: "", // Using empty string instead of -1 to match our string type
         duration: 4000
       };
       
