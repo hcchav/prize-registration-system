@@ -352,6 +352,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
         if (animData.targetPrize) {
           console.log('Calling onSpinComplete with prize:', animData.targetPrize);
           onSpinComplete?.(animData.targetPrize);
+          console.log('onSpinComplete called completeAnimation');
         }
         
         // Reset animation frame reference
@@ -421,7 +422,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
     };
   // Using a stable reference to assignedPrize.id instead of the entire object
   // to prevent unnecessary effect reruns
-  }, [assignedPrize?.id, availablePrizes, drawWheel, onSpinComplete]);
+  }, [assignedPrize?.id, availablePrizes, drawWheel]);
 
 
 

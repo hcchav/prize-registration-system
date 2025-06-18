@@ -305,20 +305,20 @@ export default function Home() {
   };
 
   const handleSpinComplete = (prize: Prize | null) => {
-    if (!prize) {
-      setNoPrizeAvailable(true);
-      setPrize(null);
-    } else {
-      setNoPrizeAvailable(false);
-      setPrize(prize);
-    }
+    // if (!prize) {
+    //   setNoPrizeAvailable(true);
+    //   setPrize(null);
+    // } else {
+    //   setNoPrizeAvailable(false);
+    //   setPrize(prize);
+    // }
+    // setLoading(false);
     setLoading(false);
+    setPrize(prize);
     setShowCongratsModal(true);
   };
 
-  const closeCongratsModal = () => {
-    setShowCongratsModal(false);
-  };
+
 
   useEffect(() => {
     // When the component mounts, show the wheel if we don't have a prize yet
