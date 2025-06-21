@@ -234,7 +234,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       console.log('Sending email to:', email);
       const { data, error } = await resend.emails.send({
-        from: 'noreply@syncworkflow.com',
+        from: 'noreply@biomebrigade.com',
         to: email,
         subject: 'Your Biome Brigade OTP Code',
         html: htmlTemplateWithOTP(otp),
