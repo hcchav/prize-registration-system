@@ -3,7 +3,10 @@ import { supabase } from '../../src/lib/supabase';
 import { Database } from '../../src/types/database.types';
 import { Twilio } from 'twilio';
 
-type Attendee = Database['public']['Tables']['attendees']['Row'];
+// Extend the database type to include claim_id which might not be in the type definition yet
+type Attendee = Database['public']['Tables']['attendees']['Row'] & {
+  claim_id?: number | null;
+};
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID!;
 const authToken = process.env.TWILIO_AUTH_TOKEN!;
@@ -100,18 +103,58 @@ export default async function handler(
     return res.status(404).json({ error: 'Attendee not found' });
   }
 
-  const { error: updateError } = await supabase
-    .from('attendees')
-    .update({ verified: true })
-    .eq('id', attendee.id)
-    .single();
+  try {
+    // First, mark the attendee as verified
+    const { error: updateError } = await supabase
+      .from('attendees')
+      .update({ verified: true })
+      .eq('id', attendee.id)
+      .single();
 
-  if (updateError) {
-    console.error('Error updating attendee:', updateError);
+    if (updateError) {
+      console.error('Error updating attendee:', updateError);
+      res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
+      return res.status(500).json({ error: 'Failed to update attendee' });
+    }
+
+    // Generate a claim ID if the attendee doesn't have one
+    if (!attendee.claim_id) {
+      // Generate a new claim ID using the database function
+      const { data: claimIdResult, error: claimIdError } = await supabase
+        .rpc('get_strict_next_claim_id');
+
+      if (claimIdError) {
+        console.error('Error generating claim ID:', claimIdError);
+        // Continue even if claim ID generation fails - we'll still mark the user as verified
+      } else {
+        const newClaimId = claimIdResult;
+        console.log('Generated new claim ID:', newClaimId);
+
+        // Update the attendee record with the new claim ID
+        const { error: claimUpdateError } = await supabase
+          .from('attendees')
+          .update({ claim_id: newClaimId })
+          .eq('id', attendee.id);
+
+        if (claimUpdateError) {
+          console.error('Error updating claim ID:', claimUpdateError);
+          // Continue even if claim ID update fails
+        } else {
+          // Update the attendee object with the new claim ID for the response
+          attendee.claim_id = newClaimId;
+        }
+      }
+    }
+
     res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
-    return res.status(500).json({ error: 'Failed to update attendee' });
+    return res.status(200).json({ 
+      success: true, 
+      attendeeId: attendee.id,
+      claimId: attendee.claim_id
+    });
+  } catch (error) {
+    console.error('Error in verification process:', error);
+    res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
+    return res.status(500).json({ error: 'An unexpected error occurred during verification' });
   }
-
-  res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
-  return res.status(200).json({ success: true, attendeeId: attendee.id });
 }

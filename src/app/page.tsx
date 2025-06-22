@@ -229,6 +229,12 @@ export default function Home() {
       if (data.attendeeId) {
         localStorage.setItem('attendeeId', data.attendeeId);
         localStorage.setItem('attendeeEmail', formData.email);
+        
+        // Store the claim ID if available
+        if (data.claimId) {
+          localStorage.setItem('claimId', data.claimId.toString());
+          console.log('Claim ID generated and stored:', data.claimId);
+        }
       }
 
       setVerified(true);
@@ -1063,7 +1069,7 @@ export default function Home() {
                                 {prize?.name || 'Your Prize'}
                               </p>
                               <p className="text-[#00263a] text-sm mt-3">
-                                Your Claim # is {formatRegNumber(localStorage.getItem('attendeeId') || 'N/A')}
+                                Your Claim # is {formatRegNumber(localStorage.getItem('claimId') || localStorage.getItem('attendeeId') || 'N/A')}
                               </p>
                             </div>
                           </>
