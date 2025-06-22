@@ -39,22 +39,19 @@ export default async function handler(
       });
     }
 
-    // 2. Find an available prize with stock > 0
-    console.log('Fetching available prizes...');
-    const { data: availablePrizes, error: prizeError, count } = await supabase
-      .from('prizes')
-      .select('*', { count: 'exact' })
-      .gt('stock', 0);
-
-    console.log('Available prizes query result:', { availablePrizes, count, prizeError });
-
+    // Use the new database function to select a random prize and update its stock atomically
+    console.log('Calling select_and_update_random_prize function...');
+    const { data: prizeResult, error: prizeError } = await supabase.rpc('select_and_update_random_prize');
+    
+    console.log('Prize selection result:', prizeResult);
+    
     if (prizeError) {
-      console.error('Error fetching prizes:', prizeError);
+      console.error('Error selecting prize:', prizeError);
       throw prizeError;
     }
-
-    if (!availablePrizes || availablePrizes.length === 0) {
-      const errorMessage = 'No prizes available in stock';
+    
+    if (!prizeResult.success) {
+      const errorMessage = prizeResult.error || 'No prizes available in stock';
       console.error(errorMessage);
       res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
       return res.status(404).json({ 
@@ -63,67 +60,11 @@ export default async function handler(
         details: errorMessage
       });
     }
-
-    // Calculate total weight and create weighted array
-    const totalWeight = availablePrizes.reduce((sum, prize) => sum + (prize.weight || 1), 0);
-    const randomWeight = Math.random() * totalWeight;
     
-    // Find the prize based on weighted random selection
-    let accumulatedWeight = 0;
-    let selectedPrize = null;
+    // Extract the selected prize from the result
+    const selectedPrize = prizeResult.data;
     
-    for (const prize of availablePrizes) {
-      accumulatedWeight += prize.weight || 1;
-      if (randomWeight <= accumulatedWeight) {
-        selectedPrize = prize;
-        break;
-      }
-    }
-    
-    // Fallback in case of floating point precision issues
-    if (!selectedPrize) {
-      selectedPrize = availablePrizes[availablePrizes.length - 1];
-    }
-
-    console.log('Selected prize (weighted random):', selectedPrize);
-
-    // 2. Decrement prize stock using the database function
-    try {
-      // First try using the decrement_prize_stock function
-      const { error: stockError } = await supabase.rpc('decrement_prize_stock', {
-        prize_id: selectedPrize.id,
-        amount: 1
-      });
-      
-      // If the function fails, fall back to direct update
-      if (stockError) {
-        console.warn('decrement_prize_stock function failed, falling back to direct update', stockError);
-        
-        // Get current values first
-        const { data: currentPrize, error: fetchError } = await supabase
-          .from('prizes')
-          .select('stock, claimed')
-          .eq('id', selectedPrize.id)
-          .single();
-          
-        if (fetchError) throw fetchError;
-        
-        // Then update with direct query
-        const { error: updateError } = await supabase
-          .from('prizes')
-          .update({ 
-            stock: Math.max(0, (currentPrize?.stock || 0) - 1),
-            claimed: (currentPrize?.claimed || 0) + 1,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', selectedPrize.id);
-          
-        if (updateError) throw updateError;
-      }
-    } catch (stockUpdateError) {
-      console.error('Error in stock update:', stockUpdateError);
-      // Continue with the prize assignment even if stock update fails
-    }
+    console.log('Selected prize:', selectedPrize);
 
     // 3. Update attendee with the prize
     const { error: updateError } = await supabase

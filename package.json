@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test:load": "node __tests__/load-test-claim-id.js",
     "test:direct-load": "node __tests__/direct-load-test-claim-id.js",
-    "test:spin-wheel": "node __tests__/spin-wheel-load-test.js"
+    "test:spin-wheel": "node __tests__/spin-wheel-load-test.js",
+    "db:apply-function": "node scripts/apply-db-function.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3",
