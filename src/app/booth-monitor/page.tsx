@@ -80,8 +80,7 @@ export default function BoothMonitor() {
           <div
             style={{
               width: '100%',
-              maxWidth: '1000px',
-            
+              maxWidth: '1200px',
               border: '2px solid var(--brand-lightblue-400)',
               borderRadius: '1rem',
               boxShadow: '0 8px 32px 0 rgba(0,39,57,0.10)',

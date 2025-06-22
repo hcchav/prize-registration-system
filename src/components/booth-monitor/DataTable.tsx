@@ -60,7 +60,7 @@ export function DataTable({ data, loading }: DataTableProps) {
                 fontSize: '0.95rem',
                 textAlign: 'left',
                 borderBottom: '1px solid #abcae9',
-                width: '12%'
+                width: '10%'
               }}
             >
               Reg #
@@ -75,6 +75,7 @@ export function DataTable({ data, loading }: DataTableProps) {
                 padding: '1rem 1.5rem',
                 fontSize: '0.95rem',
                 textAlign: 'left',
+                width: '20%',
                 borderBottom: '1px solid #abcae9'
               }}
             >
@@ -107,7 +108,7 @@ export function DataTable({ data, loading }: DataTableProps) {
                 fontSize: '0.95rem',
                 textAlign: 'left',
                 borderBottom: '1px solid #abcae9',
-                width: '100%'
+                width: '30%'
               }}
             >
               Prize
@@ -126,21 +127,44 @@ export function DataTable({ data, loading }: DataTableProps) {
               <td style={{ padding: '1rem 1.5rem', color: 'var(--brand-navy-500)', fontSize: '1rem', fontFamily: 'inherit' }}>
                 {attendee.company}
               </td>
-              <td style={{ padding: '1rem 1.5rem' }}>
-                <span
-                  style={{
-                    backgroundColor: attendee.prizeColor || '#e5e7eb', // Use color from database or fallback to gray
-                    color: attendee.prizeColor ? '#FFFFFF' : '#666', // Use white text for colored backgrounds, gray for unclaimed
-                    fontWeight: 700,
-                    borderRadius: '1rem',
-                    padding: '0.4rem 1rem',
-                    fontSize: '0.95rem',
-                    fontFamily: 'inherit',
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
-                  }}
-                >
-                  {attendee.prize || 'Prize Not Assigned'}
-                </span>
+              <td style={{
+                padding: '0.5rem 1rem',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '30%',
+                minWidth: '150px'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  width: '100%',
+                  height: '100%',
+                  overflow: 'hidden'
+                }}>
+                  <span
+                    style={{
+                      backgroundColor: attendee.prizeColor || '#e5e7eb',
+                      color: attendee.prizeColor ? '#FFFFFF' : '#666',
+                      fontWeight: 700,
+                      borderRadius: '1rem',
+                      padding: '0.4rem 0.8rem',
+                      fontSize: '0.9rem',
+                      fontFamily: 'inherit',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: 'inline-block',
+                      maxWidth: '100%',
+                      lineHeight: '1.2',
+                      textAlign: 'center'
+                    }}
+                  >
+                    {attendee.prize || 'Prize Not Assigned'}
+                  </span>
+                </div>
               </td>
             </tr>
           ))}
