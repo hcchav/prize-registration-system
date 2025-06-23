@@ -40,8 +40,8 @@ export default async function handler(
     }
 
     // Use the new database function to select a random prize and update its stock atomically
-    console.log('Calling select_and_update_random_prize function...');
-    const { data: prizeResult, error: prizeError } = await supabase.rpc('select_and_update_random_prize');
+    console.log('Calling select_and_assign_random_prize function...');
+    const { data: prizeResult, error: prizeError } = await supabase.rpc('select_and_assign_random_prize');
     
     console.log('Prize selection result:', prizeResult);
     

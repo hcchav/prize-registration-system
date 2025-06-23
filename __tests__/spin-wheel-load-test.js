@@ -61,6 +61,8 @@ async function createTestAttendees(count) {
 // Function to spin the wheel for an attendee
 async function spinWheel(attendeeId) {
   try {
+    console.log(`Sending spin request for attendee ${attendeeId}...`);
+    
     const response = await axios.post(API_URL, {
       attendeeId,
       eventId: 1
@@ -69,8 +71,11 @@ async function spinWheel(attendeeId) {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache'
-      }
+      },
+      timeout: 10000 // 10 second timeout
     });
+    
+    console.log(`Spin successful for attendee ${attendeeId}:`, response.data?.name || 'Unknown prize');
     
     return {
       success: true,
@@ -78,11 +83,27 @@ async function spinWheel(attendeeId) {
       prize: response.data
     };
   } catch (error) {
-    console.error(`Error spinning wheel for attendee ${attendeeId}:`, error.message);
+    let errorDetail = 'Unknown error';
+    
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      errorDetail = `Server error ${error.response.status}: ${JSON.stringify(error.response.data)}`;
+      console.error(`Error spinning wheel for attendee ${attendeeId}:`, errorDetail);
+    } else if (error.request) {
+      // The request was made but no response was received
+      errorDetail = 'No response received from server (timeout or network issue)';
+      console.error(`Error spinning wheel for attendee ${attendeeId}:`, errorDetail);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      errorDetail = `Request setup error: ${error.message}`;
+      console.error(`Error spinning wheel for attendee ${attendeeId}:`, errorDetail);
+    }
+    
     return { 
       success: false, 
       attendeeId,
-      error: error.response?.data?.error || error.message 
+      error: errorDetail
     };
   }
 }
