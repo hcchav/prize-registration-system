@@ -1,0 +1,2 @@
+npm run test:spin-wheel
+npm run test:direct-load

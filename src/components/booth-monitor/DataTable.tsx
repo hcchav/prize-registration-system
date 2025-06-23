@@ -8,6 +8,7 @@ export interface Attendee {
   prize?: string;
   prizeColor?: string | null;
   prizeDisplayText?: string | null;
+  claim_id?: string | null;
 }
 
 interface DataTableProps {
@@ -15,8 +16,9 @@ interface DataTableProps {
   loading: boolean;
 }
 
-const formatRegNumber = (id: string) => {
-  const num = parseInt(id);
+const formatClaimNumber = (claim_id: string | null | undefined) => {
+  if (!claim_id) return '----';
+  const num = parseInt(claim_id);
   return num.toString().padStart(4, '0');
 };
 
@@ -63,7 +65,7 @@ export function DataTable({ data, loading }: DataTableProps) {
                 width: '10%'
               }}
             >
-              Reg #
+              Claim #
             </th>
             <th
               style={{
@@ -119,7 +121,7 @@ export function DataTable({ data, loading }: DataTableProps) {
           {data.map((attendee, idx) => (
             <tr key={attendee.id} style={{ borderBottom: '1px solid #abcae9' }}>
               <td style={{ padding: '1rem 1.5rem', fontWeight: 800, color: 'var(--brand-navy-500)', fontSize: '1.1rem', fontFamily: 'inherit' }}>
-                {formatRegNumber(attendee.id)}
+                {formatClaimNumber(attendee.claim_id)}
               </td>
               <td style={{ padding: '1rem 1.5rem', color: 'var(--brand-navy-500)', fontWeight: 600, fontSize: '1rem', fontFamily: 'inherit' }}>
                 {attendee.firstName} {attendee.lastName.charAt(0)}.

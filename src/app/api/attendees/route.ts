@@ -12,6 +12,7 @@ interface DbAttendee {
   last_name: string;
   company: string;
   prize: string | null;
+  claim_id: string | null;
 }
 
 interface DbPrize {
@@ -33,7 +34,7 @@ export async function GET() {
     // Get all attendees
     const { data: attendees, error } = await supabase
       .from('attendees')
-      .select('id, first_name, last_name, company, prize')
+      .select('id, first_name, last_name, company, prize, claim_id')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -98,7 +99,8 @@ export async function GET() {
             company: a.company,
             prize: a.prize,
             prizeColor: prizeColor,
-            prizeDisplayText: prizeDisplayText
+            prizeDisplayText: prizeDisplayText,
+            claim_id: a.claim_id
           };
         })
       },

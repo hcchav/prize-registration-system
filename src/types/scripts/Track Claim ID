@@ -1,0 +1,44 @@
+
+-- 1. Table to Track Claim ID
+
+
+CREATE TABLE claim_id_tracker (
+  key TEXT PRIMARY KEY,
+  value INTEGER
+);
+
+-- Initialize it at 16
+INSERT INTO claim_id_tracker (key, value) VALUES ('next_claim_id', 16);
+
+
+
+-- 2. Gap-Free Claim ID Generator Function
+
+CREATE OR REPLACE FUNCTION get_strict_next_claim_id()
+RETURNS INTEGER AS $$
+DECLARE
+  next_id INTEGER;
+BEGIN
+  -- Lock the row to prevent simultaneous reads/updates
+  SELECT value INTO next_id
+  FROM claim_id_tracker
+  WHERE key = 'next_claim_id'
+  FOR UPDATE;
+
+  -- Increment the tracker
+  UPDATE claim_id_tracker
+  SET value = next_id + 1
+  WHERE key = 'next_claim_id';
+
+  -- Return the current ID (before increment)
+  RETURN next_id;
+EXCEPTION WHEN OTHERS THEN
+  RAISE EXCEPTION 'Claim ID failed: %', SQLERRM;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- Add the claim_id column to attendees
+ALTER TABLE attendees
+ADD COLUMN claim_id INTEGER UNIQUE;
