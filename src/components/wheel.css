@@ -1,0 +1,61 @@
+/* Responsive wheel styling */
+.wheel-container {
+  width: 320px;
+  height: 320px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) scale(1.1);
+  transform-origin: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Ensure the wheel fits within the parent container */
+.wheel-container > div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Media queries for responsive scaling based on container width */
+@media (max-width: 768px) {
+  .wheel-container {
+    transform: translateX(-50%) scale(1.0);
+  }
+}
+
+@media (max-width: 640px) {
+  .wheel-container {
+    transform: translateX(-50%) scale(0.95);
+  }
+}
+
+/* iPhone 14 Pro Max has width of 430px */
+@media (max-width: 480px) and (min-width: 420px) {
+  .wheel-container {
+    transform: translateX(-50%) scale(0.9);
+  }
+}
+
+/* Standard mobile devices */
+@media (max-width: 420px) and (min-width: 380px) {
+  .wheel-container {
+    transform: translateX(-50%) scale(0.85);
+  }
+}
+
+@media (max-width: 380px) and (min-width: 320px) {
+  .wheel-container {
+    transform: translateX(-50%) scale(0.8);
+  }
+}
+
+/* Adjust container height for very small screens */
+@media (max-width: 320px) {
+  .wheel-container {
+    transform: translateX(-50%) scale(0.75);
+  }
+}

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { type Prize } from "@/constants/prizes";
 import { supabase } from '@/lib/supabase';
 import { Wheel as RouletteWheel } from 'react-custom-roulette';
+import './wheel.css'; // We'll create this CSS file
 
 interface WheelProps {
   onSpinStart?: () => void;
@@ -60,7 +61,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
           option: prize.displayText,
           style: {
             backgroundColor: prize.color,
-            textColor: prize.textColor
+            textColor: '#FFFFFF' // Force all text to be white
           }
         }));
         
@@ -237,8 +238,8 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
   }, [assignedPrize, onSpinComplete]);
 
   return (
-    <div className="flex flex-col items-center w-full max-w-md mx-auto">
-      <div className="relative w-full max-w-xs mx-auto">
+    <div className="grid grid-cols-1 w-full relative h-[320px]">
+      <div className="wheel-container">
         {wheelData.length > 0 && (
           <RouletteWheel
             mustStartSpinning={mustSpin}
@@ -246,15 +247,16 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
             data={wheelData}
             onStopSpinning={handleStopSpinning}
             spinDuration={0.8}
-            outerBorderWidth={3}
+            outerBorderWidth={1}
             outerBorderColor="#042841"
-            innerRadius={20}
+            innerRadius={5}
             innerBorderColor="#042841"
-            innerBorderWidth={2}
+            innerBorderWidth={0.5}
             radiusLineColor="#042841"
-            radiusLineWidth={1}
-            textDistance={85}
-            fontSize={14}
+            radiusLineWidth={0.5}
+            textDistance={50}
+            fontSize={8}
+            perpendicularText={false}
           />
         )}
       </div>

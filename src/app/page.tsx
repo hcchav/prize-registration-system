@@ -1003,19 +1003,23 @@ export default function Home() {
                   priority
                 />
               </div> */}
-              <div className="flex flex-col w-80 items-center justify-center gap-3 px-6 py-6">
+              <div className="flex flex-col w-80 items-center justify-center gap-3 px-2 py-6">
                 <div className="w-full flex flex-col items-center" style={{ opacity: showCongratsModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>
                   <div className="relative self-stretch font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal] mb-4">
                     CLAIM YOUR PRIZE!
                   </div>
-                  <Wheel 
-                    onSpinStart={() => setLoading(true)}
-                    onSpinComplete={handleSpinComplete}
-                    onError={(error) => {
-                      setError(error);
-                      setLoading(false);
-                    }}
-                  />
+                  <div className="flex justify-center items-center w-full py-4 relative">
+                    <div className="flex justify-center items-center w-full">
+                      <Wheel 
+                        onSpinStart={() => setLoading(true)}
+                        onSpinComplete={handleSpinComplete}
+                        onError={(error) => {
+                          setError(error);
+                          setLoading(false);
+                        }}
+                      />
+                    </div>
+                  </div>
                   {error && (
                     <p className="text-red-500 text-sm text-center mt-2">
                       {error}
