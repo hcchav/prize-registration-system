@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="30px" viewBox="0 0 40 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Rotated teardrop shape so the point faces left (toward the wheel) -->
+        <path d="M40,15 C40,15 20,30 10,30 C4.4771525,30 0,23.2842712 0,15 C0,6.71572875 4.4771525,0 10,0 C20,0 40,15 40,15 Z" fill="#052740"></path>
+    </g>
+</svg>

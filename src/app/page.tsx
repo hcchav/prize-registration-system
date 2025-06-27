@@ -1008,8 +1008,8 @@ export default function Home() {
                   <div className="relative self-stretch font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal] mb-4">
                     CLAIM YOUR PRIZE!
                   </div>
-                  <div className="flex justify-center items-center w-full py-4 relative">
-                    <div className="flex justify-center items-center w-full">
+                  <div className="flex flex-col justify-center items-center w-full py-4">
+                    <div className="flex justify-center items-center w-full mb-16">
                       <Wheel 
                         onSpinStart={() => setLoading(true)}
                         onSpinComplete={handleSpinComplete}

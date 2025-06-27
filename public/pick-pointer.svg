@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Simple pick-shaped pointer with sharp point at bottom -->
+  <path d="M15,5 L25,5 C28,5 30,7 30,10 L30,25 L20,35 L10,25 L10,10 C10,7 12,5 15,5 Z" fill="#052740"/>
+</svg>

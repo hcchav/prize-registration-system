@@ -4,11 +4,13 @@
   height: 320px;
   position: absolute;
   left: 50%;
+  top: 0;
   transform: translateX(-50%) scale(1.1);
   transform-origin: center;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
 }
 
 /* Ensure the wheel fits within the parent container */
@@ -20,16 +22,31 @@
   align-items: center;
 }
 
+
+
+
+
+
+
 /* Media queries for responsive scaling based on container width */
-@media (max-width: 768px) {
+/* For larger screens */
+@media (min-width: 768px) {
   .wheel-container {
-    transform: translateX(-50%) scale(1.0);
+    transform: translateX(-50%) scale(.9);
   }
 }
 
+/* For medium screens */
+@media (max-width: 768px) {
+  .wheel-container {
+    transform: translateX(-50%) scale(0.9);
+  }
+}
+
+/* For smaller screens */
 @media (max-width: 640px) {
   .wheel-container {
-    transform: translateX(-50%) scale(0.95);
+    transform: translateX(-50%) scale(0.8);
   }
 }
 
@@ -58,4 +75,12 @@
   .wheel-container {
     transform: translateX(-50%) scale(0.75);
   }
+}
+
+/* Custom pointer styling - target the SVG directly */
+.wheel-container svg polygon {
+  fill: #052740 !important;
+  stroke: #052740 !important;
+  stroke-width: 3px !important;
+  transform: scale(1.5) !important;
 }

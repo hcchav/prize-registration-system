@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Teardrop with very sharp point facing left (toward wheel) -->
+  <path d="M0,20 L25,5 C35,5 40,15 40,20 C40,25 35,35 25,35 L0,20 Z" fill="#052740"/>
+</svg>

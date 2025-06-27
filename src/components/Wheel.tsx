@@ -4,8 +4,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { type Prize } from "@/constants/prizes";
 import { supabase } from '@/lib/supabase';
-import { Wheel as RouletteWheel } from 'react-custom-roulette';
+import dynamic from 'next/dynamic';
 import './wheel.css'; // We'll create this CSS file
+
+// Dynamically import the Wheel component with SSR disabled
+const RouletteWheel = dynamic(
+  () => import('react-custom-roulette').then((mod) => mod.Wheel),
+  { ssr: false }
+);
 
 interface WheelProps {
   onSpinStart?: () => void;
@@ -238,33 +244,43 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
   }, [assignedPrize, onSpinComplete]);
 
   return (
-    <div className="grid grid-cols-1 w-full relative h-[320px]">
-      <div className="wheel-container">
-        {wheelData.length > 0 && (
-          <RouletteWheel
-            mustStartSpinning={mustSpin}
-            prizeNumber={prizeNumber}
-            data={wheelData}
-            onStopSpinning={handleStopSpinning}
-            spinDuration={0.8}
-            outerBorderWidth={1}
-            outerBorderColor="#042841"
-            innerRadius={5}
-            innerBorderColor="#042841"
-            innerBorderWidth={0.5}
-            radiusLineColor="#042841"
-            radiusLineWidth={0.5}
-            textDistance={50}
-            fontSize={8}
-            perpendicularText={false}
-          />
-        )}
+    <div className="grid grid-cols-1 w-full flex flex-col items-center">
+      <div className="relative h-[320px] w-full mb-4">
+        <div className="wheel-container">
+          {wheelData.length > 0 && (
+            <RouletteWheel
+              mustStartSpinning={mustSpin}
+              prizeNumber={prizeNumber}
+              data={wheelData}
+              onStopSpinning={handleStopSpinning}
+              spinDuration={0.8}
+              outerBorderWidth={1}
+              outerBorderColor="#ffffff"
+              innerRadius={5}
+              innerBorderColor="#ffffff"
+              innerBorderWidth={0.5}
+              radiusLineColor="transparent"
+              radiusLineWidth={0}
+              textDistance={50}
+              fontSize={24}
+              perpendicularText={false}
+              pointerProps={{
+                src: '/blue_shape_smoothed.svg',
+                style: {
+                  width: '50px',
+                  height: '50px',
+                  transform: 'rotate(0deg) translateX(0px) translateY(0px)'
+                }
+              }}
+            />
+          )}
+        </div>
       </div>
       
       <Button
         onClick={handleSpin}
         disabled={spinning || loading}
-        className={`w-full py-3 rounded-md text-white font-regular mt-4 ${spinning || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
+        className={`w-full py-3 rounded-md text-white font-regular ${spinning || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
       >
         {spinning || loading ? 'Spinning...' : 'Spin the Wheel!'}
       </Button>
