@@ -165,9 +165,9 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
         throw new Error('Invalid response from server. Please try again.');
       }
       
-      // The API returns the prize data directly in the response
-      const selectedPrize = data;
-      if (!selectedPrize || !selectedPrize.id) {
+      // Find the assigned prize in our available prizes
+      const selectedPrize = data.prize;
+      if (!selectedPrize) {
         throw new Error('No prize data received from server.');
       }
       

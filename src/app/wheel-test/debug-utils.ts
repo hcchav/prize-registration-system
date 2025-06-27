@@ -130,6 +130,14 @@ export class WheelPerformanceTracker {
     averageSpinDuration: number;
     totalDuration: number;
     errors: Record<string, number>;
+  } = {
+    spinAttempts: 0,
+    successfulSpins: 0,
+    failedSpins: 0,
+    stuckSpins: 0,
+    averageSpinDuration: 0,
+    totalDuration: 0,
+    errors: {}
   };
   
   constructor() {
@@ -162,7 +170,7 @@ export class WheelPerformanceTracker {
    * Record a successful spin
    * @param duration - Duration of the spin in ms
    */
-  public recordSuccessfulSpin(duration: number): void {
+  public recordSpinSuccess(duration: number): void {
     this.metrics.successfulSpins++;
     this.updateAverageDuration(duration);
   }
@@ -171,7 +179,7 @@ export class WheelPerformanceTracker {
    * Record a failed spin
    * @param error - Error message
    */
-  public recordFailedSpin(error: string): void {
+  public recordSpinFailure(error: string): void {
     this.metrics.failedSpins++;
     
     // Track error frequency
@@ -240,6 +248,7 @@ export class BrowserPerformanceMonitor {
   private intervalId: NodeJS.Timeout | null = null;
   private lastFrameTime = 0;
   private frameCount = 0;
+  private startTime = 0;
   
   constructor() {
     this.metrics = {
@@ -258,6 +267,7 @@ export class BrowserPerformanceMonitor {
     this.monitoring = true;
     this.lastFrameTime = performance.now();
     this.frameCount = 0;
+    this.startTime = performance.now();
     
     // Capture initial timing metrics
     const timing = performance.timing;
@@ -307,17 +317,22 @@ export class BrowserPerformanceMonitor {
     
     requestAnimationFrame(countFrame);
   }
-  
+
   /**
    * Stop monitoring browser performance
+   * @returns The duration of the monitoring period in milliseconds
    */
-  public stopMonitoring(): void {
+  public stopMonitoring(): number {
     this.monitoring = false;
     
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
+    
+    // Calculate and return the duration
+    const duration = performance.now() - this.startTime;
+    return duration;
   }
   
   /**
@@ -370,7 +385,7 @@ export function detectRenderingIssues(): string[] {
 /**
  * Utility to check browser capabilities that might affect wheel animation
  */
-export function checkBrowserCapabilities(): Record<string, boolean | string> {
+export function checkBrowserCapabilities(): Record<string, boolean | string | number> {
   return {
     requestAnimationFrame: typeof window.requestAnimationFrame === 'function',
     cancelAnimationFrame: typeof window.cancelAnimationFrame === 'function',

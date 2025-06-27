@@ -22,24 +22,18 @@ export default function WheelTest() {
   
   // Create instances of debug utilities
   const [animationMonitor] = useState(() => new WheelAnimationMonitor(
-    (stuckData) => {
-      console.log('WHEEL STUCK!', stuckData);
+    (details) => {
+      console.error('WHEEL STUCK DETECTED!', details);
       setTestResults(prev => [
         {
           timestamp: new Date().toLocaleTimeString(),
           success: false,
-          error: `Wheel stuck! Duration: ${stuckData.duration}ms, Frames: ${stuckData.frameCount}`,
+          error: `WHEEL STUCK! Duration: ${details.duration}ms, Frames: ${details.frameCount}`,
         },
         ...prev
       ]);
       performanceTracker.recordStuckSpin();
-      
-      // Force reset the wheel when stuck is detected
-      setIsRunning(false);
-      setTimeout(() => setIsRunning(true), 500);
-    },
-    // Reduce stuck detection delay from 2000ms to 1500ms for faster detection
-    1500
+    }
   ));
   
   const [performanceTracker] = useState(() => new WheelPerformanceTracker());
@@ -60,9 +54,6 @@ export default function WheelTest() {
       performance: browserMonitor.getMetrics(),
       wheelMetrics: performanceTracker.getMetrics()
     });
-
-    // Start with the wheel running
-    setIsRunning(true);
   }, []);
 
   // Handle spin start
@@ -197,11 +188,6 @@ export default function WheelTest() {
     setTestResults([]);
     setTestCount(0);
     performanceTracker.resetMetrics();
-    
-    // Force reset the wheel component
-    setIsRunning(false);
-    setTimeout(() => setIsRunning(true), 200);
-    
     setDebugInfo({
       capabilities: checkBrowserCapabilities(),
       performance: browserMonitor.getMetrics(),
@@ -275,36 +261,12 @@ export default function WheelTest() {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4">Prize Wheel</h2>
           {isRunning ? (
-            <div className="relative">
-              <Wheel
-                onSpinStart={handleSpinStart}
-                onSpinComplete={handleSpinComplete}
-                onError={handleSpinError}
-                testMode={true}
-              />
-              {/* Add a manual emergency stop button */}
-              <Button 
-                onClick={() => {
-                  console.log('Emergency stop triggered');
-                  // Force reset the wheel
-                  setIsRunning(false);
-                  setTimeout(() => setIsRunning(true), 500);
-                  
-                  // Record the emergency stop
-                  setTestResults(prev => [
-                    {
-                      timestamp: new Date().toLocaleTimeString(),
-                      success: false,
-                      error: 'Emergency stop triggered by user',
-                    },
-                    ...prev
-                  ]);
-                }}
-                className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded"
-              >
-                Emergency Stop
-              </Button>
-            </div>
+            <Wheel
+              onSpinStart={handleSpinStart}
+              onSpinComplete={handleSpinComplete}
+              onError={handleSpinError}
+              testMode={true}
+            />
           ) : (
             <div className="flex items-center justify-center h-64 bg-gray-100 rounded-lg">
               <p className="text-gray-500">Wheel is resetting...</p>
@@ -342,40 +304,6 @@ export default function WheelTest() {
       
       <div className="mt-8 p-4 bg-gray-100 rounded-lg">
         <h2 className="text-xl font-bold">Debug Information</h2>
-        
-        <div className="mt-2 flex gap-2">
-          <Button
-            onClick={() => {
-              // Force garbage collection if available (Chrome with --js-flags="--expose-gc")
-              if (typeof window !== 'undefined' && (window as any).gc) {
-                (window as any).gc();
-                console.log('Manual garbage collection triggered');
-              } else {
-                console.log('Garbage collection not available');
-              }
-            }}
-            variant="outline"
-            className="text-xs"
-          >
-            Force GC (if available)
-          </Button>
-          
-          <Button
-            onClick={() => {
-              // Update debug info manually
-              setDebugInfo({
-                capabilities: checkBrowserCapabilities(),
-                performance: browserMonitor.getMetrics(),
-                wheelMetrics: performanceTracker.getMetrics(),
-                timestamp: new Date().toISOString()
-              });
-            }}
-            variant="outline"
-            className="text-xs"
-          >
-            Refresh Debug Info
-          </Button>
-        </div>
         
         <div className="mt-4">
           <h3 className="font-semibold">Performance Metrics:</h3>
