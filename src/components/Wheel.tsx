@@ -194,8 +194,57 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
         name: selectedPrize.name,
         displayText: selectedPrize.display_text || selectedPrize.name
       };
+
+      //add here to send email of prize selection
+
       
       setAssignedPrize(assignedPrizeData);
+      
+      // Send prize confirmation email
+      try {
+        // Get attendeeId from localStorage with proper error handling
+        let attendeeId;
+        const storedId = localStorage.getItem('attendeeId');
+        
+        if (storedId) {
+          try {
+            // Try to parse as JSON first
+            attendeeId = JSON.parse(storedId);
+          } catch (parseError) {
+            // If parsing fails, use the raw string value
+            attendeeId = storedId;
+          }
+        }
+        
+        if (attendeeId) {
+          console.log('Sending prize confirmation email for:', { 
+            attendeeId, 
+            prizeName: assignedPrizeData.displayText 
+          });
+          
+          fetch('/api/send-prize-confirmation-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              attendeeId,
+              prizeName: assignedPrizeData.displayText
+            }),
+          }).then(response => {
+            if (!response.ok) {
+              console.error('Failed to send prize confirmation email:', response.statusText);
+            } else {
+              console.log('Prize confirmation email sent successfully');
+            }
+          }).catch(error => {
+            console.error('Error sending prize confirmation email:', error);
+          });
+        }
+      } catch (emailError) {
+        console.error('Error preparing prize confirmation email:', emailError);
+        // Don't block the wheel spin if email sending fails
+      }
       
       // Start spinning the wheel
       setSpinning(true);
