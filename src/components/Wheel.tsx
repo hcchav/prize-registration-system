@@ -200,7 +200,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
       
       setAssignedPrize(assignedPrizeData);
       
-      // Send prize confirmation email
+      // Send prize confirmation email with 25-second delay
       try {
         // Get attendeeId from localStorage with proper error handling
         let attendeeId;
@@ -217,29 +217,34 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
         }
         
         if (attendeeId) {
-          console.log('Sending prize confirmation email for:', { 
+          console.log('Will send prize confirmation email in 25 seconds for:', { 
             attendeeId, 
             prizeName: assignedPrizeData.displayText 
           });
           
-          fetch('/api/send-prize-confirmation-email', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              attendeeId,
-              prizeName: assignedPrizeData.displayText
-            }),
-          }).then(response => {
-            if (!response.ok) {
-              console.error('Failed to send prize confirmation email:', response.statusText);
-            } else {
-              console.log('Prize confirmation email sent successfully');
-            }
-          }).catch(error => {
-            console.error('Error sending prize confirmation email:', error);
-          });
+          // Set a timeout to delay the email sending by 25 seconds
+          setTimeout(() => {
+            console.log('Now sending delayed prize confirmation email after 25 seconds');
+            
+            fetch('/api/send-prize-confirmation-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                attendeeId,
+                prizeName: assignedPrizeData.displayText
+              }),
+            }).then(response => {
+              if (!response.ok) {
+                console.error('Failed to send prize confirmation email:', response.statusText);
+              } else {
+                console.log('Prize confirmation email sent successfully');
+              }
+            }).catch(error => {
+              console.error('Error sending prize confirmation email:', error);
+            });
+          }, 25000); // 25 seconds delay
         }
       } catch (emailError) {
         console.error('Error preparing prize confirmation email:', emailError);

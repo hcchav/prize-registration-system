@@ -6,7 +6,6 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string) {
   const logoUrl = 'https://prize-registration-system.vercel.app/images/prizes/Mockup.png';
-  const bannerUrl = 'https://prize-registration-system.vercel.app/images/prizes/verification-banner-mobile-828x420.png';
   
   return `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -81,7 +80,7 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string) {
         }
         @media screen and (min-width: 1px) {
           .fallback-bg {
-            background-image: url('${bannerUrl}') !important;
+            background-color: #abcae9 !important; 
           }
         }
       </style>
@@ -97,11 +96,10 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string) {
           <tr>
             <td style="padding: 0 20px;">
               <div class="content-box">
-                <div class="fallback-bg">
-                  <!-- Fallback content for email clients that don't support background images -->
-                  <div style="display: none; max-height: 0; overflow: hidden; mso-hide: all;">
-                    Biome Brigade Prize Confirmation
-                  </div>
+                <div class="fallback-bg" style="padding: 15px 0; text-align: center; height:30px;">
+                  <h1 style="font-size: 24px; font-weight: 700; color: #052740; margin: 0;">
+                    Prize Confirmation
+                  </h1>
                 </div>
                 <div style="padding: 20px;">
                   <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
@@ -142,8 +140,8 @@ function formatRegNumber(id: string | number | null): string {
   // Convert id to string if it's not already
   const idStr = String(id);
   // Take the last 6 characters of the ID and format as REG-XXXXXX
-  const lastSix = idStr.slice(-6).padStart(6, '0');
-  return `REG-${lastSix}`;
+  const lastFour = idStr.slice(-4).padStart(4, '0');
+  return `${lastFour}`;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -163,7 +161,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Get attendee email from database
     const { data: attendee, error: attendeeError } = await supabase
       .from('attendees')
-      .select('email')
+      .select('email, claim_id')
       .eq('id', attendeeId)
       .single();
 
@@ -177,8 +175,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
       return res.status(404).json({ success: false, error: 'Attendee not found or email missing' });
     }
-
-    const formattedClaimNumber = formatRegNumber(attendeeId);
+    
+    // Use claim_id from the database if available, otherwise fall back to attendeeId
+    const claimIdToFormat = attendee.claim_id
+    const formattedClaimNumber = formatRegNumber(claimIdToFormat);
 
     // Send email with prize confirmation
     try {
