@@ -83,7 +83,7 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string) {
             background-color: #abcae9 !important; 
           }
         }
-      </style>
+      </style
     </head>
     <body style="margin: 0; padding: 0; font-family: Poppins, Tahoma, sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
       <center style="width: 100%;">
