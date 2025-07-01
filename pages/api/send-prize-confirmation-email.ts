@@ -4,7 +4,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string) {
+function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, recipientEmail: string, firstName: string) {
   const logoUrl = 'https://prize-registration-system.vercel.app/images/prizes/Mockup.png';
   
   return `
@@ -83,7 +83,7 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string) {
             background-color: #abcae9 !important; 
           }
         }
-      </style
+      </style>
     </head>
     <body style="margin: 0; padding: 0; font-family: Poppins, Tahoma, sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
       <center style="width: 100%;">
@@ -103,7 +103,7 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string) {
                 </div>
                 <div style="padding: 20px;">
                   <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
-                    Congratulations, Hero!<br /><br />
+                    Congratulations, ${firstName || 'Friend'}!<br /><br />
                     You have won a prize in the Biome Brigade giveaway!
                   </p>
                   <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; margin: 0 0 10px 0;">Your Prize:</p>
@@ -161,7 +161,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Get attendee email from database
     const { data: attendee, error: attendeeError } = await supabase
       .from('attendees')
-      .select('email, claim_id')
+      .select('email, claim_id, first_name')
       .eq('id', attendeeId)
       .single();
 
@@ -187,7 +187,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         from: 'noreply@biomebrigade.com',
         to: attendee.email,
         subject: 'Your Biome Brigade Prize Confirmation',
-        html: htmlTemplateWithPrizeDetails(prizeName, formattedClaimNumber),
+        html: htmlTemplateWithPrizeDetails(prizeName, formattedClaimNumber, attendee.email, attendee.first_name),
       });
       
       if (error) {
