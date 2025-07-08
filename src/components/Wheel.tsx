@@ -38,15 +38,94 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
 
   // Load all prizes for the wheel
   useEffect(() => {
+    // Flag to track if component is mounted
+    let isMounted = true;
+    
+    // Use a flag to prevent duplicate requests
+    if (window._wheelLoadingPrizes) {
+      console.log('Already loading prizes, skipping duplicate call');
+      return;
+    }
+    
+    window._wheelLoadingPrizes = true;
+    
+    // Function to fetch prizes with retry logic
+    const fetchPrizesWithRetry = async (retries = 3, delay = 1000) => {
+      for (let attempt = 1; attempt <= retries + 1; attempt++) {
+        try {
+          console.log(`Loading prizes attempt ${attempt}/${retries + 1}`);
+          
+          // Create an AbortController for timeout
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+          
+          // Make the request with timeout to our new API endpoint
+          const response = await Promise.race([
+            fetch('/api/get-prizes', {
+              signal: controller.signal,
+              headers: {
+                'Cache-Control': 'no-cache'
+              }
+            }),
+            new Promise<never>((_, reject) => 
+              setTimeout(() => reject(new Error('API request timed out')), 5000)
+            )
+          ]);
+          
+          clearTimeout(timeoutId);
+          
+          // Check if response is a fetch Response
+          if (response instanceof Response) {
+            if (!response.ok) {
+              throw new Error(`API returned ${response.status}: ${await response.text()}`);
+            }
+            
+            const data = await response.json();
+            if (data && Array.isArray(data)) {
+              return data;
+            }
+            
+            throw new Error('Invalid data format returned from API');
+          }
+          
+          throw new Error('No valid response from API');
+        } catch (err) {
+          console.error(`Attempt ${attempt} failed:`, err);
+          
+          // If this was our last retry, throw the error
+          if (attempt > retries) throw err;
+          
+          // Otherwise wait and try again
+          console.log(`Retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          
+          // Increase delay for next attempt (exponential backoff)
+          delay *= 1.5;
+        }
+      }
+      
+      // This should never be reached due to the throw in the loop
+      throw new Error('Failed to fetch prizes after retries');
+    };
+    
     const loadPrizes = async () => {
       try {
-        // First, load all prizes for the wheel display
-        const { data: allPrizes, error: allPrizesError } = await supabase
-          .from('prizes')
-          .select('*')
-          .order('id', { ascending: true });
-
-        if (allPrizesError) throw allPrizesError;
+        console.log('Loading prizes for wheel display...');
+        setLoading(true);
+        
+        // Fetch prizes with retry logic
+        const allPrizes = await fetchPrizesWithRetry();
+        
+        if (!allPrizes || allPrizes.length === 0) {
+          console.warn('No prizes found in database');
+          if (isMounted) {
+            setError('No prizes available');
+            onError?.('No prizes available to display');
+          }
+          return;
+        }
+        
+        console.log(`Successfully loaded ${allPrizes.length} prizes`);
         
         // Use all prizes for the wheel display
         const prizesWithPosition = allPrizes.map((prize, index) => ({
@@ -60,7 +139,9 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
           wheelPosition: index // Store the position for later reference
         }));
         
-        setAvailablePrizes(prizesWithPosition);
+        if (isMounted) {
+          setAvailablePrizes(prizesWithPosition);
+        }
         
         // Create data for react-custom-roulette
         const wheelItems = prizesWithPosition.map(prize => ({
@@ -71,14 +152,57 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
           }
         }));
         
-        setWheelData(wheelItems);
-      } catch (err) {
+        if (isMounted) {
+          setWheelData(wheelItems);
+          console.log('Wheel data prepared successfully');
+        }
+      } catch (err: unknown) {
         console.error('Error loading prizes:', err);
-        onError?.('Failed to load prizes. Please try again later.');
+        
+        // More detailed error information
+        if (err instanceof Error) {
+          console.error(`Error name: ${err.name}, message: ${err.message}`);
+          if (err.stack) console.error(`Stack trace: ${err.stack}`);
+          
+          // Only update state if component is still mounted
+          if (isMounted) {
+            // Check for specific error types
+            if (err.message?.includes('timeout') || err.name === 'AbortError') {
+              setError('Connection timed out. Please try again.');
+              onError?.('Connection timed out while loading prizes. Please try again.');
+            } else if (!navigator.onLine) {
+              setError('Network connection issue. Please check your internet and try again.');
+              onError?.('Network connection issue. Please check your internet connection and try again.');
+            } else {
+              setError('Failed to load prizes. Please try again later.');
+              onError?.('Failed to load prizes. Please try again later.');
+            }
+          }
+        } else {
+          // Handle non-Error objects
+          if (isMounted) {
+            setError('An unexpected error occurred. Please try again later.');
+            onError?.('An unexpected error occurred. Please try again later.');
+          }
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+        
+        // Reset the loading flag after a short delay
+        setTimeout(() => {
+          window._wheelLoadingPrizes = false;
+        }, 500);
       }
     };
 
     loadPrizes();
+    
+    // Cleanup function to prevent state updates after unmount
+    return () => {
+      isMounted = false;
+    };
   }, [onError]);
 
   // Handle spin button click
