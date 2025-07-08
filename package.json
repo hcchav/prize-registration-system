@@ -13,6 +13,8 @@
     "db:apply-function": "node scripts/apply-db-function.js"
   },
   "dependencies": {
+    "@logtail/node": "^0.5.5",
+    "@logtail/winston": "^0.5.5",
     "@supabase/supabase-js": "^2.39.3",
     "@tailwindcss/postcss": "^4.1.7",
     "axios": "^1.10.0",
@@ -29,7 +31,8 @@
     "resend": "^4.4.1",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.7",
-    "twilio": "^5.0.0"
+    "twilio": "^5.0.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",

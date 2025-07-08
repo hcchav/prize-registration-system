@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { type Prize } from "@/constants/prizes";
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
 import './wheel.css'; // We'll create this CSS file
+import clientLogger from '@/lib/client-logger';
 
 // Dynamically import the Wheel component with SSR disabled
 const RouletteWheel = dynamic(
@@ -30,6 +31,9 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   
+  // Use a ref to track loading state instead of window variable
+  const isLoadingPrizesRef = useRef(false);
+
   // Data for react-custom-roulette
   const [wheelData, setWheelData] = useState<Array<{
     option: string;
@@ -41,19 +45,20 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
     // Flag to track if component is mounted
     let isMounted = true;
     
-    // Use a flag to prevent duplicate requests
-    if (window._wheelLoadingPrizes) {
+    // Use the ref to prevent duplicate requests
+    if (isLoadingPrizesRef.current) {
       console.log('Already loading prizes, skipping duplicate call');
       return;
     }
     
-    window._wheelLoadingPrizes = true;
+    isLoadingPrizesRef.current = true;
     
     // Function to fetch prizes with retry logic
     const fetchPrizesWithRetry = async (retries = 3, delay = 1000) => {
       for (let attempt = 1; attempt <= retries + 1; attempt++) {
         try {
           console.log(`Loading prizes attempt ${attempt}/${retries + 1}`);
+          clientLogger.info(`Loading prizes attempt ${attempt}/${retries + 1}`);
           
           // Create an AbortController for timeout
           const controller = new AbortController();
@@ -77,35 +82,56 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
           // Check if response is a fetch Response
           if (response instanceof Response) {
             if (!response.ok) {
-              throw new Error(`API returned ${response.status}: ${await response.text()}`);
+              const errorText = await response.text();
+              clientLogger.error(`API returned error status ${response.status}`, {
+                status: response.status,
+                response: errorText
+              });
+              throw new Error(`API returned ${response.status}: ${errorText}`);
             }
             
             const data = await response.json();
             if (data && Array.isArray(data)) {
+              clientLogger.info('Successfully fetched prizes', { count: data.length });
               return data;
             }
             
+            clientLogger.error('Invalid data format returned from API', { data });
             throw new Error('Invalid data format returned from API');
           }
           
+          clientLogger.error('No valid response from API');
           throw new Error('No valid response from API');
-        } catch (err) {
+        } catch (err: unknown) {
           console.error(`Attempt ${attempt} failed:`, err);
           
-          // If this was our last retry, throw the error
-          if (attempt > retries) throw err;
+          // Log the error with BetterStack
+          if (err instanceof Error) {
+            clientLogger.error(`Prize fetch attempt ${attempt} failed`, {
+              error: err.message,
+              name: err.name,
+              stack: err.stack
+            });
+          } else {
+            clientLogger.error(`Prize fetch attempt ${attempt} failed with unknown error`, {
+              error: String(err)
+            });
+          }
           
-          // Otherwise wait and try again
-          console.log(`Retrying in ${delay}ms...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          // If this is not the last attempt, wait before retrying
+          if (attempt <= retries) {
+            console.log(`Waiting ${delay}ms before retry...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            continue;
+          }
           
-          // Increase delay for next attempt (exponential backoff)
-          delay *= 1.5;
+          // If we've exhausted all retries, rethrow the error
+          throw err;
         }
       }
       
-      // This should never be reached due to the throw in the loop
-      throw new Error('Failed to fetch prizes after retries');
+      // This should never be reached due to the throw in the catch block
+      throw new Error('Unexpected end of fetchPrizesWithRetry');
     };
     
     const loadPrizes = async () => {
@@ -164,22 +190,37 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
           console.error(`Error name: ${err.name}, message: ${err.message}`);
           if (err.stack) console.error(`Stack trace: ${err.stack}`);
           
+          // Log to BetterStack
+          clientLogger.error('Error loading prizes', {
+            error: err.message,
+            name: err.name,
+            stack: err.stack
+          });
+          
           // Only update state if component is still mounted
           if (isMounted) {
             // Check for specific error types
             if (err.message?.includes('timeout') || err.name === 'AbortError') {
               setError('Connection timed out. Please try again.');
               onError?.('Connection timed out while loading prizes. Please try again.');
+              clientLogger.warn('Connection timeout detected', { errorType: 'timeout' });
             } else if (!navigator.onLine) {
               setError('Network connection issue. Please check your internet and try again.');
               onError?.('Network connection issue. Please check your internet connection and try again.');
+              clientLogger.warn('Network connection issue detected', { errorType: 'offline' });
             } else {
               setError('Failed to load prizes. Please try again later.');
               onError?.('Failed to load prizes. Please try again later.');
+              clientLogger.error('Unknown error loading prizes', { errorType: 'unknown' });
             }
           }
         } else {
           // Handle non-Error objects
+          clientLogger.error('Non-error object thrown while loading prizes', {
+            error: String(err),
+            type: typeof err
+          });
+          
           if (isMounted) {
             setError('An unexpected error occurred. Please try again later.');
             onError?.('An unexpected error occurred. Please try again later.');
@@ -190,10 +231,8 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
           setLoading(false);
         }
         
-        // Reset the loading flag after a short delay
-        setTimeout(() => {
-          window._wheelLoadingPrizes = false;
-        }, 500);
+        // Reset the loading flag without a delay
+        isLoadingPrizesRef.current = false;
       }
     };
 
@@ -202,6 +241,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
     // Cleanup function to prevent state updates after unmount
     return () => {
       isMounted = false;
+      isLoadingPrizesRef.current = false;
     };
   }, [onError]);
 
