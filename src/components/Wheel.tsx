@@ -137,7 +137,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
     const loadPrizes = async () => {
       try {
         console.log('Loading prizes for wheel display...');
-        setLoading(true);
+        // setLoading(true);
         
         // Fetch prizes with retry logic
         const allPrizes = await fetchPrizesWithRetry();
@@ -186,17 +186,18 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
         console.error('Error loading prizes:', err);
         
         // More detailed error information
-        if (err instanceof Error) {
-          console.error(`Error name: ${err.name}, message: ${err.message}`);
-          if (err.stack) console.error(`Stack trace: ${err.stack}`);
-          
-          // Log to BetterStack
-          clientLogger.error('Error loading prizes', {
-            error: err.message,
-            name: err.name,
-            stack: err.stack
-          });
-          
+          if (err instanceof Error) {
+            console.error(`Error name: ${err.name}, message: ${err.message}`);
+            if (err.stack) console.error(`Stack trace: ${err.stack}`);
+            
+            // Log to BetterStack
+            clientLogger.error('Error loading prizes', {
+              error: err.message,
+              name: err.name,
+              stack: err.stack
+            });
+        
+       
           // Only update state if component is still mounted
           if (isMounted) {
             // Check for specific error types
@@ -224,6 +225,10 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
           if (isMounted) {
             setError('An unexpected error occurred. Please try again later.');
             onError?.('An unexpected error occurred. Please try again later.');
+            clientLogger.error('Non-error object thrown while loading prizes', {
+              error: String(err),
+              type: typeof err
+            });
           }
         }
       } finally {
@@ -243,7 +248,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
       isMounted = false;
       isLoadingPrizesRef.current = false;
     };
-  }, [onError]);
+  }, []);
 
   // Handle spin button click
   const handleSpin = useCallback(async () => {

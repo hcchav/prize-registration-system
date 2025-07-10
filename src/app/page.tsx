@@ -246,69 +246,69 @@ export default function Home() {
     }
   };
 
-  const handlePrizeSelection = async (winningPrize: Prize) => {
-    try {
-      setVerifying(true);
-      setError('');
+  // const handlePrizeSelection = async (winningPrize: Prize) => {
+  //   try {
+  //     setVerifying(true);
+  //     setError('');
       
-      // Get attendee ID from local storage
-      const attendeeId = localStorage.getItem('attendeeId');
-      if (!attendeeId) {
-        throw new Error('No attendee ID found. Please try registering again.');
-      }
+  //     // Get attendee ID from local storage
+  //     const attendeeId = localStorage.getItem('attendeeId');
+  //     if (!attendeeId) {
+  //       throw new Error('No attendee ID found. Please try registering again.');
+  //     }
       
-      console.log('Claiming prize for attendee ID:', { attendeeId, prizeId: winningPrize.id });
+  //     console.log('Claiming prize for attendee ID:', { attendeeId, prizeId: winningPrize.id });
 
-      // Claim the prize using the assign-prize endpoint
-      const claimResponse = await fetch('/api/assign-prize', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prizeId: winningPrize.id,
-          attendeeIdentifier: attendeeId
-        }),
-      });
+  //     // Claim the prize using the assign-prize endpoint
+  //     const claimResponse = await fetch('/api/assign-prize', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         prizeId: winningPrize.id,
+  //         attendeeIdentifier: attendeeId
+  //       }),
+  //     });
 
-      const claimData = await claimResponse.json();
+  //     const claimData = await claimResponse.json();
       
-      if (!claimResponse.ok) {
-        console.error('Prize claim failed:', claimData);
+  //     if (!claimResponse.ok) {
+  //       console.error('Prize claim failed:', claimData);
         
-        // Handle out of stock with retry
-        if (claimData.code === 'PRIZE_OUT_OF_STOCK_RETRY') {
-          setError(claimData.details);
-          // Don't set loading to false here, let the wheel handle the retry
-          return;
-        }
+  //       // Handle out of stock with retry
+  //       if (claimData.code === 'PRIZE_OUT_OF_STOCK_RETRY') {
+  //         setError(claimData.details);
+  //         // Don't set loading to false here, let the wheel handle the retry
+  //         return;
+  //       }
         
-        // Handle no prizes available
-        if (claimData.code === 'NO_PRIZES_AVAILABLE') {
-          setError(claimData.details);
-          setShowWheel(false);
-          return;
-        }
+  //       // Handle no prizes available
+  //       if (claimData.code === 'NO_PRIZES_AVAILABLE') {
+  //         setError(claimData.details);
+  //         setShowWheel(false);
+  //         return;
+  //       }
         
-        // Handle other errors
-        throw new Error(claimData.error || 'Failed to claim prize.');
-      }
+  //       // Handle other errors
+  //       throw new Error(claimData.error || 'Failed to claim prize.');
+  //     }
       
-      // Update the prize state with the assigned prize
-      setPrize(winningPrize);
-      setShowWheel(false);
+  //     // Update the prize state with the assigned prize
+  //     setPrize(winningPrize);
+  //     setShowWheel(false);
       
-      console.log('Prize assigned successfully:', claimData);
+  //     console.log('Prize assigned successfully:', claimData);
       
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to process prize. Please try again.';
-      setError(errorMessage);
-      console.error('Prize processing error:', err);
-    } finally {
-      setVerifying(false);
-      setLoading(false);
-    }
-  };
+  //   } catch (err) {
+  //     const errorMessage = err instanceof Error ? err.message : 'Failed to process prize. Please try again.';
+  //     setError(errorMessage);
+  //     console.error('Prize processing error:', err);
+  //   } finally {
+  //     setVerifying(false);
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleSpinComplete = (prize: Prize | null) => {
     if (!prize) {
@@ -324,12 +324,12 @@ export default function Home() {
 
 
 
-  useEffect(() => {
-    // When the component mounts, show the wheel if we don't have a prize yet
-    if (!prize) {
-      setShowWheel(true);
-    }
-  }, [prize]);
+  // useEffect(() => {
+  //   // When the component mounts, show the wheel if we don't have a prize yet
+  //   if (!prize) {
+  //     setShowWheel(true);
+  //   }
+  // }, [prize]);
 
   function setSelectedValue(value: string): void {
     throw new Error('Function not implemented.');
@@ -1011,7 +1011,7 @@ export default function Home() {
                   <div className="flex flex-col justify-center items-center w-full py-4">
                     <div className="flex justify-center items-center w-full mb-16">
                       <Wheel 
-                        onSpinStart={() => setLoading(true)}
+                        // onSpinStart={() => setLoading(true)}
                         onSpinComplete={handleSpinComplete}
                         onError={(error) => {
                           setError(error);
