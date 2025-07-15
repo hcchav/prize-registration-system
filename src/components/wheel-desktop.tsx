@@ -21,7 +21,7 @@ interface WheelProps {
   testMode?: boolean;
 }
 
-export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode = false }: WheelProps) {
+export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, testMode = false }: WheelProps) {
   const [availablePrizes, setAvailablePrizes] = useState<Prize[]>([]);
   const [spinning, setSpinning] = useState(false);
   const [error, setError] = useState<string | null>(null);
