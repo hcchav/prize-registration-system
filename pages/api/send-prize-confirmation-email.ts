@@ -94,10 +94,10 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, re
           <tr>
             <td style="padding: 0 20px;">
               <div class="content-box">
-                <div class="fallback-bg" style="padding: 0; text-align: center;">
+                <div style="padding: 0; text-align: center;">
                   <img src="${confirmationBannerUrl}" alt="Prize Confirmation" style="width: 100%; height: auto; display: block;" />
                 </div>
-                <div style="padding: 20px;">
+                <div style="padding: 20px 0 0 0;; padding-top: 0;">
                   <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
                     Congratulations, ${firstName || 'Friend'}!<br /><br />
                   </p>
