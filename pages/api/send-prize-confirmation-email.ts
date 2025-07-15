@@ -6,6 +6,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, recipientEmail: string, firstName: string) {
   const logoUrl = 'https://prize-registration-system.vercel.app/images/prizes/Mockup.png';
+  const confirmationBannerUrl = 'https://prize-registration-system.vercel.app/images/prizes/confirmation-banner-1920x1080.png';
   
   return `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -94,7 +95,7 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, re
             <td style="padding: 0 20px;">
               <div class="content-box">
                 <div class="fallback-bg" style="padding: 0; text-align: center;">
-                  <img src="/images/prizes/confirmation-banner-1920x1080.png" alt="Prize Confirmation" style="width: 100%; height: auto; display: block;" />
+                  <img src="${confirmationBannerUrl}" alt="Prize Confirmation" style="width: 100%; height: auto; display: block;" />
                 </div>
                 <div style="padding: 20px;">
                   <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
