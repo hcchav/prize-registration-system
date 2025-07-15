@@ -48,12 +48,9 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, re
           text-align: center;
           margin: 15px 0;
         }
-        .claim-number {
-          font-size: 20px;
+        .claim-number {          
           font-weight: 700;
-          color: #00263a;
-          text-align: center;
-          margin: 15px 0;
+          color: #418fde;
         }
         .footer {
           text-align: center;
@@ -96,37 +93,42 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, re
           <tr>
             <td style="padding: 0 20px;">
               <div class="content-box">
-                <div class="fallback-bg" style="padding: 15px 0; text-align: center; height:30px;">
-                  <h1 style="font-size: 24px; font-weight: 700; color: #052740; margin: 0;">
-                    Prize Confirmation
-                  </h1>
+                <div class="fallback-bg" style="padding: 0; text-align: center;">
+                  <img src="/images/prizes/confirmation-banner-1920x1080.png" alt="Prize Confirmation" style="width: 100%; height: auto; display: block;" />
                 </div>
                 <div style="padding: 20px;">
-                  <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
+                  <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
                     Congratulations, ${firstName || 'Friend'}!<br /><br />
-                    You have won a prize in the Biome Brigade giveaway!
                   </p>
-                  <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; margin: 0 0 10px 0;">Your Prize:</p>
+                  <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
+                  Go to the Biome Brigade Booth (#8737) to claim your
+                  </p>                 
                   <div class="prize-name">
                     ${prizeName}
                   </div>
-                  <p style="font-size: 16px; font-weight: 700; color: #00263a; text-align: center; margin: 20px 0 10px 0;">Your Claim Number:</p>
-                  <div class="claim-number">
-                    ${claimNumber}
-                  </div>
-                  <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 20px 0 0 0;">
-                    Visit the Biome Brigade Booth (#8737) to claim your prize!
+                  <p style="font-size: 16px; font-weight: 700; color: #00263a; text-align: center; margin: 20px 0 10px 0;">
+                    <span>Your claim # is </span>
+                    <span class="claim-number">${claimNumber}</span> 
                   </p>
+                                
                 </div>
               </div>
             </td>
           </tr>
           <tr>
-            <td class="footer">
-              <p style="margin: 0 0 10px 0; color: #666666; font-size: 16px; line-height: 1.5;">Please do not reply to this email.</p>
-              <p style="margin: 0; color: #666666; font-size: 16px; line-height: 1.5;">If you have any questions, contact <a href="mailto:info@biomebrigade.com" style="color: #418fde; text-decoration: none;">info@biomebrigade.com</a>.</p>
+            <td style="padding: 20px 0 0;">
+              <div style="border-radius: 10px; overflow: hidden; max-width: 340px; margin: 0 auto;">
+                <div style="padding: 2px; text-align: center;">
+                  <h2 style="font-size: 24px; font-weight: 700; color: #00263a; margin: 0 0 10px 0;">Interested in Biome Brigade products?</h2>
+                  <p style="font-size: 18px; line-height: 1.6; margin: 0 0 25px 0;">
+                    <span style="color: #418fde; font-weight: 700;">Let's talk!</span> Schedule a quick call to learn about our wholesale program and how we support our retail partners.
+                  </p>
+                  <a href="#" style="display: inline-block; background-color: #418fde; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 5px; font-size: 18px; font-weight: 700; margin: 0 0 25px 0; width: 200px">Schedule a Call</a>
+                  <p style="font-size: 18px; color: #00263a; margin: 0;">We're excited to connect!</p>
+                </div>
+              </div>
             </td>
-          </tr>
+          </tr>   
         </table>
       </center>
     </body>
