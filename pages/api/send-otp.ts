@@ -103,7 +103,6 @@ function htmlTemplateWithOTP(otp: string) {
                 <div class="fallback-bg">
                   <!-- Fallback content for email clients that don't support background images -->
                   <div style="display: none; max-height: 0; overflow: hidden; mso-hide: all;">
-                    Welcome to Biome Brigade
                   </div>
                 </div>
                 <div style="padding: 20px;">

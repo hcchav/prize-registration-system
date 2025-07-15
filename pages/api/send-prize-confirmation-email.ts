@@ -94,12 +94,12 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, re
           <tr>
             <td style="padding: 0 20px;">
               <div class="content-box">
-                <div style="padding: 0; text-align: center;">
+                <div class="fallback-bg">
                   <img src="${confirmationBannerUrl}" alt="Prize Confirmation" style="width: 100%; height: auto; display: block;" />
                 </div>
-                <div style="padding: 20px 0 0 0;; padding-top: 0;">
-                  <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
-                    Congratulations, ${firstName || 'Friend'}!<br /><br />
+                <div style="padding: 30px 20px 0 20px;">
+                  <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 10px 0;">
+                    Congratulations, ${firstName || 'Friend'}!
                   </p>
                   <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
                   Go to the Biome Brigade Booth (#8737) to claim your
@@ -107,7 +107,7 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, re
                   <div class="prize-name">
                     ${prizeName}
                   </div>
-                  <p style="font-size: 16px; font-weight: 700; color: #00263a; text-align: center; margin: 20px 0 10px 0;">
+                  <p style="font-size: 16px; font-weight: 700; color: #00263a; text-align: center; margin: 20px 0 30px 0;">
                     <span>Your claim # is </span>
                     <span class="claim-number">${claimNumber}</span> 
                   </p>
