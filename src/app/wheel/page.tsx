@@ -132,46 +132,7 @@ export default function WheelPage() {
                   <div className="relative self-stretch font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal] mb-4">
                     SPIN THE WHEEL TO WIN
                   </div>
-                  
                   <div className="flex flex-col justify-center items-center w-full py-4">
-                    <div className="w-full space-y-4 mb-6">
-                      <div className="relative w-full group">
-                        <div className={`relative h-12 rounded-[5px] border border-solid ${
-                          error ? 'border-[#D03C3C]' : 'border-[#abcae9]'
-                        } ${error ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
-                          <input
-                            id="claimNumber"
-                            type="text"
-                            className={`w-full h-full mt-1.5 px-4 py-2 bg-transparent outline-none ${
-                              error ? 'text-[#D03C3C]' : 'text-[#00263a]'
-                            } text-base font-regular`}
-                            value={claimNumber}
-                            onChange={(e) => {
-                              setClaimNumber(e.target.value);
-                              // Clear error when user starts typing
-                              if (error) setError(null);
-                            }}
-                            placeholder=" "
-                          />
-                          <label 
-                            htmlFor="claimNumber"
-                            className={`absolute left-4 ${
-                              error ? 'text-[#D03C3C]' : 'text-[#418FDE]'
-                            } transition-all duration-200 pointer-events-none ${
-                              claimNumber ? 'text-xs top-1' : 'text-base top-3'
-                            }`}
-                          >
-                            Claim Number
-                          </label>
-                        </div>
-                        {error && (
-                          <p className="text-[#D03C3C] mt-2 text-xs pl-4">
-                            {error}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    
                     <div className="flex justify-center items-center w-full mb-8">
                       <WheelDesktop 
                         onSpinComplete={handleSpinComplete}
@@ -189,6 +150,46 @@ export default function WheelPage() {
                           const isVerified = await verifyClaimNumber();
                           return isVerified; // Only allow spin if verified
                         }}
+                        // Pass the claim number input as content to display above the spin button
+                        aboveButtonContent={
+                          <div className="flex flex-col w-full mb-4">
+                            <div className="w-full">
+                              <div className={`relative h-14 w-full border rounded-md overflow-hidden ${
+                                error ? 'border-[#D03C3C]' : 'border-[#abcae9]'
+                              } ${error ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
+                                <input
+                                  id="claimNumber"
+                                  type="text"
+                                  className={`w-full h-full mt-1.5 px-4 py-2 bg-transparent outline-none ${
+                                    error ? 'text-[#D03C3C]' : 'text-[#00263a]'
+                                  } text-base font-regular`}
+                                  value={claimNumber}
+                                  onChange={(e) => {
+                                    setClaimNumber(e.target.value);
+                                    // Clear error when user starts typing
+                                    if (error) setError(null);
+                                  }}
+                                  placeholder=" "
+                                />
+                                <label 
+                                  htmlFor="claimNumber"
+                                  className={`absolute left-4 ${
+                                    error ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                                  } transition-all duration-200 pointer-events-none ${
+                                    claimNumber ? 'text-xs top-1' : 'text-base top-3'
+                                  }`}
+                                >
+                                  Claim Number
+                                </label>
+                              </div>
+                              {error && (
+                                <p className="text-[#D03C3C] mt-2 text-xs pl-4">
+                                  {error}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        }
                       />
                     </div>
                   </div>

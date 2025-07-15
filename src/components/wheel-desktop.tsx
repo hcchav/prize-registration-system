@@ -19,9 +19,10 @@ interface WheelProps {
   onSpinComplete?: (prize: Prize | null) => void;
   onError?: (message: string) => void;
   testMode?: boolean;
+  aboveButtonContent?: React.ReactNode;
 }
 
-export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, testMode = false }: WheelProps) {
+export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, testMode = false, aboveButtonContent }: WheelProps) {
   const [availablePrizes, setAvailablePrizes] = useState<Prize[]>([]);
   const [spinning, setSpinning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -523,6 +524,9 @@ export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, tes
           )}
         </div>
       </div>
+      
+      {/* Render content above the button if provided */}
+      {aboveButtonContent}
       
       <Button
         onClick={handleSpin}
