@@ -516,8 +516,8 @@ export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, tes
               perpendicularText={false}
               pointerProps={{
                 src: '/blue_shape_smoothed.svg',                style: {
-                  width: '50px',
-                  height: '50px',
+                  width: '75px',
+                  height: '75px',
                   transform: 'rotate(0deg) translateX(0px) translateY(0px)'
                 }
               }}
