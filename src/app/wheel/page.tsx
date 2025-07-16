@@ -139,16 +139,16 @@ export default function WheelPage() {
             />
           </div>
         </div>
-        <div id="prize-wheel" className="bg-white flex flex-row justify-center w-full">
-          <div className="bg-white w-[375px] h-auto relative">
-            <div className="w-80 h-auto mt-5 mx-auto rounded-[5px] border-2 border-solid border-[#abcae9] overflow-hidden">
-              <div className="flex flex-col w-80 items-center justify-center gap-3 px-2 py-6">
-                <div className="w-full flex flex-col items-center" style={{ opacity: showCongratsModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>
-                  <div className="relative self-stretch font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal] mb-4">
+        <div id="prize-wheel">
+          <div>
+            <div>
+              <div className="flex flex-col items-center justify-center gap-3">
+                <div style={{ opacity: showCongratsModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>
+                  <div className="font-bold text-[#00263a] text-xl text-center mb-4">
                     SPIN THE WHEEL TO WIN
                   </div>
-                  <div className="flex flex-col justify-center items-center w-full py-4">
-                    <div className="flex justify-center items-center w-full mb-8">
+                  <div>
+                    <div>
                       <WheelDesktop 
                         onSpinComplete={handleSpinComplete}
                         onError={(error) => {

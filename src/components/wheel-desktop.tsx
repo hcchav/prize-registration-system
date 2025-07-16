@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { type Prize } from "@/constants/prizes";
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
-import './wheel.css'; // We'll create this CSS file
+import './wheel-desktop.css'; // Using our desktop-specific CSS file
 import clientLogger from '@/lib/client-logger';
 
 // Dynamically import the Wheel component with SSR disabled
@@ -447,7 +447,7 @@ export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, tes
       
       // Start spinning the wheel
       setSpinning(true);
-      setMustSpin(true);
+        setMustSpin(true);
       
     } catch (err) {
       console.error('Error during spin:', err);
@@ -492,8 +492,10 @@ export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, tes
   }, [assignedPrize, onSpinComplete]);
 
   return (
-    <div className="grid grid-cols-1 w-full flex flex-col items-center">
-      <div className="relative h-[320px] w-full mb-4">
+    <div className="wheel-desktop-container">
+
+      {/* Viewport-based wheel container */}
+      <div className="wheel-viewport-container">
         <div className="wheel-container">
           {wheelData.length > 0 && (
             <RouletteWheel
@@ -513,8 +515,7 @@ export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, tes
               fontSize={24}
               perpendicularText={false}
               pointerProps={{
-                src: '/blue_shape_smoothed.svg',
-                style: {
+                src: '/blue_shape_smoothed.svg',                style: {
                   width: '50px',
                   height: '50px',
                   transform: 'rotate(0deg) translateX(0px) translateY(0px)'
