@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { type Prize } from '@/constants/prizes';
 import WheelDesktop from '@/components/wheel-desktop';
 
@@ -122,8 +123,22 @@ export default function WheelPage() {
   }, []);
 
   return (
+    
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#f5f9fd]">
       <div className="w-full max-w-md">
+        
+        <div id="registration-header" className="fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-15 bg-white shadow-sm">
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#abcae9] to-transparent"></div>
+          <div className="w-60 h-12 relative">
+            <Image
+              src="/Mockup.svg"
+              alt="Registration Header"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
         <div id="prize-wheel" className="bg-white flex flex-row justify-center w-full">
           <div className="bg-white w-[375px] h-auto relative">
             <div className="w-80 h-auto mt-5 mx-auto rounded-[5px] border-2 border-solid border-[#abcae9] overflow-hidden">

@@ -1,0 +1,125 @@
+/* Main container for the wheel component */
+.wheel-desktop-container {
+  width: 100%;
+  max-width: 2560px;
+  margin: 0 auto;
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Viewport-based wheel container */
+.wheel-viewport-container {
+  width: 100%;
+  position: relative;
+  padding-bottom: 100%; /* Creates a square aspect ratio */
+}
+
+/* Wheel container that holds the actual wheel component */
+.wheel-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Make the wheel component fill its container */
+.wheel-container > div {
+  width: 100% !important;
+  height: 100% !important;
+  transform-origin: center center;
+  transform: scale(2);
+  
+}
+
+/* Style the pointer */
+.wheel-container > div > svg > polygon {
+  fill: #00263a !important;
+}
+
+/* Responsive scaling based on viewport width */
+@media (min-width: 768px) {
+  .wheel-viewport-container {
+    width: 90vw;
+    max-width: 90vw;
+    margin: 0 auto;
+    padding-bottom: 90vw;
+  }
+  
+  .wheel-container > div {
+    transform: scale(1.5);
+  }
+}
+
+@media (min-width: 1080px) {
+  .wheel-viewport-container {
+    width: 80vw;
+    max-width: 80vw;
+    padding-bottom: 80vw;
+  }
+  
+  .wheel-container > div {
+    transform: scale(2);
+  }
+}
+
+@media (min-width: 1440px) {
+  .wheel-viewport-container {
+    width: 70vw;
+    max-width: 70vw;
+    padding-bottom: 70vw;
+  }
+  
+  .wheel-container > div {
+    transform: scale(2.5);
+  }
+}
+
+@media (min-width: 1920px) {
+  .wheel-viewport-container {
+    width: 60vw;
+    max-width: 60vw;
+    padding-bottom: 60vw;
+  }
+  
+  .wheel-container > div {
+    transform: scale(2);
+  }
+}
+
+@media (min-width: 2560px) {
+  .wheel-viewport-container {
+    width: 50vw;
+    max-width: 50vw;
+    padding-bottom: 50vw;
+  }
+  
+  .wheel-container > div {
+    transform: scale(3.5);
+  }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 767px) {
+  .wheel-container > div {
+    transform: scale(1.2);
+  }
+}
+
+@media (max-width: 480px) {
+  .wheel-container > div {
+    transform: scale(1);
+  }
+}
+
+/* Custom pointer styling - target the SVG directly */
+.wheel-container svg polygon {
+  fill: #052740 !important;
+  stroke: #052740 !important;
+  stroke-width: 3px !important;
+  transform: scale(1.5) !important;
+}
