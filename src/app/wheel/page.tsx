@@ -127,9 +127,9 @@ export default function WheelPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#f5f9fd]">
       <div className="w-full max-w-md">
         
-        <div id="registration-header" className="fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-15 bg-white shadow-sm">
-          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#abcae9] to-transparent"></div>
-          <div className="w-60 h-12 relative">
+        <div id="registration-header" className="fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-[160px] bg-white shadow-xl">
+          <div className="absolute inset-x-0 bottom-0 h-[4px] bg-gradient-to-r from-transparent via-[#abcae9] to-transparent"></div>
+          <div className="w-[480px] h-[120px] relative">
             <Image
               src="/Mockup.svg"
               alt="Registration Header"
@@ -144,9 +144,9 @@ export default function WheelPage() {
             <div>
               <div className="flex flex-col items-center justify-center gap-3">
                 <div style={{ opacity: showCongratsModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>
-                  <div className="font-bold text-[#00263a] text-xl text-center mb-4">
+                  {/* <div className="font-extrabold text-[#00263a] text-[4rem] text-center mb-[5rem]">
                     SPIN THE WHEEL TO WIN
-                  </div>
+                  </div> */}
                   <div>
                     <div>
                       <WheelDesktop 
@@ -167,14 +167,14 @@ export default function WheelPage() {
                         }}
                         // Pass the claim number input as content to display above the spin button
                         aboveButtonContent={
-                          <div className="flex flex-col w-full mb-4">
+                          <div className="flex flex-col w-full mt-10 mb-4">
                             <div className="w-full">
                               <div className={`relative h-14 w-full border rounded-md overflow-hidden ${
                                 error ? 'border-[#D03C3C]' : 'border-[#abcae9]'
                               } ${error ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                                 <input
                                   id="claimNumber"
-                                  type="text"
+                                  type="text"                                  
                                   className={`w-full h-full mt-1.5 px-4 py-2 bg-transparent outline-none ${
                                     error ? 'text-[#D03C3C]' : 'text-[#00263a]'
                                   } text-base font-regular`}

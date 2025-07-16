@@ -532,7 +532,7 @@ export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, tes
       <Button
         onClick={handleSpin}
         disabled={spinning || loading}
-        className={`w-full py-3 rounded-md text-white font-regular ${spinning || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
+        className={`w-full py-3 rounded-md text-white font-regular h-[5rem] text-[2rem] ${spinning || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
       >
         {spinning || loading ? 'Spinning...' : 'Spin the Wheel!'}
       </Button>
