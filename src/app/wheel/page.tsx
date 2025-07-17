@@ -124,12 +124,10 @@ export default function WheelPage() {
 
   return (
     
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#f5f9fd]">
-      <div className="w-full max-w-md">
-        
-        <div id="registration-header" className="fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-[160px] bg-white shadow-xl">
+    <div className="flex min-h-screen flex-col items-center bg-[#f5f9fd] pt-[220px]">
+        <div id="registration-header" className="fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-[180px] bg-white shadow-xl">
           <div className="absolute inset-x-0 bottom-0 h-[4px] bg-gradient-to-r from-transparent via-[#abcae9] to-transparent"></div>
-          <div className="w-[480px] h-[120px] relative">
+          <div className="w-[550px] h-[140px] relative">
             <Image
               src="/Mockup.svg"
               alt="Registration Header"
@@ -139,17 +137,10 @@ export default function WheelPage() {
             />
           </div>
         </div>
-        <div id="prize-wheel">
-          <div>
-            <div>
-              <div className="flex flex-col items-center justify-center gap-3">
-                <div style={{ opacity: showCongratsModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>
-                  {/* <div className="font-extrabold text-[#00263a] text-[4rem] text-center mb-[5rem]">
-                    SPIN THE WHEEL TO WIN
-                  </div> */}
-                  <div>
+        <div id="prize-wheel" className="w-full max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] 2xl:max-w-[50vw] pt-12 px-8 pb-16">
+          <div style={{ opacity: showCongratsModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>
                     <div>
-                      <WheelDesktop 
+                      <WheelDesktop
                         onSpinComplete={handleSpinComplete}
                         onError={(error) => {
                           setError(error);
@@ -167,17 +158,17 @@ export default function WheelPage() {
                         }}
                         // Pass the claim number input as content to display above the spin button
                         aboveButtonContent={
-                          <div className="flex flex-col w-full mt-10 mb-4">
+                          <div className="flex flex-col w-full mt-14 mb-6">
                             <div className="w-full">
-                              <div className={`relative h-14 w-full border rounded-md overflow-hidden ${
+                              <div className={`relative h-20 w-full border-2 rounded-md overflow-hidden ${
                                 error ? 'border-[#D03C3C]' : 'border-[#abcae9]'
                               } ${error ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                                 <input
                                   id="claimNumber"
                                   type="text"                                  
-                                  className={`w-full h-full mt-1.5 px-4 py-2 bg-transparent outline-none ${
+                                  className={`w-full h-full mt-2 px-6 py-3 bg-transparent outline-none text-xl ${
                                     error ? 'text-[#D03C3C]' : 'text-[#00263a]'
-                                  } text-base font-regular`}
+                                  } text-2xl font-medium`}
                                   value={claimNumber}
                                   onChange={(e) => {
                                     setClaimNumber(e.target.value);
@@ -188,17 +179,17 @@ export default function WheelPage() {
                                 />
                                 <label 
                                   htmlFor="claimNumber"
-                                  className={`absolute left-4 ${
+                                  className={`absolute left-6 ${
                                     error ? 'text-[#D03C3C]' : 'text-[#418FDE]'
-                                  } transition-all duration-200 pointer-events-none ${
-                                    claimNumber ? 'text-xs top-1' : 'text-base top-3'
+                                  } transition-all duration-200 pointer-events-none text-xl ${
+                                    claimNumber ? 'text-base top-1' : 'text-2xl top-4'
                                   }`}
                                 >
                                   Claim Number
                                 </label>
                               </div>
                               {error && (
-                                <p className="text-[#D03C3C] mt-2 text-xs pl-4">
+                                <p className="text-[#D03C3C] mt-2 text-base pl-6 font-medium">
                                   {error}
                                 </p>
                               )}
@@ -207,7 +198,6 @@ export default function WheelPage() {
                         }
                       />
                     </div>
-                  </div>
                 </div>
                 
                 {/* Confetti Effect */}
@@ -228,34 +218,34 @@ export default function WheelPage() {
                 {showCongratsModal && (
                   <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="fixed inset-0 bg-black opacity-50"></div>
-                    <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 z-10">
+                    <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 z-10">
                       <div className="text-center">
                         {noPrizeAvailable ? (
                           <>
-                            <div className="font-bold text-2xl text-[#00263a] mb-4">
+                            <div className="font-bold text-3xl text-[#00263a] mb-6">
                               All Prizes Claimed. Thank you for participating!
                             </div>
                           </>
                         ) : (
                           <>
-                            <div className="font-bold text-2xl text-[#00263a] mb-4">
+                            <div className="font-bold text-4xl text-[#00263a] mb-6">
                               CONGRATULATIONS!
                             </div>
                             <div className="mb-4">
-                              <p className="text-base text-[#00263a]">
+                              <p className="text-2xl text-[#00263a]">
                                 Go to the Biome Brigade Booth (#8737) to Claim Your
                               </p>
-                              <p className="text-[#418FDE] text-xl font-bold mt-2">
+                              <p className="text-[#418FDE] text-3xl font-bold mt-3">
                                 {prize?.name || 'Your Prize'}
                               </p>
-                              <p className="text-[#00263a] text-sm mt-3">
+                              <p className="text-[#00263a] text-xl mt-4">
                                 Your Claim # is {formatClaimNumber(claimNumber)}
                               </p>
                             </div>
                           </>
                         )}
                         <button
-                          className="mt-4 bg-[#418FDE] hover:bg-[#2e7bc4] text-white font-bold py-2 px-4 rounded"
+                          className="mt-6 bg-[#418FDE] hover:bg-[#2e7bc4] text-white font-bold text-xl py-3 px-8 rounded-lg"
                           onClick={() => window.location.reload()}
                         >
                           Done
@@ -264,11 +254,7 @@ export default function WheelPage() {
                     </div>
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
   );
 }

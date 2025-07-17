@@ -495,7 +495,7 @@ export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, tes
     <div className="wheel-desktop-container">
 
       {/* Viewport-based wheel container */}
-      <div className="wheel-viewport-container">
+      <div className="wheel-viewport-container" style={{ marginTop: '30px' }}>
         <div className="wheel-container">
           {wheelData.length > 0 && (
             <RouletteWheel
@@ -532,9 +532,9 @@ export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, tes
       <Button
         onClick={handleSpin}
         disabled={spinning || loading}
-        className={`w-full py-3 rounded-md text-white font-regular h-[5rem] text-[2rem] ${spinning || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
+        className={`w-full py-4 rounded-lg text-white font-bold h-[6.5rem] text-[2.5rem] max-w-none border-0 ${spinning || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2] shadow-lg'}`}
       >
-        {spinning || loading ? 'Spinning...' : 'Spin the Wheel!'}
+        {spinning || loading ? 'Spinning...' : 'SPIN THE WHEEL!'}
       </Button>
       
       {testMode && (
