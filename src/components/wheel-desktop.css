@@ -61,7 +61,6 @@
   width: 100% !important;
   height: 100% !important;
   transform-origin: center center;
-  transform: scale(1.8); /* Reduced from 2 to 1.8 to prevent overflow */
   margin: 0 auto;
   left: 0;
   right: 0;
@@ -215,4 +214,141 @@ html, body {
   transform-style: preserve-3d; /* Use hardware acceleration */
   backface-visibility: hidden; /* Prevent flickering */
   will-change: transform; /* Hint to browser about animation */
+}
+
+/* Portrait Mode Optimizations */
+@media (orientation: portrait) {
+  /* Adjust wheel size for portrait mode */
+  .wheel-viewport-container {
+    width: min(90%, 800px);
+    max-width: min(90%, 800px);
+    padding-bottom: min(90%, 800px);
+    margin: 1rem auto;
+  }
+  
+  /* Reduce gap between wheel and input/button in portrait mode */
+  .wheel-input-button-container {
+    margin-top: 3rem;
+  }
+  
+  /* Make input and button more prominent in portrait mode */
+  .claim-input-container input,
+  .spin-button-container button {
+    font-size: 2rem !important;
+    height: 5rem !important;
+  }
+  
+  /* Header and logo optimizations for portrait mode */
+  .portrait-header {
+    height: 15vh !important; /* Slightly smaller header in portrait */
+  }
+  
+  .portrait-logo-container {
+    max-width: 90vw !important; /* Wider logo container in portrait */
+  }
+}
+
+/* Portrait mode for 1080x1920 screens */
+@media (orientation: portrait) and (min-width: 1080px) and (max-width: 1439px) {
+  .wheel-viewport-container {
+    width: 85vw;
+    max-width: 85vw;
+    padding-bottom: 85vw;
+  }
+  
+  .wheel-container > div {
+    transform: scale(2.2);
+  }
+  
+  /* Adjust input and button for this resolution */
+  .claim-input-container input,
+  .spin-button-container button {
+    font-size: 2.2rem !important;
+    height: 5.5rem !important;
+  }
+  
+  /* Header and logo optimizations for 1080p portrait */
+  .portrait-header {
+    height: 18vh !important;
+  }
+}
+
+/* Portrait mode for 1440x2560 screens */
+@media (orientation: portrait) and (min-width: 1440px) and (max-width: 2159px) {
+  .wheel-viewport-container {
+    width: 80vw;
+    max-width: 80vw;
+    padding-bottom: 80vw;
+  }
+  
+  .wheel-container > div {
+    transform: scale(2.5);
+  }
+  
+  /* Adjust input and button for this resolution */
+  .claim-input-container input,
+  .spin-button-container button {
+    font-size: 2.5rem !important;
+    height: 6rem !important;
+  }
+  
+  /* Header and logo optimizations for 1440p portrait */
+  .portrait-header {
+    height: 20vh !important;
+  }
+  
+  .portrait-logo-container {
+    max-width: 85vw !important;
+  }
+}
+
+/* Portrait mode for 4K UHD (2160x3840) screens */
+@media (orientation: portrait) and (min-width: 2160px) {
+  /* Adjust page padding to accommodate larger header */
+  .flex.min-h-screen.flex-col.items-center.bg-\[\#f5f9fd\].pt-\[20vh\] {
+    padding-top: 18vh !important;
+  }
+  
+  /* Scale up wheel container for 4K */
+  .wheel-viewport-container {
+    width: 85vw;
+    max-width: 85vw;
+    padding-bottom: 85vw;
+    margin: 0 auto;
+  }
+  
+  /* Scale up wheel for 4K (approximately 2x the 1080p scale) */
+  .wheel-container > div {
+    transform: scale(4.0);
+  }
+  
+  /* Scale up input and button for 4K (approximately 2x the 1080p size) */
+  .claim-input-container input,
+  .spin-button-container button {
+    font-size: 8.0rem !important;
+    height: 20rem !important;
+  }
+  
+  /* Increase spacing between wheel and input/button */
+  .wheel-input-button-container {
+    margin-top: 8rem;
+    width: 90%;
+    max-width: 1800px;
+  }
+  
+  /* Scale up label size for 4K */
+  .claim-input-container label {
+    font-size: 5rem !important;
+    margin-bottom: 2.5rem !important;
+  }
+  
+  /* Match 1080p header height */
+  .portrait-header {
+    height: 18vh !important;
+  }
+  
+  /* Keep default logo container width */
+  .portrait-logo-container {
+    max-width: 90vw !important;
+  }
 }

@@ -124,15 +124,15 @@ export default function WheelPage() {
 
   return (
     
-    <div className="flex min-h-screen flex-col items-center bg-[#f5f9fd] pt-[220px]">
-        <div id="registration-header" className="fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-[180px] bg-white shadow-xl">
+    <div className="flex min-h-screen flex-col items-center bg-[#f5f9fd] pt-[20vh]">
+        <div id="registration-header" className="portrait-header fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-[20vh] bg-white shadow-xl">
           <div className="absolute inset-x-0 bottom-0 h-[4px] bg-gradient-to-r from-transparent via-[#abcae9] to-transparent"></div>
-          <div className="w-[550px] h-[140px] relative">
+          <div className="portrait-logo-container w-[100%] h-[100%] max-w-[1000px] relative">
             <Image
               src="/Mockup.svg"
               alt="Registration Header"
               fill
-              className="object-contain"
+              className="portrait-logo object-contain"
               priority
             />
           </div>
