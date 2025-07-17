@@ -160,7 +160,7 @@ export default function WheelPage() {
                         aboveButtonContent={
                           <div className="flex flex-col w-full mt-20 mb-6">
                             <div className="w-full">
-                              <div className={`relative h-[6.5rem] w-full border-2 rounded-lg overflow-hidden ${
+                              <div className={`claim-input-container relative h-[6.5rem] w-full border-2 rounded-lg overflow-hidden ${
                                 error ? 'border-[#D03C3C]' : 'border-[#abcae9]'
                               } ${error ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                                 <input

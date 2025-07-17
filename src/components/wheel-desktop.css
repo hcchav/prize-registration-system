@@ -47,6 +47,15 @@
   transform: translateX(-50%); /* Center horizontally */
 }
 
+/* Container for input and button with increased spacing from wheel */
+.wheel-input-button-container {
+  margin-top: 6rem; /* Bigger gap between wheel and input/button container */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 /* Make the wheel component fill its container */
 .wheel-container > div {
   width: 100% !important;
@@ -136,7 +145,7 @@
   }
   
   .wheel-container > div {
-    transform: scale(2.5);
+    transform: scale(3);
     margin: 0 auto;
   }
 }

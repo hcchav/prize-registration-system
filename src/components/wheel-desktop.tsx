@@ -526,16 +526,19 @@ export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, tes
         </div>
       </div>
       
-      {/* Render content above the button if provided */}
-      {aboveButtonContent}
-      
-      <Button
-        onClick={handleSpin}
-        disabled={spinning || loading}
-        className={`w-full py-4 rounded-lg text-white font-bold h-[6.5rem] text-[2.5rem] max-w-none border-0 ${spinning || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2] shadow-lg'}`}
-      >
-        {spinning || loading ? 'Spinning...' : 'SPIN THE WHEEL!'}
-      </Button>
+      {/* Container for both input and button */}
+      <div className="wheel-input-button-container">
+        {/* Render content above the button if provided */}
+        {aboveButtonContent}
+        
+        <Button
+          onClick={handleSpin}
+          disabled={spinning || loading}
+          className={`spin-button-container w-full py-4 rounded-lg text-white font-bold h-[6.5rem] text-[2.5rem] max-w-none border-0 ${spinning || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2] shadow-lg'}`}
+        >
+          {spinning || loading ? 'Spinning...' : 'SPIN THE WHEEL!'}
+        </Button>
+      </div>
       
       {testMode && (
         <Button
