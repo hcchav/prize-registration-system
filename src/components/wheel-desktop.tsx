@@ -495,7 +495,7 @@ export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, tes
     <div className="wheel-desktop-container">
 
       {/* Viewport-based wheel container */}
-      <div className="wheel-viewport-container" style={{ marginTop: '30px' }}>
+      <div className="wheel-viewport-container">
         <div className="wheel-container">
           {wheelData.length > 0 && (
             <RouletteWheel
@@ -514,8 +514,11 @@ export default function WheelDesktop({ onSpinStart, onSpinComplete, onError, tes
               textDistance={50}
               fontSize={24}
               perpendicularText={false}
+              backgroundColors={wheelData.map(item => item.style.backgroundColor)}
+              textColors={wheelData.map(() => '#FFFFFF')}
               pointerProps={{
-                src: '/blue_shape_smoothed.svg',                style: {
+                src: '/blue_shape_smoothed.svg',
+                style: {
                   width: '75px',
                   height: '75px',
                   transform: 'rotate(0deg) translateX(0px) translateY(0px)'

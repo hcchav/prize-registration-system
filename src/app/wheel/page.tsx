@@ -137,7 +137,7 @@ export default function WheelPage() {
             />
           </div>
         </div>
-        <div id="prize-wheel" className="w-full max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] 2xl:max-w-[50vw] pt-12 px-8 pb-16">
+        <div id="prize-wheel" className="w-full max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] 2xl:max-w-[50vw] pt-12 px-8 pb-16 flex justify-center items-center">
           <div style={{ opacity: showCongratsModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>
                     <div>
                       <WheelDesktop

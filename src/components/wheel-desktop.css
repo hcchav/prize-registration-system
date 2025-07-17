@@ -10,30 +10,41 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  text-align: center; /* Ensure text is centered */
+  max-width: 100%; /* Ensure it doesn't overflow parent */
 }
 
 /* Viewport-based wheel container */
 .wheel-viewport-container {
-  width: 85%;
+  width: min(85%, 800px);
   position: relative;
-  padding-bottom: 85%; /* Creates a square aspect ratio but slightly smaller */
+  padding-bottom: min(85%, 800px); /* Creates a square aspect ratio but slightly smaller */
   border: none;
   box-shadow: none;
   overflow: visible;
-  margin: 2rem 0;
+  margin: 2rem auto;
+  left: 0;
+  right: 0;
+  max-width: 800px; /* Ensure consistent max width */
 }
 
 /* Wheel container that holds the actual wheel component */
 .wheel-container {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 50%;
+  right: auto;
+  bottom: 0;
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: visible;
+  margin: 0 auto;
+  transform: translateX(-50%); /* Center horizontally */
 }
 
 /* Make the wheel component fill its container */
@@ -42,6 +53,10 @@
   height: 100% !important;
   transform-origin: center center;
   transform: scale(2);
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  position: relative; /* Ensure positioning context */
 }
 
 /* Style the pointer */
@@ -52,38 +67,58 @@
 /* Responsive scaling based on viewport width */
 @media (min-width: 768px) {
   .wheel-viewport-container {
-    width: 80vw;
-    max-width: 80vw;
+    width: min(80vw, 800px);
+    max-width: min(80vw, 800px);
     margin: 0 auto;
-    padding-bottom: 80vw;
+    padding-bottom: min(80vw, 800px);
+  }
+  
+  .wheel-container {
+    left: 50%;
+    transform: translateX(-50%);
   }
   
   .wheel-container > div {
     transform: scale(1.8);
+    margin: 0 auto;
   }
 }
 
 @media (min-width: 1080px) {
   .wheel-viewport-container {
-    width: 70vw;
-    max-width: 70vw;
-    padding-bottom: 70vw;
+    width: min(70vw, 800px);
+    max-width: min(70vw, 800px);
+    padding-bottom: min(70vw, 800px);
+    margin: 0 auto;
+  }
+  
+  .wheel-container {
+    left: 50%;
+    transform: translateX(-50%);
   }
   
   .wheel-container > div {
     transform: scale(2);
+    margin: 0 auto;
   }
 }
 
 @media (min-width: 1440px) {
   .wheel-viewport-container {
-    width: 60vw;
-    max-width: 60vw;
-    padding-bottom: 60vw;
+    width: min(60vw, 800px);
+    max-width: min(60vw, 800px);
+    padding-bottom: min(60vw, 800px);
+    margin: 0 auto;
+  }
+  
+  .wheel-container {
+    left: 50%;
+    transform: translateX(-50%);
   }
   
   .wheel-container > div {
     transform: scale(2.2);
+    margin: 0 auto;
   }
 }
 
@@ -92,10 +127,17 @@
     width: 50vw;
     max-width: 50vw;
     padding-bottom: 50vw;
+    margin: 0 auto;
+  }
+  
+  .wheel-container {
+    left: 50%;
+    transform: translateX(-50%);
   }
   
   .wheel-container > div {
     transform: scale(2.5);
+    margin: 0 auto;
   }
 }
 
@@ -104,23 +146,42 @@
     width: 50vw;
     max-width: 50vw;
     padding-bottom: 50vw;
+    margin: 0 auto;
+  }
+  
+  .wheel-container {
+    left: 50%;
+    transform: translateX(-50%);
   }
   
   .wheel-container > div {
     transform: scale(4);
+    margin: 0 auto;
   }
 }
 
 /* Mobile-specific adjustments */
 @media (max-width: 767px) {
+  .wheel-container {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
   .wheel-container > div {
     transform: scale(1.8);
+    margin: 0 auto;
   }
 }
 
 @media (max-width: 480px) {
+  .wheel-container {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
   .wheel-container > div {
     transform: scale(1.5);
+    margin: 0 auto;
   }
 }
 
