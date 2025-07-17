@@ -158,17 +158,17 @@ export default function WheelPage() {
                         }}
                         // Pass the claim number input as content to display above the spin button
                         aboveButtonContent={
-                          <div className="flex flex-col w-full mt-14 mb-6">
+                          <div className="flex flex-col w-full mt-20 mb-6">
                             <div className="w-full">
-                              <div className={`relative h-20 w-full border-2 rounded-md overflow-hidden ${
+                              <div className={`relative h-[6.5rem] w-full border-2 rounded-lg overflow-hidden ${
                                 error ? 'border-[#D03C3C]' : 'border-[#abcae9]'
                               } ${error ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                                 <input
                                   id="claimNumber"
-                                  type="text"                                  
-                                  className={`w-full h-full mt-2 px-6 py-3 bg-transparent outline-none text-xl ${
+                                  type="number"                                  
+                                  className={`w-full h-full px-6 py-3 bg-transparent outline-none ${
                                     error ? 'text-[#D03C3C]' : 'text-[#00263a]'
-                                  } text-2xl font-medium`}
+                                  } text-[2.5rem] font-bold`}
                                   value={claimNumber}
                                   onChange={(e) => {
                                     setClaimNumber(e.target.value);
@@ -181,11 +181,11 @@ export default function WheelPage() {
                                   htmlFor="claimNumber"
                                   className={`absolute left-6 ${
                                     error ? 'text-[#D03C3C]' : 'text-[#418FDE]'
-                                  } transition-all duration-200 pointer-events-none text-xl ${
-                                    claimNumber ? 'text-base top-1' : 'text-2xl top-4'
+                                  } transition-all duration-200 pointer-events-none ${
+                                    claimNumber ? 'text-xl top-2' : 'text-[2.5rem] top-4'
                                   }`}
                                 >
-                                  Claim Number
+                                  Enter claim number
                                 </label>
                               </div>
                               {error && (
