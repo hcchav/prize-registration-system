@@ -283,7 +283,7 @@ html, body {
   }
   /* Enhanced floating label effect for 1080p portrait */
   label[for="claimNumber"] {
-    font-size: 2.2rem !important;
+    font-size: 2.2rem !important; /* Same size as Spin the Wheel button */
     transition: all 0.3s ease;
   }
   
@@ -374,8 +374,24 @@ html, body {
   
   /* Scale up label size for 4K */
   label[for="claimNumber"] {
-    font-size: 4.5rem !important;
+    font-size: 6rem !important;
   }
+
+  /* Move label when input has focus or content */
+  input#claimNumber:focus + label[for="claimNumber"],
+  input#claimNumber:not(:placeholder-shown) + label[for="claimNumber"] {
+    transform: translateY(-1rem) scale(0.75);   
+    left: -50px;
+    font-size: 4rem !important;
+    
+    /* font-weight: bold; */
+  }
+  
+  /* Move entered text down by 20px */
+  input#claimNumber {
+    padding-top: 30px !important;
+  }
+  
   
   /* Match header height */
   .portrait-header {
