@@ -147,6 +147,56 @@ function formatRegNumber(id: string | number | null): string {
   return `${lastFour}`;
 }
 
+// Helper function to send the email after the delay
+async function sendDelayedEmail(attendeeId: string, prizeName: string, res: NextApiResponse) {
+  try {
+    // Get attendee email from database
+    const { data: attendee, error: attendeeError } = await supabase
+      .from('attendees')
+      .select('email, claim_id, first_name')
+      .eq('id', attendeeId)
+      .single();
+
+    if (attendeeError) {
+      console.error('Error fetching attendee:', attendeeError);
+      return { success: false, error: 'Failed to fetch attendee information' };
+    }
+
+    if (!attendee || !attendee.email) {
+      return { success: false, error: 'Attendee not found or email missing' };
+    }
+    
+    // Use claim_id from the database if available, otherwise fall back to attendeeId
+    const claimIdToFormat = attendee.claim_id
+    const formattedClaimNumber = formatRegNumber(claimIdToFormat);
+
+    // Send email with prize confirmation
+    try {
+      console.log('Now sending delayed prize confirmation email after 25 seconds to:', attendee.email);
+      const { data, error } = await resend.emails.send({
+        from: 'noreply@biomebrigade.com',
+        to: attendee.email,
+        subject: 'Your Biome Brigade Prize Confirmation',
+        html: htmlTemplateWithPrizeDetails(prizeName, formattedClaimNumber, attendee.email, attendee.first_name),
+      });
+      
+      if (error) {
+        console.error('Email sending error:', error);
+        return { success: false, error: 'Failed to send email' };
+      }
+      
+      console.log('Prize confirmation email sent successfully:', data);
+      return { success: true };
+    } catch (error) {
+      console.error('Error in email sending:', error);
+      return { success: false, error: 'Error sending email' };
+    }
+  } catch (error) {
+    console.error('Unexpected error in delayed email sending:', error);
+    return { success: false, error: 'An unexpected error occurred' };
+  }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
@@ -161,52 +211,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Get attendee email from database
-    const { data: attendee, error: attendeeError } = await supabase
-      .from('attendees')
-      .select('email, claim_id, first_name')
-      .eq('id', attendeeId)
-      .single();
+    // Log that we received the request and will delay sending
+    console.log('Received prize confirmation request. Will send email in 25 seconds for:', { 
+      attendeeId, 
+      prizeName 
+    });
 
-    if (attendeeError) {
-      console.error('Error fetching attendee:', attendeeError);
-      res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
-      return res.status(500).json({ success: false, error: 'Failed to fetch attendee information' });
-    }
+    // Return immediate response to client
+    res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
+    res.status(200).json({ 
+      success: true, 
+      message: 'Email will be sent after 25-second delay' 
+    });
 
-    if (!attendee || !attendee.email) {
-      res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
-      return res.status(404).json({ success: false, error: 'Attendee not found or email missing' });
-    }
+    // Schedule the email to be sent after 25 seconds
+    // This runs asynchronously and doesn't block the response
+    setTimeout(async () => {
+      const result = await sendDelayedEmail(attendeeId, prizeName, res);
+      console.log('Delayed email sending result:', result);
+    }, 25000); // 25 seconds delay
     
-    // Use claim_id from the database if available, otherwise fall back to attendeeId
-    const claimIdToFormat = attendee.claim_id
-    const formattedClaimNumber = formatRegNumber(claimIdToFormat);
-
-    // Send email with prize confirmation
-    try {
-      console.log('Sending prize confirmation email to:', attendee.email);
-      const { data, error } = await resend.emails.send({
-        from: 'noreply@biomebrigade.com',
-        to: attendee.email,
-        subject: 'Your Biome Brigade Prize Confirmation',
-        html: htmlTemplateWithPrizeDetails(prizeName, formattedClaimNumber, attendee.email, attendee.first_name),
-      });
-      
-      if (error) {
-        console.error('Email sending error:', error);
-        res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
-        return res.status(500).json({ success: false, error: 'Failed to send email' });
-      }
-      
-      console.log('Prize confirmation email sent successfully:', data);
-      res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
-      return res.status(200).json({ success: true });
-    } catch (error) {
-      console.error('Error in email sending:', error);
-      res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
-      return res.status(500).json({ success: false, error: 'Error sending email' });
-    }
   } catch (error) {
     console.error('Unexpected error:', error);
     res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
