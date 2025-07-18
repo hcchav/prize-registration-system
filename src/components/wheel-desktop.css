@@ -271,6 +271,11 @@ html, body {
   .portrait-header {
     height: 18vh !important;
   }
+  
+  /* Larger label for 1080p portrait */
+  label[for="claimNumber"] {
+    font-size: 2.2rem !important;
+  }
 }
 
 /* Portrait mode for 1440x2560 screens */
