@@ -160,7 +160,7 @@ export default function WheelPage() {
                         aboveButtonContent={
                           <div className="flex flex-col w-full mt-20 mb-6">
                             <div className="w-full">
-                              <div className={`claim-input-container relative h-[6.5rem] w-full border-2 rounded-lg overflow-hidden ${
+                              <div className={`claim-input-container relative w-full border-2 rounded-lg overflow-hidden ${
                                 error ? 'border-[#D03C3C]' : 'border-[#abcae9]'
                               } ${error ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
                                 <input
@@ -168,7 +168,7 @@ export default function WheelPage() {
                                   type="number"                                  
                                   className={`w-full h-full px-6 py-3 bg-transparent outline-none ${
                                     error ? 'text-[#D03C3C]' : 'text-[#00263a]'
-                                  } text-[2.5rem] font-bold`}
+                                  } font-bold text-2xl`}
                                   value={claimNumber}
                                   onChange={(e) => {
                                     setClaimNumber(e.target.value);
@@ -182,7 +182,7 @@ export default function WheelPage() {
                                   className={`absolute left-6 ${
                                     error ? 'text-[#D03C3C]' : 'text-[#418FDE]'
                                   } transition-all duration-200 pointer-events-none ${
-                                    claimNumber ? 'text-xl top-2' : 'text-[2.5rem] top-4'
+                                    claimNumber ? 'text-xl top-2' : 'top-4'
                                   }`}
                                 >
                                   Enter claim number

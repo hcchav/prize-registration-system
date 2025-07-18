@@ -306,15 +306,15 @@ html, body {
 @media (orientation: portrait) and (min-width: 2160px) {
   /* Adjust page padding to accommodate larger header */
   .flex.min-h-screen.flex-col.items-center.bg-\[\#f5f9fd\].pt-\[20vh\] {
-    padding-top: 18vh !important;
+    padding-top: 28vh !important;
   }
   
   /* Scale up wheel container for 4K */
   .wheel-viewport-container {
-    width: 85vw;
-    max-width: 85vw;
-    padding-bottom: 85vw;
-    margin: 0 auto;
+    width: 90vw;
+    max-width: 90vw;
+    padding-bottom: 90vw;
+    margin-top: 4rem;
   }
   
   /* Scale up wheel for 4K (approximately 2x the 1080p scale) */
@@ -322,33 +322,33 @@ html, body {
     transform: scale(4.0);
   }
   
-  /* Scale up input and button for 4K (approximately 2x the 1080p size) */
-  .claim-input-container input,
-  .spin-button-container button {
-    font-size: 8.0rem !important;
-    height: 20rem !important;
+  /* Make both input and button the same larger size for 4K */
+  .claim-input-container,
+  input#claimNumber,
+  .spin-button-container {
+    height: 12rem !important;
+    font-size: 5.5rem !important;
   }
   
   /* Increase spacing between wheel and input/button */
   .wheel-input-button-container {
-    margin-top: 8rem;
+    margin-top: 6rem;
     width: 90%;
-    max-width: 1800px;
+    max-width: 1400px;
   }
   
   /* Scale up label size for 4K */
-  .claim-input-container label {
-    font-size: 5rem !important;
-    margin-bottom: 2.5rem !important;
+  label[for="claimNumber"] {
+    font-size: 4.5rem !important;
   }
   
-  /* Match 1080p header height */
+  /* Match header height */
   .portrait-header {
-    height: 18vh !important;
+    height: 12.5vh !important;
   }
   
   /* Keep default logo container width */
   .portrait-logo-container {
-    max-width: 90vw !important;
+    max-width: 75vw !important;
   }
 }
