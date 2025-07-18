@@ -172,7 +172,7 @@ async function sendDelayedEmail(attendeeId: string, prizeName: string, res: Next
 
     // Send email with prize confirmation
     try {
-      console.log('Now sending delayed prize confirmation email after 25 seconds to:', attendee.email);
+      console.log('Now sending delayed prize confirmation email after 10 seconds to:', attendee.email);
       const { data, error } = await resend.emails.send({
         from: 'noreply@biomebrigade.com',
         to: attendee.email,
@@ -212,7 +212,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Log that we received the request and will delay sending
-    console.log('Received prize confirmation request. Will send email in 25 seconds for:', { 
+    console.log('Received prize confirmation request. Will send email in 10 seconds for:', { 
       attendeeId, 
       prizeName 
     });
@@ -221,15 +221,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
     res.status(200).json({ 
       success: true, 
-      message: 'Email will be sent after 25-second delay' 
+      message: 'Email will be sent after 10-second delay' 
     });
 
-    // Schedule the email to be sent after 25 seconds
-    // This runs asynchronously and doesn't block the response
+    // Keep the function alive using a combination of setTimeout and setImmediate
+    // This technique helps prevent Vercel from terminating the function too early
+    let keepAliveInterval: NodeJS.Timeout;
+    
+    // Create a keep-alive mechanism using setImmediate
+    const keepAlive = () => {
+      setImmediate(() => {
+        // Do minimal work to keep the event loop active
+        const timestamp = new Date().toISOString();
+        if (timestamp) {
+          // Just to prevent optimization
+          console.log('Keeping function alive:', timestamp);
+        }
+      });
+    };
+    
+    // Start the keep-alive interval
+    keepAliveInterval = setInterval(keepAlive, 500);
+    
+    // Schedule the email to be sent after 10 seconds
     setTimeout(async () => {
-      const result = await sendDelayedEmail(attendeeId, prizeName, res);
-      console.log('Delayed email sending result:', result);
-    }, 25000); // 25 seconds delay
+      try {
+        const result = await sendDelayedEmail(attendeeId, prizeName, res);
+        console.log('Delayed email sending result:', result);
+      } catch (error) {
+        console.error('Error in delayed email sending:', error);
+      } finally {
+        // Clean up the interval once email is sent
+        clearInterval(keepAliveInterval);
+      }
+    }, 10000); // 10 seconds delay
     
   } catch (error) {
     console.error('Unexpected error:', error);
