@@ -341,7 +341,7 @@ html, body {
 @media (orientation: portrait) and (min-width: 2160px) {
   /* Adjust page padding to accommodate larger header */
   .flex.min-h-screen.flex-col.items-center.bg-\[\#f5f9fd\].pt-\[20vh\] {
-    padding-top: 28vh !important;
+    padding-top: 16vh !important; /* Further reduced to move content up */
   }
   
   /* Scale up wheel container for 4K */
@@ -349,7 +349,7 @@ html, body {
     width: 90vw;
     max-width: 90vw;
     padding-bottom: 90vw;
-    margin-top: 4rem;
+    margin-top: -2rem; /* Negative margin to move wheel up further */
   }
   
   /* Scale up wheel for 4K (approximately 2x the 1080p scale) */
@@ -365,9 +365,9 @@ html, body {
     font-size: 5.5rem !important;
   }
   
-  /* Increase spacing between wheel and input/button */
+  /* Adjust spacing between wheel and input/button */
   .wheel-input-button-container {
-    margin-top: 6rem;
+    margin-top: 4rem; /* Reduced to move input/button up */
     width: 90%;
     max-width: 1400px;
   }
