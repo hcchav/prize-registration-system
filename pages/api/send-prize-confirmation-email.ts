@@ -147,8 +147,8 @@ function formatRegNumber(id: string | number | null): string {
   return `${lastFour}`;
 }
 
-// Helper function to send the email after the delay
-async function sendDelayedEmail(attendeeId: string, prizeName: string, res: NextApiResponse) {
+// Helper function to send the email
+async function sendEmail(attendeeId: string, prizeName: string) {
   try {
     // Get attendee email from database
     const { data: attendee, error: attendeeError } = await supabase
@@ -172,7 +172,7 @@ async function sendDelayedEmail(attendeeId: string, prizeName: string, res: Next
 
     // Send email with prize confirmation
     try {
-      console.log('Now sending delayed prize confirmation email after 10 seconds to:', attendee.email);
+      console.log('Sending prize confirmation email to:', attendee.email);
       const { data, error } = await resend.emails.send({
         from: 'noreply@biomebrigade.com',
         to: attendee.email,
@@ -192,7 +192,7 @@ async function sendDelayedEmail(attendeeId: string, prizeName: string, res: Next
       return { success: false, error: 'Error sending email' };
     }
   } catch (error) {
-    console.error('Unexpected error in delayed email sending:', error);
+    console.error('Unexpected error in email sending:', error);
     return { success: false, error: 'An unexpected error occurred' };
   }
 }
@@ -211,50 +211,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Log that we received the request and will delay sending
-    console.log('Received prize confirmation request. Will send email in 10 seconds for:', { 
+    console.log('Received prize confirmation request for:', { 
       attendeeId, 
       prizeName 
     });
 
-    // Return immediate response to client
+    // Send email immediately
+    const result = await sendEmail(attendeeId, prizeName);
+    
+    // Return response to client
     res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
-    res.status(200).json({ 
-      success: true, 
-      message: 'Email will be sent after 10-second delay' 
-    });
-
-    // Keep the function alive using a combination of setTimeout and setImmediate
-    // This technique helps prevent Vercel from terminating the function too early
-    let keepAliveInterval: NodeJS.Timeout;
     
-    // Create a keep-alive mechanism using setImmediate
-    const keepAlive = () => {
-      setImmediate(() => {
-        // Do minimal work to keep the event loop active
-        const timestamp = new Date().toISOString();
-        if (timestamp) {
-          // Just to prevent optimization
-          console.log('Keeping function alive:', timestamp);
-        }
+    if (result.success) {
+      return res.status(200).json({ 
+        success: true, 
+        message: 'Email sent successfully' 
       });
-    };
-    
-    // Start the keep-alive interval
-    keepAliveInterval = setInterval(keepAlive, 500);
-    
-    // Schedule the email to be sent after 10 seconds
-    setTimeout(async () => {
-      try {
-        const result = await sendDelayedEmail(attendeeId, prizeName, res);
-        console.log('Delayed email sending result:', result);
-      } catch (error) {
-        console.error('Error in delayed email sending:', error);
-      } finally {
-        // Clean up the interval once email is sent
-        clearInterval(keepAliveInterval);
-      }
-    }, 10000); // 10 seconds delay
+    } else {
+      return res.status(500).json({ 
+        success: false, 
+        error: result.error || 'Failed to send email' 
+      });
+    }
     
   } catch (error) {
     console.error('Unexpected error:', error);
