@@ -306,7 +306,7 @@ html, body {
 @media (orientation: portrait) and (min-width: 2160px) {
   /* Adjust page padding to accommodate larger header */
   .flex.min-h-screen.flex-col.items-center.bg-\[\#f5f9fd\].pt-\[20vh\] {
-    padding-top: 28vh !important;
+    padding-top: 18vh !important;
   }
   
   /* Scale up wheel container for 4K */
