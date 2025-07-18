@@ -272,10 +272,26 @@ html, body {
     height: 18vh !important;
   }
   
-  /* Larger label for 1080p portrait */
+  /* Enhanced floating label effect for 1080p portrait */
   label[for="claimNumber"] {
     font-size: 2.2rem !important;
+    transition: all 0.3s ease;
   }
+  
+  /* Move label when input has focus or content */
+  input#claimNumber:focus + label[for="claimNumber"],
+  input#claimNumber:not(:placeholder-shown) + label[for="claimNumber"] {
+    transform: translateY(-1rem) scale(0.75);   
+    left: -20px;
+    
+    /* font-weight: bold; */
+  }
+  
+  /* Move entered text down by 20px */
+  input#claimNumber {
+    padding-top: 30px !important;
+  }
+ 
 }
 
 /* Portrait mode for 1440x2560 screens */
@@ -311,7 +327,7 @@ html, body {
 @media (orientation: portrait) and (min-width: 2160px) {
   /* Adjust page padding to accommodate larger header */
   .flex.min-h-screen.flex-col.items-center.bg-\[\#f5f9fd\].pt-\[20vh\] {
-    padding-top: 18vh !important;
+    padding-top: 28vh !important;
   }
   
   /* Scale up wheel container for 4K */
@@ -357,3 +373,5 @@ html, body {
     max-width: 75vw !important;
   }
 }
+
+
