@@ -250,10 +250,16 @@ html, body {
 
 /* Portrait mode for 1080x1920 screens */
 @media (orientation: portrait) and (min-width: 1080px) and (max-width: 1439px) {
+  /* Adjust page padding to move content up */
+  .flex.min-h-screen.flex-col.items-center.bg-\[\#f5f9fd\].pt-\[20vh\] {
+    padding-top: 15vh !important;
+  }
+  
   .wheel-viewport-container {
     width: 85vw;
     max-width: 85vw;
     padding-bottom: 85vw;
+    margin-top: -2rem; /* Move wheel up */
   }
   
   .wheel-container > div {
@@ -269,9 +275,12 @@ html, body {
   
   /* Header and logo optimizations for 1080p portrait */
   .portrait-header {
-    height: 18vh !important;
+    height: 12.5vh !important;
   }
   
+  .portrait-logo-container {
+    max-width: 65vw !important;
+  }
   /* Enhanced floating label effect for 1080p portrait */
   label[for="claimNumber"] {
     font-size: 2.2rem !important;
@@ -290,6 +299,11 @@ html, body {
   /* Move entered text down by 20px */
   input#claimNumber {
     padding-top: 30px !important;
+  }
+  
+  /* Move input and button container up */
+  .wheel-input-button-container {
+    margin-top: -1.5rem;
   }
  
 }
