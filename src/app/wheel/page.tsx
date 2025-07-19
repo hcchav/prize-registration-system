@@ -216,41 +216,39 @@ export default function WheelPage() {
 
                 {/* Congrats Modal */}
                 {showCongratsModal && (
-                  <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="fixed inset-0 bg-black opacity-50"></div>
-                    <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 z-10">
-                      <div className="text-center">
-                        {noPrizeAvailable ? (
-                          <>
-                            <div className="font-bold text-3xl text-[#00263a] mb-6">
-                              All Prizes Claimed. Thank you for participating!
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="font-bold text-4xl text-[#00263a] mb-6">
-                              CONGRATULATIONS!
-                            </div>
-                            <div className="mb-4">
-                              <p className="text-2xl text-[#00263a]">
-                                Go to the Biome Brigade Booth (#8737) to Claim Your
-                              </p>
-                              <p className="text-[#418FDE] text-3xl font-bold mt-3">
-                                {prize?.name || 'Your Prize'}
-                              </p>
-                              <p className="text-[#00263a] text-xl mt-4">
-                                Your Claim # is {formatClaimNumber(claimNumber)}
-                              </p>
-                            </div>
-                          </>
-                        )}
-                        <button
-                          className="mt-6 bg-[#418FDE] hover:bg-[#2e7bc4] text-white font-bold text-xl py-3 px-8 rounded-lg"
-                          onClick={() => window.location.reload()}
-                        >
-                          Done
-                        </button>
-                      </div>
+                  <div className="congrats-modal-overlay">
+                    <div className="congrats-modal-backdrop"></div>
+                    <div className="congrats-modal-content">
+                      {noPrizeAvailable ? (
+                        <>
+                          <div className="congrats-modal-no-prize-title">
+                            All Prizes Claimed. Thank you for participating!
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="congrats-modal-title">
+                            CONGRATULATIONS!
+                          </div>
+                          <div className="mb-4">
+                            <p className="congrats-modal-text">
+                              Go to the Biome Brigade Booth (#8737) to Claim Your
+                            </p>
+                            <p className="congrats-modal-prize-name">
+                              {prize?.name || 'Your Prize'}
+                            </p>
+                            <p className="congrats-modal-claim-number">
+                              Your Claim # is {formatClaimNumber(claimNumber)}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      <button
+                        className="congrats-modal-button"
+                        onClick={() => window.location.reload()}
+                      >
+                        Done
+                      </button>
                     </div>
                   </div>
                 )}
