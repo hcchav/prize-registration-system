@@ -493,40 +493,40 @@ html, body {
 /* 4K Portrait Mode Optimizations for Congrats Modal */
 @media (min-width: 2160px) and (orientation: portrait) {
   .congrats-modal-content {
-    max-width: 50rem;
-    padding: 4rem;
-    border-radius: 1rem;
+    max-width: 110rem;
+    padding: 8rem;
+    border-radius: 2rem;
   }
 
   .congrats-modal-title {
-    font-size: 4.5rem;
-    margin-bottom: 3rem;
+    font-size: 9rem;
+    margin-bottom: 6rem;
   }
 
   .congrats-modal-no-prize-title {
-    font-size: 3.5rem;
-    margin-bottom: 3rem;
+    font-size: 7rem;
+    margin-bottom: 6rem;
   }
 
   .congrats-modal-text {
-    font-size: 2.5rem;
+    font-size: 5rem;
     line-height: 1.4;
   }
 
   .congrats-modal-prize-name {
-    font-size: 3.5rem;
-    margin-top: 1.5rem;
+    font-size: 7rem;
+    margin-top: 3rem;
   }
 
   .congrats-modal-claim-number {
-    font-size: 2.25rem;
-    margin-top: 2rem;
+    font-size: 4.5rem;
+    margin-top: 4rem;
   }
 
   .congrats-modal-button {
-    margin-top: 3rem;
-    font-size: 2.25rem;
-    padding: 1.5rem 3rem;
-    border-radius: 1rem;
+    margin-top: 6rem;
+    font-size: 4.5rem;
+    padding: 3rem 6rem;
+    border-radius: 2rem;
   }
 }
