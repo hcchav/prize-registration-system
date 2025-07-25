@@ -102,15 +102,12 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, re
                     Congratulations, ${firstName || 'Friend'}!
                   </p>
                   <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
-                  Go to the Biome Brigade Booth (#8737) to claim your
+                  You have won a:
                   </p>                 
                   <div class="prize-name">
                     ${prizeName}
                   </div>
-                  <p style="font-size: 16px; font-weight: 700; color: #00263a; text-align: center; margin: 20px 0 30px 0;">
-                    <span>Your claim # is </span>
-                    <span class="claim-number">${claimNumber}</span> 
-                  </p>
+                 
                                 
                 </div>
               </div>
@@ -122,9 +119,9 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, re
                 <div style="padding: 2px; text-align: center;">
                   <h2 style="font-size: 24px; font-weight: 700; color: #00263a; margin: 0 0 10px 0;">Interested in Biome Brigade products?</h2>
                   <p style="font-size: 18px; line-height: 1.6; margin: 0 0 25px 0;">
-                    <span style="color: #418fde; font-weight: 700;">Let's talk!</span> Schedule a quick call to learn about our wholesale program and how we support our retail partners.
+                    <span style="color: #418fde; font-weight: 700;">Let's talk!</span> Schedule a quick call to learn more about our products!
                   </p>
-                  <a href="#" style="display: inline-block; background-color: #418fde; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 5px; font-size: 18px; font-weight: 700; margin: 0 0 25px 0; width: 200px">Schedule a Call</a>
+                  <a href="https://calendly.com/reggie-biomebrigade/30min-1" style="display: inline-block; background-color: #418fde; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 5px; font-size: 18px; font-weight: 700; margin: 0 0 25px 0; width: 200px">Schedule a Call</a>
                   <p style="font-size: 18px; color: #00263a; margin: 0;">We're excited to connect!</p>
                 </div>
               </div>

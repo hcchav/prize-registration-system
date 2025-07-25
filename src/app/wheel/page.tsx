@@ -232,14 +232,11 @@ export default function WheelPage() {
                           </div>
                           <div className="mb-4">
                             <p className="congrats-modal-text">
-                              Go to the Biome Brigade Booth (#8737) to Claim Your
+                            You have won a:
                             </p>
                             <p className="congrats-modal-prize-name">
                               {prize?.name || 'Your Prize'}
-                            </p>
-                            <p className="congrats-modal-claim-number">
-                              Your Claim # is {formatClaimNumber(claimNumber)}
-                            </p>
+                            </p>                           
                           </div>
                         </>
                       )}

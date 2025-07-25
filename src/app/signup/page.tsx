@@ -981,7 +981,16 @@ export default function Home() {
         <div id="claim-number" className="bg-white flex flex-row justify-center w-full">
           <div className="bg-white w-[375px] h-auto relative">
             <div className="w-80 h-auto mt-5 mx-auto rounded-[5px] border-2 border-solid border-[#abcae9] overflow-hidden">
-
+              <div className="relative w-full h-[162px] overflow-hidden">
+                <Image
+                  src="/images/prizes/confirmation-banner-1920x1080.png"
+                  alt="Biome Brigade Confirmation"
+                  className="w-full h-full object-cover"
+                  width={320}
+                  height={162}
+                  priority
+                />
+              </div>
               <div className="flex flex-col w-80 items-center justify-center gap-3 px-6 py-8">
                 <div className="relative self-stretch font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal] mb-4">
                   THANK YOU FOR REGISTERING!
@@ -989,7 +998,7 @@ export default function Home() {
                 
                 <div className="text-center mb-4">
                   <p className="text-base text-[#00263a]">
-                    Go to the Biome Brigade Booth (#8737) to
+                    Go to the Biome Brigade Booth (#8737) and
                   </p>
                   <p className="text-[#418FDE] text-xl font-bold mt-2">
                     Enter Your Claim Number & Spin the Wheel to Win a Prize
