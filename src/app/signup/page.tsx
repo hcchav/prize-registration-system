@@ -991,6 +991,7 @@ export default function Home() {
                   priority
                 />
               </div>
+              <div className="w-full border-b-2 border-[#00263a]"></div>
               <div className="flex flex-col w-80 items-center justify-center gap-3 px-6 py-8">
                 <div className="relative self-stretch font-bold text-[#00263a] text-xl text-center tracking-[0] leading-[normal] mb-4">
                   THANK YOU FOR REGISTERING!
