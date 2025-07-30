@@ -1,0 +1,80 @@
+/* Responsive wheel styling for spinthewheel page */
+.spinthewheel-container {
+  width: 320px;
+  height: 320px;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%) scale(1.1);
+  transform-origin: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Ensure the wheel fits within the parent container */
+.spinthewheel-container > div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Media queries for responsive scaling based on container width */
+/* For larger screens */
+@media (min-width: 768px) {
+  .spinthewheel-container {
+    transform: translateX(-50%) scale(.9);
+  }
+}
+
+/* For medium screens */
+@media (max-width: 768px) {
+  .spinthewheel-container {
+    transform: translateX(-50%) scale(0.9);
+  }
+}
+
+/* For smaller screens */
+@media (max-width: 640px) {
+  .spinthewheel-container {
+    transform: translateX(-50%) scale(0.8);
+  }
+}
+
+/* iPhone 14 Pro Max has width of 430px */
+@media (max-width: 480px) and (min-width: 420px) {
+  .spinthewheel-container {
+    transform: translateX(-50%) scale(0.9);
+  }
+}
+
+/* Standard mobile devices */
+@media (max-width: 420px) and (min-width: 380px) {
+  .spinthewheel-container {
+    transform: translateX(-50%) scale(0.85);
+  }
+}
+
+@media (max-width: 380px) and (min-width: 320px) {
+  .spinthewheel-container {
+    transform: translateX(-50%) scale(0.8);
+  }
+}
+
+/* Adjust container height for very small screens */
+@media (max-width: 320px) {
+  .spinthewheel-container {
+    transform: translateX(-50%) scale(0.75);
+  }
+}
+
+/* Custom pointer styling - target the SVG directly */
+.spinthewheel-container svg polygon {
+  fill: #052740 !important;
+  stroke: #052740 !important;
+  stroke-width: 3px !important;
+  transform: scale(1.5) !important;
+}
