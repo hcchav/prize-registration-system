@@ -19,9 +19,13 @@ interface WheelProps {
   onSpinComplete?: (prize: Prize | null) => void;
   onError?: (message: string) => void;
   testMode?: boolean;
+  // New props for direct control from parent component
+  mustSpin?: boolean;
+  prizeNumber?: number;
+  onSpinEnd?: () => void;
 }
 
-export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode = false }: WheelProps) {
+export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode = false, mustSpin: externalMustSpin, prizeNumber: externalPrizeNumber, onSpinEnd }: WheelProps) {
   const [availablePrizes, setAvailablePrizes] = useState<Prize[]>([]);
   const [spinning, setSpinning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -153,20 +157,41 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
         
         console.log(`Successfully loaded ${allPrizes.length} prizes`);
         
+        // Sort prizes by ID to ensure consistent ordering with API
+        const sortedPrizes = [...allPrizes].sort((a, b) => a.id - b.id);
+        
+        console.log('Sorted prizes for wheel:', sortedPrizes.map(p => ({ id: p.id, name: p.name })));
+        
         // Use all prizes for the wheel display
-        const prizesWithPosition = allPrizes.map((prize, index) => ({
-          id: prize.id,
-          name: prize.name,
-          displayText: prize.display_text || prize.name, // Use display_text from DB or fallback to name
-          color: prize.color || '#9cf7f7', // Default color if not specified
-          textColor: prize.text_color || '#000000', // Default text color
-          weight: 100, // Default weight
-          stock: prize.stock,
-          wheelPosition: index // Store the position for later reference
-        }));
+        const prizesWithPosition = sortedPrizes.map((prize, index) => {
+          // Map prize ID to wheel position (index)
+          const mappedPrize = {
+            id: prize.id,
+            name: prize.name,
+            displayText: prize.display_text || prize.name, // Use display_text from DB or fallback to name
+            color: prize.color || '#9cf7f7', // Default color if not specified
+            textColor: prize.text_color || '#000000', // Default text color
+            weight: 100, // Default weight
+            stock: prize.stock,
+            wheelPosition: index, // Store the position for later reference
+            // Store the ID-based position for matching with API
+            idBasedPosition: prize.id % sortedPrizes.length
+          };
+          
+          console.log(`Prize mapping: ID ${prize.id} -> Position ${index} (ID mod ${sortedPrizes.length} = ${prize.id % sortedPrizes.length})`);
+          return mappedPrize;
+        });
         
         if (isMounted) {
           setAvailablePrizes(prizesWithPosition);
+          
+          // Store the prize mapping in localStorage for the spinthewheel page to use
+          try {
+            localStorage.setItem('wheelData', JSON.stringify(prizesWithPosition));
+            console.log('Wheel data stored in localStorage');
+          } catch (err) {
+            console.error('Failed to store wheel data in localStorage:', err);
+          }
         }
         
         // Create data for react-custom-roulette
@@ -177,6 +202,11 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
             textColor: '#FFFFFF' // Force all text to be white
           }
         }));
+        
+        console.log('Final wheel data mapping:');
+        wheelItems.forEach((item, index) => {
+          console.log(`Wheel segment ${index}: ${item.option}`);
+        });
         
         if (isMounted) {
           setWheelData(wheelItems);
@@ -484,7 +514,111 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
       console.log('Calling onSpinComplete with prize:', assignedPrize);
       onSpinComplete?.(assignedPrize);
     }
-  }, [assignedPrize, onSpinComplete]);
+    
+    // Call the onSpinEnd callback if provided
+    if (onSpinEnd) {
+      onSpinEnd();
+    }
+  }, [assignedPrize, onSpinComplete, onSpinEnd]);
+
+  // Effect to handle external mustSpin prop
+  useEffect(() => {
+    if (externalMustSpin && !mustSpin && !spinning && wheelData.length > 0) {
+      console.log('External mustSpin triggered, starting spin');
+      
+      // Try to get the prize data from localStorage first
+      try {
+        const storedPrize = localStorage.getItem('selectedPrize');
+        if (storedPrize) {
+          const prizeData = JSON.parse(storedPrize);
+          console.log('Retrieved prize data from localStorage:', prizeData);
+          
+          // If we have a prize ID, try to find the matching wheel segment
+          if (prizeData.id !== undefined) {
+            const prizeId = Number(prizeData.id);
+            console.log('Looking for prize with ID:', prizeId);
+            
+            // Find the matching wheel segment for this prize ID
+            const matchingPrizeIndex = availablePrizes.findIndex(p => p.id === prizeId);
+            if (matchingPrizeIndex !== -1) {
+              console.log('Found matching prize at index:', matchingPrizeIndex);
+              console.log('Matching prize:', availablePrizes[matchingPrizeIndex]);
+              
+              // Set the prize number and assigned prize
+              setPrizeNumber(matchingPrizeIndex);
+              setAssignedPrize(availablePrizes[matchingPrizeIndex]);
+            } 
+            // If no match by ID, but prizeIndex is provided, use that
+            else if (prizeData.prizeIndex !== undefined) {
+              const prizeIndex = Number(prizeData.prizeIndex);
+              if (prizeIndex >= 0 && prizeIndex < wheelData.length) {
+                console.log('Using prizeIndex from API:', prizeIndex);
+                setPrizeNumber(prizeIndex);
+                setAssignedPrize(availablePrizes[prizeIndex]);
+              } else {
+                // Fallback to external prize number or default
+                useExternalOrDefaultPrize();
+              }
+            } 
+            // Otherwise use external prize number or default
+            else {
+              useExternalOrDefaultPrize();
+            }
+          } 
+          // No prize ID, use external prize number or default
+          else {
+            useExternalOrDefaultPrize();
+          }
+        } 
+        // No stored prize, use external prize number or default
+        else {
+          useExternalOrDefaultPrize();
+        }
+      } catch (err) {
+        console.error('Error processing stored prize:', err);
+        // Fallback to external prize number or default
+        useExternalOrDefaultPrize();
+      }
+      
+      // Start spinning
+      setSpinning(true);
+      setMustSpin(true);
+    }
+    
+    // Helper function to use external prize number or default
+    function useExternalOrDefaultPrize() {
+      if (externalPrizeNumber !== undefined) {
+        // Validate prize number is within bounds
+        if (Number.isInteger(externalPrizeNumber) && externalPrizeNumber >= 0 && externalPrizeNumber < wheelData.length) {
+          console.log('Using external prize number:', externalPrizeNumber);
+          console.log('Wheel data length:', wheelData.length);
+          console.log('Wheel segment at position:', wheelData[externalPrizeNumber]);
+          
+          // Set the prize number for the wheel
+          setPrizeNumber(externalPrizeNumber);
+          
+          // Set the assigned prize
+          if (availablePrizes.length > 0 && externalPrizeNumber < availablePrizes.length) {
+            setAssignedPrize(availablePrizes[externalPrizeNumber]);
+          }
+        } else {
+          // Use a safe default if prize number is invalid
+          console.warn('Invalid prize number provided:', externalPrizeNumber, 'Using default (0)');
+          setPrizeNumber(0);
+          if (availablePrizes.length > 0) {
+            setAssignedPrize(availablePrizes[0]);
+          }
+        }
+      } else {
+        // Ensure we have a valid prize number if none was provided
+        console.log('No external prize number provided, using default (0)');
+        setPrizeNumber(0);
+        if (availablePrizes.length > 0) {
+          setAssignedPrize(availablePrizes[0]);
+        }
+      }
+    }
+  }, [externalMustSpin, externalPrizeNumber, mustSpin, spinning, wheelData.length, availablePrizes]);
 
   return (
     <div className="grid grid-cols-1 w-full flex flex-col items-center">
@@ -520,13 +654,7 @@ export default function Wheel({ onSpinStart, onSpinComplete, onError, testMode =
         </div>
       </div>
       
-      <Button
-        onClick={handleSpin}
-        disabled={spinning || loading}
-        className={`w-full py-3 rounded-md text-white font-regular ${spinning || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#418fde] hover:bg-[#3177c2]'}`}
-      >
-        {spinning || loading ? 'Spinning...' : 'Spin the Wheel!'}
-      </Button>
+      {/* Spin button removed as requested - wheel now spins only when triggered by controller */}
       
       {testMode && (
         <Button
