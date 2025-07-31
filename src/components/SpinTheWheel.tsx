@@ -23,7 +23,7 @@ interface SpinTheWheelProps {
   // New props for direct control from parent component
   mustSpin?: boolean;
   prizeNumber?: number;
-  onSpinEnd?: () => void;
+  onSpinEnd?: (prize: Prize | null) => void;
 }
 
 export default function SpinTheWheel({ 
@@ -346,9 +346,24 @@ export default function SpinTheWheel({
     console.log('Spin completed');
     setSpinning(false);
     
-    // Call the onSpinEnd callback if provided
+    // Get the prize from localStorage if available
+    let prizeToPass = assignedPrize;
+    
+    try {
+      const selectedPrizeData = localStorage.getItem('selectedPrize');
+      if (selectedPrizeData) {
+        const prizeData = JSON.parse(selectedPrizeData);
+        console.log('Retrieved prize from localStorage:', prizeData);
+        prizeToPass = prizeData;
+      }
+    } catch (err) {
+      console.error('Error retrieving prize from localStorage:', err);
+    }
+    
+    // Call the onSpinEnd callback if provided, passing the prize
     if (onSpinEnd) {
-      onSpinEnd();
+      console.log('Calling onSpinEnd with prize:', prizeToPass);
+      onSpinEnd(prizeToPass);
     }
   };
 

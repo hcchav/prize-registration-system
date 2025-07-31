@@ -36,6 +36,13 @@ app.prepare().then(() => {
       io.emit('wheel-spin', data);
     });
 
+    // Handle spin complete event from spinthewheel page
+    socket.on('spin-complete', (data) => {
+      console.log('Spin complete event received:', data);
+      // Broadcast to all clients
+      io.emit('spin-complete', data);
+    });
+
     // Handle claim number submission
     socket.on('submit-claim', (claimNumber) => {
       console.log('Claim number submitted:', claimNumber);

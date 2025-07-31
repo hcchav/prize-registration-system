@@ -6,12 +6,17 @@ import { io, Socket } from 'socket.io-client';
 import clientLogger from '@/lib/client-logger';
 import Image from 'next/image';
 import '@/components/controller.css';
+import '@/components/modal-styles.css';
 
 export default function ControllerPage() {
   const [claimNumber, setClaimNumber] = useState<string>('');
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [noPrizeAvailable, setNoPrizeAvailable] = useState(false);
+  const [prize, setPrize] = useState<any>(null);
 
   // Initialize socket connection
   useEffect(() => {
@@ -21,7 +26,7 @@ export default function ControllerPage() {
     const port = window.location.port || (protocol === 'https://' ? '443' : '80');
     const socketUrl = `${protocol}${host}:${port}`;
     
-    console.log('Connecting to socket at:', socketUrl);
+    console.log('CONTROLLER: Connecting to socket at:', socketUrl);
     
     // Create socket connection with fallback options
     const socketInstance = io(socketUrl, {
@@ -31,7 +36,8 @@ export default function ControllerPage() {
       timeout: 20000
     });
     
-    console.log('Attempting to connect to WebSocket server...');
+    console.log('CONTROLLER: Attempting to connect to WebSocket server...');
+    console.log('CONTROLLER: Socket instance created:', socketInstance);
 
     // Socket event handlers
     socketInstance.on('connect', () => {
@@ -48,6 +54,28 @@ export default function ControllerPage() {
       console.error('Socket connection error:', err);
       setError(`Connection error: ${err.message}`);
       clientLogger.error('Socket connection error', { error: err.message });
+    });
+    
+    // Listen for spin complete event from spinthewheel page
+    socketInstance.on('spin-complete', (data) => {
+      console.log('CONTROLLER: Spin complete event received:', data);
+      clientLogger.info('CONTROLLER: Spin complete event received', { data });
+      
+      setIsSpinning(false);
+      
+      if (data && data.prize) {
+        console.log('CONTROLLER: Prize received in spin-complete event:', data.prize);
+        setPrize(data.prize);
+      } else if (data && data.noPrizeAvailable) {
+        console.log('CONTROLLER: No prize available notification received');
+        setNoPrizeAvailable(true);
+      } else {
+        console.log('CONTROLLER: Spin complete event received but no prize data');
+      }
+      
+      // Make sure the modal stays visible but changes from "Spinning..." to "Congratulations"
+      // We don't need to set showModal again since it's already showing
+      console.log('CONTROLLER: Modal state after spin complete - isSpinning:', false);
     });
 
     // Save socket instance
@@ -101,12 +129,24 @@ export default function ControllerPage() {
       socket.emit('spin-wheel', { claimNumber, prizeData });
       
       clientLogger.info('Spin wheel triggered', { claimNumber, prizeData });
+      
+      // Show spinning modal
+      setPrize(prizeData);
+      setIsSpinning(true);
+      setShowModal(true);
+      
     } catch (err) {
       console.error('Error triggering spin:', err);
       setError(err instanceof Error ? err.message : 'Failed to trigger spin');
       clientLogger.error('Error triggering spin', { 
         error: err instanceof Error ? err.message : String(err) 
       });
+      
+      // Check if the error is "No prizes available"
+      if (err instanceof Error && err.message === 'No prizes available') {
+        setNoPrizeAvailable(true);
+        setShowModal(true);
+      }
     }
   };
 
@@ -212,7 +252,7 @@ export default function ControllerPage() {
         </div>
       </div>
       
-      <div className="controller-container" style={{ marginTop: '22vh' }}>
+      <div className="controller-container" style={{ marginTop: '22vh', opacity: showModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>
  
       
       {/* Connection status */}
@@ -222,7 +262,7 @@ export default function ControllerPage() {
       </div>
       
       {/* Error message */}
-      {error && (
+      {error && !showModal && (
         <div className="error-message">
           {error}
         </div>
@@ -250,10 +290,61 @@ export default function ControllerPage() {
       <Button 
         onClick={handleSpin}
         className="spin-button"
-        disabled={!isConnected}
+        disabled={!isConnected || isSpinning}
       >
-        Spin Wheel
+        {isSpinning ? 'Spinning...' : 'Spin Wheel'}
       </Button>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="congrats-modal-overlay">
+          <div className="congrats-modal-backdrop"></div>
+          <div className="congrats-modal-content">
+            {noPrizeAvailable ? (
+              <>
+                <div className="congrats-modal-no-prize-title">
+                  All Prizes Claimed. Thank you for participating!
+                </div>
+              </>
+            ) : isSpinning ? (
+              <>
+                <div className="congrats-modal-title">
+                  SPINNING...
+                </div>
+                <div className="mb-4">
+                  <p className="congrats-modal-text">
+                    Please wait while the wheel is spinning!
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="congrats-modal-title">
+                  CONGRATULATIONS!
+                </div>
+                <div className="mb-4">
+                  <p className="congrats-modal-text">
+                  You have won a:
+                  </p>
+                  <p className="congrats-modal-prize-name">
+                    {prize?.name || 'Your Prize'}
+                  </p>                           
+                </div>
+              </>
+            )}
+            <button
+              className="congrats-modal-button"
+              onClick={() => {
+                setShowModal(false);
+                setIsSpinning(false);
+                setClaimNumber(''); // Reset claim number for next spin
+              }}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
       
       {/* Instructions removed as requested */}
     </div>

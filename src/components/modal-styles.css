@@ -1,0 +1,204 @@
+/* Shared Modal Styles for Controller and SpinTheWheel pages */
+
+/* Congrats Modal Styles */
+.congrats-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.congrats-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: black;
+  opacity: 0.5;
+}
+
+.congrats-modal-content {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  max-width: 36rem;
+  width: 100%;
+  margin: 0 1rem;
+  z-index: 10;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.congrats-modal-title {
+  font-weight: bold;
+  font-size: 2.5rem;
+  color: #00263a;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  width: 100%;
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.congrats-modal-no-prize-title {
+  font-weight: bold;
+  font-size: 1.875rem;
+  color: #00263a;
+  margin-bottom: 1.5rem;
+}
+
+.congrats-modal-text {
+  font-size: 1.5rem;
+  color: #00263a;
+}
+
+.congrats-modal-prize-name {
+  color: #418FDE;
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-top: 0.75rem;
+}
+
+.congrats-modal-claim-number {
+  color: #00263a;
+  font-size: 1.25rem;
+  margin-top: 1rem;
+}
+
+.congrats-modal-button {
+  margin-top: 1.5rem;
+  background-color: #418FDE;
+  color: white;
+  font-weight: bold;
+  font-size: 1.25rem;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.congrats-modal-button:hover {
+  background-color: #2e7bc4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.congrats-modal-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Spinning animation for the "SPINNING..." modal */
+.spinning-text {
+  position: relative;
+  display: inline-block;
+}
+
+.spinning-text::after {
+  content: '';
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border: 3px solid #418FDE;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 4K Portrait Mode Optimizations for Congrats Modal */
+@media (min-width: 2160px) and (orientation: portrait) {
+  .congrats-modal-content {
+    max-width: 110rem;
+    padding: 8rem;
+    border-radius: 2rem;
+  }
+
+  .congrats-modal-title {
+    font-size: 9rem;
+    margin-bottom: 6rem;
+  }
+
+  .congrats-modal-no-prize-title {
+    font-size: 7rem;
+    margin-bottom: 6rem;
+  }
+
+  .congrats-modal-text {
+    font-size: 5rem;
+    line-height: 1.4;
+  }
+
+  .congrats-modal-prize-name {
+    font-size: 7rem;
+    margin-top: 3rem;
+  }
+
+  .congrats-modal-claim-number {
+    font-size: 4.5rem;
+    margin-top: 4rem;
+  }
+
+  .congrats-modal-button {
+    margin-top: 6rem;
+    font-size: 4.5rem;
+    padding: 3rem 6rem;
+    border-radius: 2rem;
+  }
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) {
+  .congrats-modal-content {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  .congrats-modal-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .congrats-modal-no-prize-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .congrats-modal-text {
+    font-size: 1.25rem;
+  }
+
+  .congrats-modal-prize-name {
+    font-size: 1.5rem;
+  }
+
+  .congrats-modal-button {
+    font-size: 1rem;
+    padding: 0.5rem 1.5rem;
+  }
+}

@@ -5,6 +5,13 @@ import SpinTheWheel from '@/components/SpinTheWheel';
 import { io, Socket } from 'socket.io-client';
 import clientLogger from '@/lib/client-logger';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
+import '@/components/modal-styles.css';
+
+// Dynamically import ReactConfetti to avoid SSR issues
+const ReactConfetti = dynamic(() => import('react-confetti'), {
+  ssr: false,
+});
 
 export default function SpinTheWheelPage() {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -15,6 +22,31 @@ export default function SpinTheWheelPage() {
   const [spinComplete, setSpinComplete] = useState(false);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [showCongratsModal, setShowCongratsModal] = useState(false);
+  const [noPrizeAvailable, setNoPrizeAvailable] = useState(false);
+  const [prize, setPrize] = useState<any>(null);
+  
+  // Get window size for confetti
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 0,
+    height: typeof window !== 'undefined' ? window.innerHeight : 0,
+  });
+
+  // Update window size when window resizes
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
 
   // Initialize socket connection
   useEffect(() => {
@@ -24,7 +56,7 @@ export default function SpinTheWheelPage() {
     const port = window.location.port || (protocol === 'https://' ? '443' : '80');
     const socketUrl = `${protocol}${host}:${port}`;
     
-    console.log('Connecting to socket at:', socketUrl);
+    console.log('SPINTHEWHEEL: Connecting to socket at:', socketUrl);
     
     // Create socket connection with fallback options
     const socketInstance = io(socketUrl, {
@@ -34,7 +66,8 @@ export default function SpinTheWheelPage() {
       timeout: 20000
     });
     
-    console.log('Attempting to connect to WebSocket server...');
+    console.log('SPINTHEWHEEL: Attempting to connect to WebSocket server...');
+    console.log('SPINTHEWHEEL: Socket instance created:', socketInstance);
 
     // Socket event handlers
     socketInstance.on('connect', () => {
@@ -177,13 +210,6 @@ export default function SpinTheWheelPage() {
     return true; // Always allow spinning
   };
 
-  // Handle spin complete
-  const handleSpinComplete = (prize: any) => {
-    console.log('Spin complete, prize:', prize);
-    clientLogger.info('Spin complete', { prize });
-    setSpinComplete(true);
-  };
-
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen bg-white pt-[20vh]">
       <div id="registration-header" className="portrait-header fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-[20vh] bg-white shadow-xl">
@@ -222,22 +248,135 @@ export default function SpinTheWheelPage() {
       )}
       
       {/* SpinTheWheel component - centered container */}
-      <div className="flex justify-center items-center w-full">
+      <div className="flex justify-center items-center w-full" style={{ opacity: showCongratsModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>
         <SpinTheWheel 
           onSpinStart={handleSpinStart}
-          onSpinComplete={handleSpinComplete}
+          onSpinComplete={(prize: any) => {
+            console.log('Spin complete, prize:', prize);
+            clientLogger.info('Spin complete', { prize });
+            setSpinComplete(true);
+            
+            // Show confetti and congratulations modal
+            if (prize) {
+              setPrize(prize);
+              setShowConfetti(true);
+              setShowCongratsModal(true);
+              
+              // Hide confetti after 5 seconds
+              setTimeout(() => {
+                setShowConfetti(false);
+              }, 5000);
+            } else {
+              setNoPrizeAvailable(true);
+              setShowCongratsModal(true);
+            }
+          }}
           onError={(msg) => setError(msg)}
           mustSpin={mustSpin}
           prizeNumber={prizeNumber}
-          onSpinEnd={() => {
+          onSpinEnd={(spinPrize) => {
+            console.log('Spin ended, received prize:', spinPrize);
             setMustSpin(false);
             setShouldSpin(false);
+            setSpinComplete(true);
+            
+            // Use the prize from the wheel if available, otherwise use the one from socket
+            const finalPrize = spinPrize || prize;
+            console.log('Final prize for confetti/modal:', finalPrize);
+            
+            // Always emit spin-complete event back to controller
+            if (socket && socket.connected) {
+              console.log('SPINTHEWHEEL: Emitting spin-complete event with prize:', finalPrize);
+              socket.emit('spin-complete', { prize: finalPrize });
+              console.log('SPINTHEWHEEL: Socket ID when emitting:', socket.id);
+              console.log('SPINTHEWHEEL: Socket connected status:', socket.connected);
+              
+              // Also log the prize data for debugging
+              if (finalPrize) {
+                console.log('SPINTHEWHEEL: Prize details being sent to controller:');
+                console.log('- Name:', finalPrize.name || finalPrize.displayText);
+                console.log('- ID:', finalPrize.id);
+                console.log('- Index:', finalPrize.prizeIndex);
+              } else {
+                console.log('SPINTHEWHEEL: No prize data available to send to controller');
+              }
+            } else {
+              console.error('SPINTHEWHEEL: Cannot emit spin-complete event - socket not connected');
+              console.log('SPINTHEWHEEL: Socket object:', socket);
+            }
+            
+            // Show confetti and congratulations modal
+            if (finalPrize) {
+              setPrize(finalPrize);
+              setShowConfetti(true);
+              setShowCongratsModal(true);
+              
+              // Hide confetti after 5 seconds
+              setTimeout(() => {
+                setShowConfetti(false);
+              }, 5000);
+            } else if (noPrizeAvailable) {
+              setShowCongratsModal(true);
+            }
           }}
         />
       </div>
       
+      {/* Confetti Effect */}
+      {showConfetti && !noPrizeAvailable && (
+        <div className="fixed inset-0 z-[100] pointer-events-none">
+          <ReactConfetti
+            width={windowSize.width}
+            height={windowSize.height}
+            recycle={true}
+            numberOfPieces={200}
+            gravity={0.2}
+            colors={['#418FDE', '#2e7bc4', '#1a67aa', '#0c4b8c', '#00263a']}
+          />
+        </div>
+      )}
+
+      {/* Congrats Modal */}
+      {showCongratsModal && (
+        <div className="congrats-modal-overlay">
+          <div className="congrats-modal-backdrop"></div>
+          <div className="congrats-modal-content">
+            {noPrizeAvailable ? (
+              <>
+                <div className="congrats-modal-no-prize-title">
+                  All Prizes Claimed. Thank you for participating!
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="congrats-modal-title">
+                  CONGRATULATIONS!
+                </div>
+                <div className="mb-4">
+                  <p className="congrats-modal-text">
+                  You have won a:
+                  </p>
+                  <p className="congrats-modal-prize-name">
+                    {prize?.name || 'Your Prize'}
+                  </p>                           
+                </div>
+              </>
+            )}
+            <button
+              className="congrats-modal-button"
+              onClick={() => {
+                setShowCongratsModal(false);
+                setShowConfetti(false);
+              }}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+      
       {/* Spin result */}
-      {spinComplete && (
+      {spinComplete && !showCongratsModal && (
         <div className="mt-6 p-4 bg-green-100 rounded-lg w-full max-w-md text-center">
           <h2 className="text-xl font-semibold">Spin Complete!</h2>
         </div>
