@@ -43,6 +43,13 @@ app.prepare().then(() => {
       io.emit('spin-complete', data);
     });
 
+    // Handle close-modal event
+    socket.on('close-modal', () => {
+      console.log('Close modal event received from:', socket.id);
+      // Broadcast to all clients
+      io.emit('close-modal');
+    });
+
     // Handle claim number submission
     socket.on('submit-claim', (claimNumber) => {
       console.log('Claim number submitted:', claimNumber);

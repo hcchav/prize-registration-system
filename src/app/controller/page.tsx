@@ -78,6 +78,14 @@ export default function ControllerPage() {
       console.log('CONTROLLER: Modal state after spin complete - isSpinning:', false);
     });
 
+    // Listen for close-modal events
+    socketInstance.on('close-modal', () => {
+      console.log('CONTROLLER: Received close-modal event');
+      clientLogger.info('Received close-modal event');
+      setShowModal(false);
+      setIsSpinning(false);
+    });
+
     // Save socket instance
     setSocket(socketInstance);
 
@@ -338,6 +346,18 @@ export default function ControllerPage() {
                 setShowModal(false);
                 setIsSpinning(false);
                 setClaimNumber(''); // Reset claim number for next spin
+                
+                // Emit event to close spinthewheel modal as well
+                if (socket && socket.connected) {
+                  console.log('CONTROLLER: Emitting close-modal event');
+                  console.log('CONTROLLER: Socket ID when emitting close-modal:', socket.id);
+                  console.log('CONTROLLER: Socket connected status:', socket.connected);
+                  clientLogger.info('Emitting close-modal event', { socketId: socket.id });
+                  socket.emit('close-modal');
+                } else {
+                  console.error('CONTROLLER: Cannot emit close-modal - socket not connected');
+                  clientLogger.error('Cannot emit close-modal', { socketConnected: socket?.connected });
+                }
               }}
             >
               Done

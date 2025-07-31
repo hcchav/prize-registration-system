@@ -195,6 +195,21 @@ export default function SpinTheWheelPage() {
       setClaimNumber(claimNumber);
     });
 
+    // Listen for close-modal events
+    socketInstance.on('close-modal', () => {
+      console.log('SPINTHEWHEEL: Received close-modal event');
+      console.log('SPINTHEWHEEL: Socket ID when receiving close-modal:', socketInstance.id);
+      console.log('SPINTHEWHEEL: Socket connected status:', socketInstance.connected);
+      clientLogger.info('Received close-modal event', { socketId: socketInstance.id });
+      setShowCongratsModal(false);
+      setShowConfetti(false);
+    });
+
+    // Debug socket events
+    socketInstance.onAny((event, ...args) => {
+      console.log(`SPINTHEWHEEL: Received event: ${event}`, args);
+    });
+
     // Save socket instance
     setSocket(socketInstance);
 
@@ -287,6 +302,7 @@ export default function SpinTheWheelPage() {
             // Always emit spin-complete event back to controller
             if (socket && socket.connected) {
               console.log('SPINTHEWHEEL: Emitting spin-complete event with prize:', finalPrize);
+              clientLogger.info('Emitting spin-complete event');
               socket.emit('spin-complete', { prize: finalPrize });
               console.log('SPINTHEWHEEL: Socket ID when emitting:', socket.id);
               console.log('SPINTHEWHEEL: Socket connected status:', socket.connected);
@@ -367,6 +383,13 @@ export default function SpinTheWheelPage() {
               onClick={() => {
                 setShowCongratsModal(false);
                 setShowConfetti(false);
+                
+                // Emit event to close controller modal as well
+                if (socket && socket.connected) {
+                  console.log('SPINTHEWHEEL: Emitting close-modal event');
+                  clientLogger.info('Emitting close-modal event');
+                  socket.emit('close-modal');
+                }
               }}
             >
               Done
