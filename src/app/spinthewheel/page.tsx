@@ -18,8 +18,16 @@ export default function SpinTheWheelPage() {
 
   // Initialize socket connection
   useEffect(() => {
+    // Get the current hostname dynamically
+    const protocol = window.location.protocol === 'https:' ? 'https://' : 'http://';
+    const host = window.location.hostname;
+    const port = window.location.port || (protocol === 'https://' ? '443' : '80');
+    const socketUrl = `${protocol}${host}:${port}`;
+    
+    console.log('Connecting to socket at:', socketUrl);
+    
     // Create socket connection with fallback options
-    const socketInstance = io('http://localhost:3000', {
+    const socketInstance = io(socketUrl, {
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
@@ -63,73 +71,75 @@ export default function SpinTheWheelPage() {
           localStorage.setItem('selectedPrize', JSON.stringify(data.prizeData));
           console.log('Prize data stored in localStorage:', data.prizeData);
           
-          // Set prize number for the wheel
-          // First priority: Use prizeIndex from API if available
-          if (data.prizeData.id !== undefined) {
-            const prizeId = Number(data.prizeData.id);
-            console.log('Prize ID from API:', prizeId);
+          // IMPORTANT: The react-custom-roulette Wheel component expects prizeNumber to be
+          // the index in the data array, NOT the prize ID or any other value.
+          // We need to ensure we're setting the correct index that matches our wheel data.
+          
+          // First, try to get the wheel data to determine the correct index
+          const storedWheelData = localStorage.getItem('spinWheelData') || localStorage.getItem('wheelData');
+          
+          if (storedWheelData) {
+            const wheelData = JSON.parse(storedWheelData);
+            console.log('Wheel data from localStorage:', wheelData);
             
-            // Try to find the exact wheel position for this prize ID
-            try {
-              const storedWheelData = localStorage.getItem('spinWheelData') || localStorage.getItem('wheelData');
-              if (storedWheelData) {
-                const wheelData = JSON.parse(storedWheelData);
-                console.log('Wheel data from localStorage:', wheelData);
-                
-                // Find the prize in the wheel data by ID
-                const prizeEntry = wheelData.find((p: any) => p.id === prizeId);
-                if (prizeEntry && prizeEntry.wheelPosition !== undefined) {
-                  console.log('Found prize in wheel data by ID:', prizeEntry);
-                  console.log('Using wheel position from matching prize:', prizeEntry.wheelPosition);
-                  setPrizeNumber(prizeEntry.wheelPosition);
+            // If prizeIndex is provided directly from API, use it as the most reliable source
+            if (data.prizeData.prizeIndex !== undefined) {
+              const prizeIndex = Number(data.prizeData.prizeIndex);
+              console.log('Using prizeIndex directly from API:', prizeIndex);
+              
+              // Verify the index is within bounds of our wheel data
+              const safeIndex = prizeIndex % wheelData.length;
+              console.log(`Calculated safe index: ${prizeIndex} % ${wheelData.length} = ${safeIndex}`);
+              setPrizeNumber(safeIndex);
+            } 
+            // If we have a prize ID, try to find its position in the wheel data
+            else if (data.prizeData.id !== undefined) {
+              const prizeId = Number(data.prizeData.id);
+              console.log('Prize ID from API:', prizeId);
+              
+              // Find the prize in the wheel data by ID
+              const prizeEntry = wheelData.find((p: any) => p.id === prizeId);
+              if (prizeEntry && prizeEntry.wheelPosition !== undefined) {
+                console.log('Found prize in wheel data by ID:', prizeEntry);
+                console.log('Using wheel position from matching prize:', prizeEntry.wheelPosition);
+                setPrizeNumber(prizeEntry.wheelPosition);
+              } else {
+                // Calculate index based on position in the array
+                const prizeIndex = wheelData.findIndex((p: any) => p.id === prizeId);
+                if (prizeIndex !== -1) {
+                  console.log(`Found prize at index ${prizeIndex} in wheel data array`);
+                  setPrizeNumber(prizeIndex);
                 } else {
-                  // If prizeIndex is provided from API, use it as fallback
-                  if (data.prizeData.prizeIndex !== undefined) {
-                    const prizeIndex = Number(data.prizeData.prizeIndex);
-                    console.log('Using prizeIndex from API as fallback:', prizeIndex);
-                    setPrizeNumber(prizeIndex);
-                  } else {
-                    // Last resort: Calculate from ID
-                    const totalPrizes = wheelData.length || 8;
-                    const position = prizeId % totalPrizes;
-                    console.log(`Calculating position from ID: ${prizeId} mod ${totalPrizes} = ${position}`);
-                    setPrizeNumber(position);
-                  }
+                  // Fallback: Calculate from ID modulo wheel segments
+                  const position = prizeId % wheelData.length;
+                  console.log(`Calculating position from ID: ${prizeId} mod ${wheelData.length} = ${position}`);
+                  setPrizeNumber(position);
                 }
-              } else if (data.prizeData.prizeIndex !== undefined) {
-                // No wheel data, but prizeIndex is available
-                const prizeIndex = Number(data.prizeData.prizeIndex);
-                console.log('No wheel data, using prizeIndex from API:', prizeIndex);
-                setPrizeNumber(prizeIndex);
-              } else {
-                // No wheel data, calculate from ID
-                const totalPrizes = 8; // Default if we don't know the actual count
-                const position = prizeId % totalPrizes;
-                console.log(`No wheel data, calculating from ID: ${prizeId} mod ${totalPrizes} = ${position}`);
-                setPrizeNumber(position);
               }
-            } catch (err) {
-              console.error('Error processing wheel data:', err);
-              // Try to use prizeIndex if available
-              if (data.prizeData.prizeIndex !== undefined) {
-                const prizeIndex = Number(data.prizeData.prizeIndex);
-                console.log('Error processing wheel data, using prizeIndex from API:', prizeIndex);
-                setPrizeNumber(prizeIndex);
-              } else {
-                // Last resort: Calculate from ID
-                const totalPrizes = 8;
-                const position = prizeId % totalPrizes;
-                console.log(`Error processing wheel data, calculating from ID: ${prizeId} mod ${totalPrizes} = ${position}`);
-                setPrizeNumber(position);
-              }
+            } else {
+              // Default to position 0 if no valid data
+              console.log('Invalid or missing prize data, using default position (0)');
+              setPrizeNumber(0);
             }
           } else {
-            // Default to position 0 if no valid data
-            console.log('Invalid or missing prize data, using default position (0)');
-            setPrizeNumber(0);
+            // No wheel data available, use prizeIndex if available or calculate from ID
+            if (data.prizeData.prizeIndex !== undefined) {
+              const prizeIndex = Number(data.prizeData.prizeIndex);
+              console.log('No wheel data, using prizeIndex from API:', prizeIndex);
+              setPrizeNumber(prizeIndex);
+            } else if (data.prizeData.id !== undefined) {
+              const prizeId = Number(data.prizeData.id);
+              const totalPrizes = 8; // Default if we don't know the actual count
+              const position = prizeId % totalPrizes;
+              console.log(`No wheel data, calculating from ID: ${prizeId} mod ${totalPrizes} = ${position}`);
+              setPrizeNumber(position);
+            } else {
+              console.log('No prize ID or index available, using default position (0)');
+              setPrizeNumber(0);
+            }
           }
         } catch (err) {
-          console.error('Error storing prize data:', err);
+          console.error('Error processing prize data:', err);
           // Set a default prize number in case of error
           setPrizeNumber(0);
         }

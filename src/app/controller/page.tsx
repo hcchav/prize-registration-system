@@ -15,8 +15,16 @@ export default function ControllerPage() {
 
   // Initialize socket connection
   useEffect(() => {
+    // Get the current hostname dynamically
+    const protocol = window.location.protocol === 'https:' ? 'https://' : 'http://';
+    const host = window.location.hostname;
+    const port = window.location.port || (protocol === 'https://' ? '443' : '80');
+    const socketUrl = `${protocol}${host}:${port}`;
+    
+    console.log('Connecting to socket at:', socketUrl);
+    
     // Create socket connection with fallback options
-    const socketInstance = io('http://localhost:3000', {
+    const socketInstance = io(socketUrl, {
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
@@ -190,7 +198,7 @@ export default function ControllerPage() {
   };
 
   return (
-    <div className="controller-container pt-[20vh]">
+    <>
       <div id="registration-header" className="portrait-header fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-[20vh] bg-white shadow-xl">
         <div className="absolute inset-x-0 bottom-0 h-[4px] bg-gradient-to-r from-transparent via-[#abcae9] to-transparent"></div>
         <div className="portrait-logo-container w-[100%] h-[100%] max-w-[1000px] relative">
@@ -203,10 +211,9 @@ export default function ControllerPage() {
           />
         </div>
       </div>
-      <div className="controller-header">
-        <h1 className="controller-title">Prize Wheel Controller</h1>
-        <p className="controller-subtitle">Control the prize wheel display</p>
-      </div>
+      
+      <div className="controller-container" style={{ marginTop: '22vh' }}>
+ 
       
       {/* Connection status */}
       <div className="connection-status">
@@ -250,5 +257,6 @@ export default function ControllerPage() {
       
       {/* Instructions removed as requested */}
     </div>
+    </>
   );
 }

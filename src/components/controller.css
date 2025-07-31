@@ -6,9 +6,12 @@
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  margin-top: 20vh; /* Match the header height */
+  position: relative;
+  z-index: 1; /* Ensure content is above or below header as needed */
 }
 
 .controller-header {

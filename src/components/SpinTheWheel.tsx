@@ -294,9 +294,52 @@ export default function SpinTheWheel({
 
   useEffect(() => {
     if (externalPrizeNumber !== undefined) {
-      setPrizeNumber(externalPrizeNumber);
+      console.log('External prize number received:', externalPrizeNumber);
+      
+      // Ensure we have wheel data before setting prize number
+      if (wheelData.length > 0) {
+        // Make sure the prize number is within bounds of the wheel data
+        const safeIndex = externalPrizeNumber % wheelData.length;
+        console.log(`Setting prize number to ${safeIndex} (original: ${externalPrizeNumber}, wheel segments: ${wheelData.length})`);
+        
+        // Debug the wheel segments to verify mapping
+        console.log('Current wheel segments:');
+        wheelData.forEach((segment, idx) => {
+          console.log(`Segment ${idx}: ${segment.option}`);
+        });
+        
+        // Try to find the exact prize by name in the wheel data
+        try {
+          const selectedPrizeData = localStorage.getItem('selectedPrize');
+          if (selectedPrizeData) {
+            const prizeData = JSON.parse(selectedPrizeData);
+            console.log('Looking for prize match:', prizeData.displayText || prizeData.name);
+            
+            // Find the index of the prize in the wheel data by display text
+            const matchingIndex = wheelData.findIndex(segment => 
+              segment.option === (prizeData.displayText || prizeData.name)
+            );
+            
+            if (matchingIndex !== -1) {
+              console.log(`Found exact prize match at index ${matchingIndex}: ${wheelData[matchingIndex].option}`);
+              setPrizeNumber(matchingIndex);
+              return;
+            }
+          }
+        } catch (err) {
+          console.error('Error trying to find exact prize match:', err);
+        }
+        
+        // Set the prize number to the safe index if no exact match found
+        console.log(`No exact match found, using calculated index: ${safeIndex}`);
+        setPrizeNumber(safeIndex);
+      } else {
+        console.warn('Received prize number but wheel data is not yet loaded');
+        // Store for later use when wheel data is loaded
+        setPrizeNumber(externalPrizeNumber);
+      }
     }
-  }, [externalPrizeNumber]);
+  }, [externalPrizeNumber, wheelData]);
 
   // Handle spin completion
   const handleStopSpinning = () => {
