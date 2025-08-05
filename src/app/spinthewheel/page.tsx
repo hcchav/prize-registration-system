@@ -226,7 +226,7 @@ export default function SpinTheWheelPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-screen bg-white pt-[20vh]">
+    <div className={`flex flex-col items-center justify-center w-full min-h-screen pt-[10vh] ${isConnected ? 'bg-white' : 'bg-black'}`}>
       <div id="registration-header" className="portrait-header fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-[20vh] bg-white shadow-xl">
         <div className="absolute inset-x-0 bottom-0 h-[4px] bg-gradient-to-r from-transparent via-[#abcae9] to-transparent"></div>
         <div className="portrait-logo-container w-[100%] h-[100%] max-w-[1000px] relative">
@@ -239,14 +239,14 @@ export default function SpinTheWheelPage() {
           />
         </div>
       </div>
-      <h1 className="text-3xl font-bold mb-6">Spin The Wheel</h1>
       
       {/* Connection status */}
-      <div className="mb-4 text-center">
-        <span className={`inline-block w-3 h-3 rounded-full mr-2 ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></span>
-        <span>{isConnected ? 'Connected' : 'Disconnected'}</span>
+      <div className="absolute top-80 text-center">
+        <span className={`inline-block w-3 h-3 rounded-full mr-2 ${isConnected ? '' : 'bg-red-500'}`}></span>
+        <span className={`${isConnected ? 'text-black' : 'text-white'}`}>{isConnected ? '' : 'Disconnected'}</span>
       </div>
       
+
       {/* Error message */}
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 w-full max-w-3xl text-center">
@@ -254,13 +254,13 @@ export default function SpinTheWheelPage() {
         </div>
       )}
       
-      {/* Claim number display */}
+      {/* Claim number display
       {claimNumber && (
         <div className="mb-6 p-4 bg-gray-100 rounded-lg w-full max-w-md text-center">
           <h2 className="text-xl font-semibold">Claim Number</h2>
           <p className="text-3xl font-bold">{claimNumber}</p>
         </div>
-      )}
+      )} */}
       
       {/* SpinTheWheel component - centered container */}
       <div className="flex justify-center items-center w-full" style={{ opacity: showCongratsModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>

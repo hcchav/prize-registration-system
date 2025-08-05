@@ -260,7 +260,7 @@ export default function ControllerPage() {
         </div>
       </div>
       
-      <div className="controller-container" style={{ marginTop: '22vh', opacity: showModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>
+      <div className="controller-container" >
  
       
       {/* Connection status */}

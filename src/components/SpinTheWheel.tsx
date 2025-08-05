@@ -369,13 +369,14 @@ export default function SpinTheWheel({
 
   return (
     <div className="spinthewheel-desktop-container">
-      <h1 className="spinthewheel-title">Spin The Wheel</h1>
+      {/* <h1 className="spinthewheel-title">Spin The Wheel</h1>
       
       {/* Connection status */}
-      <div className="connection-status">
+      {/* <div className="connection-status">
         <span className={`status-indicator ${isConnected ? 'connected' : 'disconnected'}`}></span>
         <span className="status-text">{isConnected ? 'Connected' : 'Disconnected'}</span>
-      </div>
+      </div> 
+       */}
       
       {/* Wheel component with desktop-optimized container */}
       <div className="spinthewheel-viewport-container">

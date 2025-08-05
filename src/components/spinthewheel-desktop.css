@@ -3,7 +3,7 @@
   width: 100%;
   margin: 0 auto;
   position: relative;
-  padding: 3rem 0 2rem 0;
+  padding: 1rem 0 2rem 0; /* Reduced top padding from 3rem to 1rem to move wheel up */
   overflow: visible; /* Keep visible to prevent wheel from being cut off */
   border: none;
   box-shadow: none;
@@ -18,6 +18,30 @@
   right: 0;
 }
 
+/* Title styling for the Spin The Wheel component */
+.spinthewheel-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #052740;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Responsive title size */
+@media (max-width: 768px) {
+  .spinthewheel-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .spinthewheel-title {
+    font-size: 1.8rem;
+  }
+}
+
 /* Viewport-based wheel container */
 .spinthewheel-viewport-container {
   width: min(85%, 800px);
@@ -26,7 +50,7 @@
   border: none;
   box-shadow: none;
   overflow: visible;
-  margin: 2rem auto;
+  margin: 0 auto; /* Reduced from 2rem to 0 to move wheel up */
   left: 0;
   right: 0;
   max-width: 800px; /* Ensure consistent max width */
