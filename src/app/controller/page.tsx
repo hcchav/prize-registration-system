@@ -294,27 +294,31 @@ export default function ControllerPage() {
         </div>
         <div className="pin-pad-container">
           <div className="pin-pad">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((digit) => (
+            <div className="pin-pad-numbers">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((digit) => (
+                <button 
+                  key={digit} 
+                  className="pin-button"
+                  onClick={() => handleDigitClick(digit.toString())}
+                >
+                  {digit}
+                </button>
+              ))}
+            </div>
+            <div className="pin-pad-actions">
               <button 
-                key={digit} 
-                className="pin-button"
-                onClick={() => handleDigitClick(digit.toString())}
+                className="pin-button pin-button-delete"
+                onClick={handleDeleteClick}
               >
-                {digit}
+                Delete
               </button>
-            ))}
-            <button 
-              className="pin-button pin-button-delete"
-              onClick={handleDeleteClick}
-            >
-              Delete
-            </button>
-            <button 
-              className="pin-button pin-button-clear"
-              onClick={handleClearClick}
-            >
-              Clear
-            </button>
+              <button 
+                className="pin-button pin-button-clear"
+                onClick={handleClearClick}
+              >
+                Clear
+              </button>
+            </div>
           </div>
         </div>
       </div>

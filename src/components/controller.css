@@ -162,7 +162,7 @@
   width: 70%;
   height: 10vh;
   padding: 0.75rem 1rem;
-  font-size: 1.5rem;
+  font-size: calc(1rem + 2vw);
   border: 2px solid #d1d5db;
   border-radius: 6px;
   background-color: #f9fafb;
@@ -186,11 +186,25 @@
 }
 
 .pin-pad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
   width: 90%;
   max-width: 600px;
+}
+
+.pin-pad-numbers {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.pin-pad-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
 }
 
 .pin-button {
@@ -270,6 +284,11 @@
     gap: 0.8rem;
   }
   
+  .pin-pad-numbers, 
+  .pin-pad-actions {
+    gap: 0.8rem;
+  }
+  
   .claim-display {
     width: 95%;
     font-size: calc(1rem + 1.5vw);
@@ -310,6 +329,11 @@
     width: 100%;
     gap: 0.6rem;
   }
+  
+  .pin-pad-numbers, 
+  .pin-pad-actions {
+    gap: 0.6rem;
+  }
 }
 
 @media (max-width: 360px) {
@@ -330,6 +354,10 @@
   
   .pin-pad {
     gap: 0.5rem;
-    width: 100%;
+  }
+  
+  .pin-pad-numbers, 
+  .pin-pad-actions {
+    gap: 0.5rem;
   }
 }
