@@ -171,35 +171,18 @@ export default function ControllerPage() {
   // Handle API call to get prize and trigger spin
   const handleGetPrize = async (claimNumber: string) => {
     try {
-      // Get attendee ID from localStorage with error handling
-      let attendeeId;
-      try {
-        const attendeeData = localStorage.getItem('attendeeId');
-        if (!attendeeData) {
-          throw new Error('No attendee data found');
-        }
-        
-        attendeeId = JSON.parse(attendeeData);
-        if (!attendeeId) {
-          throw new Error('Invalid attendee data');
-        }
-      } catch (storageErr) {
-        console.error('Error retrieving attendee data:', storageErr);
-        throw new Error('Unable to retrieve your information. Please refresh the page and try again.');
-      }
-      
       // Add cache-busting parameter to prevent 304 responses
       const timestamp = new Date().getTime();
       console.log('Calling API with timestamp:', timestamp);
       
-      // Call API to assign a prize with timeout and error handling
+      // Call the combined verify-assign-spin API with timeout and error handling
       let response;
       try {
         // Create an AbortController to handle timeout
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
         
-        response = await fetch(`/api/assign-and-spin?t=${timestamp}`, {
+        response = await fetch(`/api/verify-assign-spin-websocket?t=${timestamp}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -207,9 +190,8 @@ export default function ControllerPage() {
             'Pragma': 'no-cache'
           },
           body: JSON.stringify({
-            attendeeId,
-            eventId: 1,
-            claimNumber
+            claimNumber,
+            eventId: 1
           }),
           signal: controller.signal
         });
@@ -237,6 +219,12 @@ export default function ControllerPage() {
           console.log('No prizes available');
           throw new Error('No prizes available');
         }
+        
+        // Special handling for invalid claim number
+        if (response.status === 404 && errorData.error === 'Invalid claim number') {
+          throw new Error('Invalid claim number. Please check and try again.');
+        }
+        
         throw new Error(errorData.error || `Server error (${response.status}). Please try again.`);
       }
       
