@@ -98,7 +98,7 @@
   width: 60%;
   height: 20vh;
   padding: 1rem;
-  font-size: 1.5rem;
+  font-size: 6rem;
   font-weight: 700;
   color: white;
   background-color: #2563eb;
@@ -157,6 +157,93 @@
   color: #4b5563;
 }
 
+/* PIN pad styling */
+.claim-display {
+  width: 70%;
+  height: 10vh;
+  padding: 0.75rem 1rem;
+  font-size: 1.5rem;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #f9fafb;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pin-pad-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  width: 90%;
+  max-width: 600px;
+}
+
+.pin-button {
+  aspect-ratio: 1 / 1;
+  font-size: calc(1rem + 2vw);
+  font-weight: 600;
+  background-color: #f3f4f6;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pin-button:hover {
+  background-color: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+.pin-button:active {
+  background-color: #d1d5db;
+  transform: translateY(1px);
+}
+
+.pin-button-delete, .pin-button-clear {
+  aspect-ratio: auto;
+  padding: 1rem;
+  font-size: calc(0.8rem + 1.5vw);
+}
+
+.pin-button-delete {
+  background-color: #fee2e2;
+  border-color: #ef4444;
+  color: #b91c1c;
+  grid-column: span 2;
+}
+
+.pin-button-delete:hover {
+  background-color: #fecaca;
+}
+
+.pin-button-clear {
+  background-color: #e0f2fe;
+  border-color: #0ea5e9;
+  color: #0369a1;
+}
+
+.pin-button-clear:hover {
+  background-color: #bae6fd;
+}
+
 /* Responsive adjustments */
 @media (max-width: 640px) {
   .controller-container {
@@ -169,13 +256,23 @@
   
   .spin-button {
     padding: 1.25rem;
-    font-size: 1.6rem;
+    font-size: 2.2rem;
     margin: 1.5rem auto;
     width: 30%;
   }
   
   .claim-input {
     width: 70%;
+  }
+  
+  .pin-pad {
+    width: 95%;
+    gap: 0.8rem;
+  }
+  
+  .claim-display {
+    width: 95%;
+    font-size: calc(1rem + 1.5vw);
   }
 }
 
@@ -195,21 +292,44 @@
   
   .spin-button {
     padding: 1.2rem;
-    font-size: 1.5rem;
+    font-size: 2rem;
     margin: 1.2rem auto;
     width: 40%;
   }
+  
+  .pin-button {
+    height: 3.5rem;
+    font-size: 1.3rem;
+  }
+  
+  .claim-display {
+    font-size: calc(1rem + 1vw);
+  }
+  
+  .pin-pad {
+    width: 100%;
+    gap: 0.6rem;
+  }
 }
 
-/* For very small screens */
 @media (max-width: 360px) {
   .spin-button {
     padding: 1rem;
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     width: 60%;
   }
   
   .claim-input {
     width: 90%;
+  }
+  
+  .pin-button {
+    height: 3rem;
+    font-size: 1.2rem;
+  }
+  
+  .pin-pad {
+    gap: 0.5rem;
+    width: 100%;
   }
 }

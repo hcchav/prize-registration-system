@@ -95,9 +95,19 @@ export default function ControllerPage() {
     };
   }, []);
 
-  // Handle claim number input change
-  const handleClaimNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setClaimNumber(e.target.value);
+  // Handle digit button click
+  const handleDigitClick = (digit: string) => {
+    setClaimNumber(prev => prev + digit);
+  };
+
+  // Handle delete button click
+  const handleDeleteClick = () => {
+    setClaimNumber(prev => prev.slice(0, -1));
+  };
+
+  // Handle clear button click
+  const handleClearClick = () => {
+    setClaimNumber('');
   };
 
   // Handle spin button click
@@ -264,9 +274,9 @@ export default function ControllerPage() {
  
       
       {/* Connection status */}
-      <div className="connection-status">
-        <span className={`status-indicator ${isConnected ? 'status-connected' : 'status-disconnected'}`}></span>
-        <span className="status-text">{isConnected ? 'Connected' : 'Disconnected'}</span>
+      <div className="">
+        <span className={`status-indicator ${isConnected ? '' : 'status-disconnected'}`}></span>
+        <span className="status-text">{isConnected ? '' : 'Disconnected'}</span>
       </div>
       
       {/* Error message */}
@@ -278,20 +288,35 @@ export default function ControllerPage() {
       
       {/* Claim number input */}
       <div className="input-group">
-        <label htmlFor="claimNumber" className="input-label">
-          Claim Number
-        </label>
-        <input
-          type="number"
-          id="claimNumber"
-          value={claimNumber}
-          onChange={handleClaimNumberChange}
-          className="claim-input"
-          placeholder="Enter claim number"
-          min="0"
-          inputMode="numeric"
-          pattern="[0-9]*"
-        />
+      
+        <div className="claim-display">
+          {claimNumber || 'Enter claim number'}
+        </div>
+        <div className="pin-pad-container">
+          <div className="pin-pad">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((digit) => (
+              <button 
+                key={digit} 
+                className="pin-button"
+                onClick={() => handleDigitClick(digit.toString())}
+              >
+                {digit}
+              </button>
+            ))}
+            <button 
+              className="pin-button pin-button-delete"
+              onClick={handleDeleteClick}
+            >
+              Delete
+            </button>
+            <button 
+              className="pin-button pin-button-clear"
+              onClick={handleClearClick}
+            >
+              Clear
+            </button>
+          </div>
+        </div>
       </div>
       
       {/* Spin button */}
@@ -300,7 +325,7 @@ export default function ControllerPage() {
         className="spin-button"
         disabled={!isConnected || isSpinning}
       >
-        {isSpinning ? 'Spinning...' : 'Spin Wheel'}
+        {isSpinning ? 'Spinning...' : 'SPIN'}
       </Button>
 
       {/* Modal */}
