@@ -113,13 +113,18 @@ export default function WheelPage() {
     }
     
     setPrize(selectedPrize);
-    setShowConfetti(true);
-    setShowCongratsModal(true);
     
-    // Hide confetti after 5 seconds
-    setTimeout(() => {
-      setShowConfetti(false);
-    }, 5000);
+    // Only show confetti if it's not "No Prize"
+    if (selectedPrize.name !== "No Prize") {
+      setShowConfetti(true);
+      
+      // Hide confetti after 5 seconds
+      setTimeout(() => {
+        setShowConfetti(false);
+      }, 5000);
+    }
+    
+    setShowCongratsModal(true);
   }, []);
 
   return (
