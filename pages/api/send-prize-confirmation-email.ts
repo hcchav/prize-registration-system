@@ -121,7 +121,7 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, re
                   <p style="font-size: 18px; line-height: 1.6; margin: 0 0 25px 0;">
                     <span style="color: #418fde; font-weight: 700;">Let's talk!</span> Schedule a quick call to learn more about our products!
                   </p>
-                  <a href="https://calendly.com/reggie-biomebrigade/30min-1" style="display: inline-block; background-color: #418fde; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 5px; font-size: 18px; font-weight: 700; margin: 0 0 25px 0; width: 200px">Schedule a Call</a>
+                  <a href="https://calendly.com/reggie-biomebrigade/salesteam" style="display: inline-block; background-color: #418fde; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 5px; font-size: 18px; font-weight: 700; margin: 0 0 25px 0; width: 200px">Schedule a Call</a>
                   <p style="font-size: 18px; color: #00263a; margin: 0;">We're excited to connect!</p>
                 </div>
               </div>
