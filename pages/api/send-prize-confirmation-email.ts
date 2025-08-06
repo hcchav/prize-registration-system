@@ -98,15 +98,24 @@ function htmlTemplateWithPrizeDetails(prizeName: string, claimNumber: string, re
                   <img src="${confirmationBannerUrl}" alt="Prize Confirmation" style="width: 100%; height: auto; display: block;" />
                 </div>
                 <div style="padding: 30px 20px 0 20px;">
+                  ${prizeName === "No Prize" ? `
+                  <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 10px 0;">
+                    Sorry, ${firstName || 'Friend'}!
+                  </p>
+                  <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
+                    You didn't win a prize, but enjoy your <span style="color: #418fde; font-weight: 700;">Biome Brigade Official Comic Collectible!</span>
+                  </p>
+                  ` : `
                   <p style="font-size: 20px; font-weight: 700; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 10px 0;">
                     Congratulations, ${firstName || 'Friend'}!
                   </p>
                   <p style="font-size: 16px; color: #00263a; text-align: center; line-height: 1.6; margin: 0 0 20px 0;">
-                  You have won a:
+                    You have won a:
                   </p>                 
                   <div class="prize-name">
                     ${prizeName}
                   </div>
+                  `}
                  
                                 
                 </div>

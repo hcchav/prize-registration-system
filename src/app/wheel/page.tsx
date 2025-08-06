@@ -225,6 +225,17 @@ export default function WheelPage() {
                             All Prizes Claimed. Thank you for participating!
                           </div>
                         </>
+                      ) : prize?.name === "No Prize" ? (
+                        <>
+                          <div className="congrats-modal-title">
+                            
+                          </div>
+                          <div className="mb-4">
+                            <p className="congrats-modal-text">
+                              Sorry, you didn't win a prize, but enjoy your <span className="congrats-modal-prize-name">Biome Brigade Official Comic Collectible!</span>
+                            </p>
+                          </div>
+                        </>
                       ) : (
                         <>
                           <div className="congrats-modal-title">
