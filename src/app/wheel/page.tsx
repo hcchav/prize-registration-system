@@ -124,8 +124,8 @@ export default function WheelPage() {
 
   return (
     
-    <div className="flex min-h-screen flex-col items-center bg-[#f5f9fd] pt-[20vh]">
-        <div id="registration-header" className="portrait-header fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-[20vh] bg-white shadow-xl">
+    <div className="flex min-h-screen flex-col items-center bg-[#f5f9fd] pt-0">
+        {/* <div id="registration-header" className="portrait-header fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center h-[20vh] bg-white shadow-xl">
           <div className="absolute inset-x-0 bottom-0 h-[4px] bg-gradient-to-r from-transparent via-[#abcae9] to-transparent"></div>
           <div className="portrait-logo-container w-[100%] h-[100%] max-w-[1000px] relative">
             <Image
@@ -136,8 +136,8 @@ export default function WheelPage() {
               priority
             />
           </div>
-        </div>
-        <div id="prize-wheel" className="w-full max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] 2xl:max-w-[50vw] pt-12 px-8 pb-16 flex justify-center items-center">
+        </div> */}
+        <div id="prize-wheel" className="w-full max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] 2xl:max-w-[50vw] mt-[10px] px-8 pb-16 flex justify-center items-center">
           <div style={{ opacity: showCongratsModal ? 0.3 : 1, transition: 'opacity 0.3s ease' }}>
                     <div>
                       <WheelDesktop
@@ -166,7 +166,7 @@ export default function WheelPage() {
                                 <input
                                   id="claimNumber"
                                   type="number"                                  
-                                  className={`w-full h-full px-6 py-3 bg-transparent outline-none ${
+                                  className={`w-full h-full px-6 py-3 pt-8 bg-transparent outline-none ${
                                     error ? 'text-[#D03C3C]' : 'text-[#00263a]'
                                   } font-bold text-2xl`}
                                   value={claimNumber}
@@ -182,7 +182,7 @@ export default function WheelPage() {
                                   className={`absolute left-6 ${
                                     error ? 'text-[#D03C3C]' : 'text-[#418FDE]'
                                   } transition-all duration-200 pointer-events-none ${
-                                    claimNumber ? 'text-xl top-2' : 'top-4'
+                                    claimNumber ? 'text-xl top-2' : 'top-1'
                                   }`}
                                 >
                                   Enter claim number
