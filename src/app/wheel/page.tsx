@@ -162,31 +162,31 @@ export default function WheelPage() {
                             <div className="w-full">
                               <div className={`claim-input-container relative w-full border-2 rounded-lg overflow-hidden ${
                                 error ? 'border-[#D03C3C]' : 'border-[#abcae9]'
-                              } ${error ? 'bg-[#FFF0F0]' : 'bg-white'}`}>
-                                <input
-                                  id="claimNumber"
-                                  type="number"                                  
-                                  className={`w-full h-full px-6 py-3 pt-8 bg-transparent outline-none ${
-                                    error ? 'text-[#D03C3C]' : 'text-[#00263a]'
-                                  } font-bold text-2xl`}
-                                  value={claimNumber}
-                                  onChange={(e) => {
-                                    setClaimNumber(e.target.value);
-                                    // Clear error when user starts typing
-                                    if (error) setError(null);
-                                  }}
-                                  placeholder=" "
-                                />
-                                <label 
-                                  htmlFor="claimNumber"
-                                  className={`absolute left-6 ${
-                                    error ? 'text-[#D03C3C]' : 'text-[#418FDE]'
-                                  } transition-all duration-200 pointer-events-none ${
-                                    claimNumber ? 'text-xl top-2' : 'top-1'
-                                  }`}
-                                >
-                                  Enter claim number
-                                </label>
+                              } ${error ? 'bg-[#FFF0F0]' : 'bg-white'}`} style={{ minHeight: '2.04rem' }}>
+                                <div className="flex flex-col w-full">
+                                  <label 
+                                    htmlFor="claimNumber"
+                                    className={`block ${
+                                      error ? 'text-[#D03C3C]' : 'text-[#418FDE]'
+                                    } font-bold text-lg`} 
+                                  >
+                                    Enter claim number
+                                  </label>
+                                  <input
+                                    id="claimNumber"
+                                    type="number"                                  
+                                    className={`w-full px-6 py-0 bg-transparent outline-none ${
+                                      error ? 'text-[#D03C3C]' : 'text-[#00263a]'
+                                    } font-bold text-xl`}
+                                    style={{ height: '2.04rem' }}
+                                    value={claimNumber}
+                                    onChange={(e) => {
+                                      setClaimNumber(e.target.value);
+                                      // Clear error when user starts typing
+                                      if (error) setError(null);
+                                    }}
+                                  />
+                                </div>
                               </div>
                               {error && (
                                 <p className="text-[#D03C3C] mt-2 text-base pl-6 font-medium">
