@@ -1,0 +1,708 @@
+/* Main container for the wheel component */
+.wheel-desktop-container {
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    padding: 3rem 0 2rem 0;
+    overflow: visible; /* Keep visible to prevent wheel from being cut off */
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    text-align: center; /* Ensure text is centered */
+    max-width: 100%; /* Ensure it doesn't overflow parent */
+  }
+  
+  /* Viewport-based wheel container */
+  .wheel-viewport-container {
+    width: min(85%, 800px);
+    position: relative;
+    padding-bottom: min(85%, 800px); /* Creates a square aspect ratio but slightly smaller */
+    border: none;
+    box-shadow: none;
+    overflow: visible;
+    margin: 2rem auto;
+    left: 0;
+    right: 0;
+    max-width: 800px; /* Ensure consistent max width */
+  }
+  
+  /* Wheel container that holds the actual wheel component */
+  .wheel-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    right: auto;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+    margin: 0 auto;
+    transform: translateX(-50%); /* Center horizontally */
+  }
+  
+  /* Container for input and button with increased spacing from wheel */
+  .wheel-input-button-container {
+    margin-top: 6rem; /* Bigger gap between wheel and input/button container */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Make the wheel component fill its container */
+  .wheel-container > div {
+    width: 100% !important;
+    height: 100% !important;
+    transform-origin: center center;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    position: relative; /* Ensure positioning context */
+  }
+  
+  /* Style the pointer */
+  .wheel-container > div > svg > polygon {
+    fill: #00263a !important;
+  }
+  
+  /* Responsive scaling based on viewport width */
+  @media (min-width: 768px) {
+    .wheel-viewport-container {
+      width: min(80vw, 800px);
+      max-width: min(80vw, 800px);
+      margin: 0 auto;
+      padding-bottom: min(80vw, 800px);
+    }
+    
+    .wheel-container {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .wheel-container > div {
+      transform: scale(1.8);
+      margin: 0 auto;
+    }
+  }
+  
+  @media (min-width: 1080px) {
+    .wheel-viewport-container {
+      width: min(70vw, 800px);
+      max-width: min(70vw, 800px);
+      padding-bottom: min(70vw, 800px);
+      margin: 0 auto;
+    }
+    
+    .wheel-container {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .wheel-container > div {
+      transform: scale(2);
+      margin: 0 auto;
+    }
+  }
+  
+  @media (min-width: 1440px) {
+    .wheel-viewport-container {
+      width: min(60vw, 800px);
+      max-width: min(60vw, 800px);
+      padding-bottom: min(60vw, 800px);
+      margin: 0 auto;
+    }
+    
+    .wheel-container {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .wheel-container > div {
+      transform: scale(2.2);
+      margin: 0 auto;
+    }
+  }
+  
+  @media (min-width: 1920px) {
+    .wheel-viewport-container {
+      width: 50vw;
+      max-width: 50vw;
+      padding-bottom: 50vw;
+      margin: 0 auto;
+    }
+    
+    .wheel-container {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .wheel-container > div {
+      transform: scale(3);
+      margin: 0 auto;
+    }
+  }
+  
+  @media (min-width: 2560px) {
+    .wheel-viewport-container {
+      width: 50vw;
+      max-width: 50vw;
+      padding-bottom: 50vw;
+      margin: 0 auto;
+    }
+    
+    .wheel-container {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .wheel-container > div {
+      transform: scale(4);
+      margin: 0 auto;
+    }
+  }
+  
+  /* Mobile-specific adjustments */
+  @media (max-width: 767px) {
+    .wheel-container {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .wheel-container > div {
+      transform: scale(1.8);
+      margin: 0 auto;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .wheel-container {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .wheel-container > div {
+      transform: scale(1.5);
+      margin: 0 auto;
+    }
+  }
+  
+  /* Portrait Mode Optimizations - Base styles for all portrait orientations */
+  @media (orientation: portrait) {
+    /* Adjust wheel size for portrait mode - making it smaller */
+    .wheel-viewport-container {
+      width: min(29%, 252px);
+      max-width: min(29%, 252px);
+      padding-bottom: min(29%, 252px);
+      margin: 0 auto; /* Remove top margin to allow consistent 10px from page top */
+    }
+    
+    /* Reduce gap between wheel and input/button in portrait mode */
+    .wheel-input-button-container {
+      margin-top: 2rem;
+    }
+    
+    /* Make input and button more prominent in portrait mode */
+    .claim-input-container input,
+    .spin-button-container button {
+      font-size: 2rem !important;
+      height: 2.55rem !important;
+    }
+    
+    /* Ensure input field is visible */
+    .claim-input-container {
+      background-color: white !important;
+      border: 2px solid #abcae9 !important;
+      min-height: 2.55rem;
+    }
+    
+    /* Make label more visible */
+    label[for="claimNumber"] {
+      background-color: transparent !important;
+      color: #418FDE !important;
+      font-weight: bold !important;
+      padding-top: 1.2rem !important;
+      top: -1rem !important; /* Move label higher up */
+    }
+  }
+  
+  /* iPhone 12 Pro / Small mobile devices (375x812 and similar) */
+  @media (orientation: portrait) and (max-width: 390px) {
+    .wheel-viewport-container {
+      width: 75vw;
+      max-width: 75vw;
+      padding-bottom: 75vw;
+    }
+    
+    .wheel-container > div {
+      transform: scale(1);
+    }
+    
+    .claim-input-container input,
+    .spin-button-container button {
+      font-size: 1.4rem !important;
+      height: 5rem !important;
+    }
+    
+    .wheel-input-button-container {
+      margin-top: 1.5rem;
+    }
+    
+    /* Ensure input field is visible on small devices */
+    .claim-input-container {
+      min-height: 5rem;
+      border-width: 2px !important;
+    }
+    
+    /* Adjust label position for small devices */
+    label[for="claimNumber"] {
+      font-size: 1.2rem !important;
+      padding-top: 0.8rem !important;
+      top: -1.4rem !important; /* Move label higher up */
+    }
+    
+    /* Adjust position when input has content */
+    input#claimNumber:not(:placeholder-shown) + label[for="claimNumber"] {
+      top: 0.3rem !important;
+      font-size: 0.9rem !important;
+    }
+  }
+  
+  /* iPad (768x1024) */
+  @media (orientation: portrait) and (min-width: 768px) and (max-width: 834px) {
+    .wheel-viewport-container {
+      width: 55vw;
+      max-width: 55vw;
+      padding-bottom: 55vw;
+    }
+    
+    .wheel-container > div {
+      transform: scale(1.3);
+    }
+    
+    .claim-input-container input,
+    .spin-button-container button {
+      font-size: 1.8rem !important;
+      height: 2.5rem !important;
+    }
+    
+    .wheel-input-button-container {
+      margin-top: 2rem;
+    }
+    
+    /* Ensure input field is visible on iPad */
+    .claim-input-container {
+      min-height: 6.5rem;
+      /* border-width: 2px !important; */
+    }
+    
+    /* Adjust label position for iPad */
+    label[for="claimNumber"] {
+      font-size: 1.6rem !important;
+      padding-top: 1rem !important;
+      top: 1rem !important; /* Move label higher up */
+    }
+    
+    /* Adjust position when input has content */
+    input#claimNumber:not(:placeholder-shown) + label[for="claimNumber"] {
+      top: 0.5rem !important;
+      font-size: 1.2rem !important;
+    }
+  }
+  
+  /* iPad Air (834x1112) */
+  @media (orientation: portrait) and (min-width: 835px) and (max-width: 1024px) {
+    .wheel-viewport-container {
+      width: 50vw;
+      max-width: 50vw;
+      padding-bottom: 50vw;
+    }
+    
+    .wheel-container > div {
+      transform: scale(1.5);
+    }
+    
+    .claim-input-container input,
+    .spin-button-container button {
+      font-size: 2rem !important;
+      height: 3rem !important;
+    }
+    
+    .wheel-input-button-container {
+      margin-top: 2.5rem;
+    }
+    
+    /* Ensure input field is visible on iPad Air */
+    .claim-input-container {
+      min-height: 3rem;
+      border-width: 2px !important;
+    }
+    
+    /* Adjust label position for iPad Air */
+    label[for="claimNumber"] {
+      font-size: 1.8rem !important;
+      padding-top: 1.2rem !important;
+      top: -1rem !important; /* Move label higher up */
+    }
+    
+    /* Adjust position when input has content */
+    input#claimNumber:not(:placeholder-shown) + label[for="claimNumber"] {
+      top: 0.6rem !important;
+      font-size: 1.3rem !important;
+    }
+  }
+  
+  /* iPad Pro (1024x1366) */
+  @media (orientation: portrait) and (min-width: 1025px) and (max-width: 1366px) {
+    .wheel-viewport-container {
+      width: 55vw;
+      max-width: 55vw;
+      padding-bottom: 55vw;
+    }
+    
+    .wheel-container > div {
+      transform: scale(1.8);
+    }
+    
+    .claim-input-container input,
+    .spin-button-container button {
+      font-size: 2.2rem !important;
+      height: 7rem !important;
+    }
+    
+    .wheel-input-button-container {
+      margin-top: 3rem;
+    }
+    
+    /* Ensure input field is visible on iPad Pro */
+    .claim-input-container {
+      min-height: 5rem;
+      border-width: 3px !important;
+    }
+    
+    /* Adjust label position for iPad Pro */
+    label[for="claimNumber"] {
+      font-size: 2rem !important;
+      padding-top: 1.5rem !important;
+      top: -0.8rem !important; /* Move label higher up */
+    }
+    
+    /* Adjust position when input has content */
+    input#claimNumber:not(:placeholder-shown) + label[for="claimNumber"] {
+      top: 0.7rem !important;
+      font-size: 1.5rem !important;
+    }
+  }
+  
+  /* Portrait mode for 1080x1920 screens */
+  @media (orientation: portrait) and (min-width: 1080px) and (max-width: 1439px) {
+    /* Adjust page padding to move content up */
+    .flex.min-h-screen.flex-col.items-center.bg-\[\#f5f9fd\].pt-\[20vh\] {
+      padding-top: 15vh !important;
+    }
+    
+    .wheel-viewport-container {
+      width: 85vw;
+      max-width: 85vw;
+      padding-bottom: 85vw;
+      margin-top: -2rem; /* Move wheel up */
+    }
+    
+    .wheel-container > div {
+      transform: scale(2.2);
+    }
+    
+    /* Adjust input and button for this resolution */
+    .claim-input-container input,
+    .spin-button-container button {
+      font-size: 2.2rem !important;
+      height: 6.5rem !important;
+    }
+    
+    /* Header and logo optimizations for 1080p portrait */
+    .portrait-header {
+      height: 12.5vh !important;
+    }
+    
+    .portrait-logo-container {
+      max-width: 65vw !important;
+    }
+    /* Enhanced floating label effect for 1080p portrait */
+    label[for="claimNumber"] {
+      font-size: 2.2rem !important; /* Same size as Spin the Wheel button */
+      transition: all 0.3s ease;
+    }
+    
+    /* Move label when input has focus or content */
+    input#claimNumber:focus + label[for="claimNumber"],
+    input#claimNumber:not(:placeholder-shown) + label[for="claimNumber"] {
+      transform: translateY(-1rem) scale(0.75);   
+      left: -20px;
+      
+      /* font-weight: bold; */
+    }
+    
+    /* Move entered text down by 20px */
+    input#claimNumber {
+      padding-top: 30px !important;
+    }
+    
+    /* Move input and button container up */
+    .wheel-input-button-container {
+      margin-top: -1.5rem;
+    }
+   
+  }
+  
+  /* Portrait mode for 1440x2560 screens */
+  @media (orientation: portrait) and (min-width: 1440px) and (max-width: 2159px) {
+    .wheel-viewport-container {
+      width: 80vw;
+      max-width: 80vw;
+      padding-bottom: 80vw;
+    }
+    
+    .wheel-container > div {
+      transform: scale(2.5);
+    }
+    
+    /* Adjust input and button for this resolution */
+    .claim-input-container input,
+    .spin-button-container button {
+      font-size: 2.5rem !important;
+      height: 7rem !important;
+    }
+    
+    /* Header and logo optimizations for 1440p portrait */
+    .portrait-header {
+      height: 20vh !important;
+    }
+    
+    .portrait-logo-container {
+      max-width: 85vw !important;
+    }
+  }
+  
+  /* Portrait mode for 4K UHD (2160x3840) screens */
+  @media (orientation: portrait) and (min-width: 2160px) {
+    /* Adjust page padding to accommodate larger header */
+    .flex.min-h-screen.flex-col.items-center.bg-\[\#f5f9fd\].pt-\[20vh\] {
+      padding-top: 16vh !important; /* Further reduced to move content up */
+    }
+    
+    /* Scale up wheel container for 4K */
+    .wheel-viewport-container {
+      width: 90vw;
+      max-width: 90vw;
+      padding-bottom: 90vw;
+      margin-top: -2rem; /* Negative margin to move wheel up further */
+    }
+    
+    /* Scale up wheel for 4K (approximately 2x the 1080p scale) */
+    .wheel-container > div {
+      transform: scale(4.0);
+    }
+    
+    /* Make both input and button the same larger size for 4K */
+    .claim-input-container,
+    input#claimNumber,
+    .spin-button-container {
+      height: 12rem !important;
+      font-size: 5.5rem !important;
+    }
+    
+    /* Adjust spacing between wheel and input/button */
+    .wheel-input-button-container {
+      margin-top: 4rem; /* Reduced to move input/button up */
+      width: 90%;
+      max-width: 1400px;
+    }
+    
+    /* Scale up label size for 4K */
+    label[for="claimNumber"] {
+      font-size: 6rem !important;
+    }
+  
+    /* Move label when input has focus or content */
+    input#claimNumber:focus + label[for="claimNumber"],
+    input#claimNumber:not(:placeholder-shown) + label[for="claimNumber"] {
+      transform: translateY(-1rem) scale(0.75);   
+      left: -50px;
+      font-size: 4rem !important;
+      
+      /* font-weight: bold; */
+    }
+    
+    /* Move entered text down by 20px */
+    input#claimNumber {
+      padding-top: 30px !important;
+    }
+    
+    
+    /* Match header height */
+    .portrait-header {
+      height: 12.5vh !important;
+    }
+    
+    /* Keep default logo container width */
+    .portrait-logo-container {
+      max-width: 75vw !important;
+    }
+  }
+  
+  /* Custom pointer styling - target the SVG directly */
+  .wheel-container svg polygon {
+    fill: #052740 !important;
+    stroke: #052740 !important;
+    stroke-width: 4px !important;
+    transform: scale(2) !important;
+  }
+  
+  /* Add CSS to prevent scrollbars during animation */
+  html, body {
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+    max-width: 100vw; /* Prevent horizontal overflow */
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Prevent wheel animation from causing layout shifts */
+  .wheel-container canvas {
+    transform-style: preserve-3d; /* Use hardware acceleration */
+    backface-visibility: hidden; /* Prevent flickering */
+    will-change: transform; /* Hint to browser about animation */
+  }
+  
+  /* Congrats Modal Styles */
+  .congrats-modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  
+  .congrats-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: black;
+    opacity: 0.5;
+  }
+  
+  .congrats-modal-content {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    max-width: 36rem;
+    width: 100%;
+    margin: 0 1rem;
+    z-index: 10;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .congrats-modal-title {
+    font-weight: bold;
+    font-size: 2.5rem;
+    color: #00263a;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    width: 100%;
+    line-height: 1.2;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .congrats-modal-no-prize-title {
+    font-weight: bold;
+    font-size: 1.875rem;
+    color: #00263a;
+    margin-bottom: 1.5rem;
+  }
+  
+  .congrats-modal-text {
+    font-size: 1.5rem;
+    color: #00263a;
+  }
+  
+  .congrats-modal-prize-name {
+    color: #418FDE;
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-top: 0.75rem;
+  }
+  
+  .congrats-modal-claim-number {
+    color: #00263a;
+    font-size: 1.25rem;
+    margin-top: 1rem;
+  }
+  
+  .congrats-modal-button {
+    margin-top: 1.5rem;
+    background-color: #418FDE;
+    color: white;
+    font-weight: bold;
+    font-size: 1.25rem;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .congrats-modal-button:hover {
+    background-color: #2e7bc4;
+  }
+  
+  /* 4K Portrait Mode Optimizations for Congrats Modal */
+  @media (min-width: 2160px) and (orientation: portrait) {
+    .congrats-modal-content {
+      max-width: 110rem;
+      padding: 8rem;
+      border-radius: 2rem;
+    }
+  
+    .congrats-modal-title {
+      font-size: 9rem;
+      margin-bottom: 6rem;
+    }
+  
+    .congrats-modal-no-prize-title {
+      font-size: 7rem;
+      margin-bottom: 6rem;
+    }
+  
+    .congrats-modal-text {
+      font-size: 5rem;
+      line-height: 1.4;
+    }
+  
+    .congrats-modal-prize-name {
+      font-size: 7rem;
+      margin-top: 3rem;
+    }
+  
+    .congrats-modal-claim-number {
+      font-size: 4.5rem;
+      margin-top: 4rem;
+    }
+  
+    .congrats-modal-button {
+      margin-top: 6rem;
+      font-size: 4.5rem;
+      padding: 3rem 6rem;
+      border-radius: 2rem;
+    }
+  }
+  
